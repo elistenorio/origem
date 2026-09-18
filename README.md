@@ -1,2 +1,41 @@
-# origem
-Origem é um marketplace dedicado à economia criativa e ao artesanato de Pernambuco. A plataforma conecta artesãos e produtores criativos diretamente a compradores, valorizando a origem, a técnica e o impacto de consumir direto de quem faz.
+# Origem
+
+## Descrição
+**Origem** é uma aplicação web full stack que conecta artesãos e produtores criativos a compradores. A plataforma inclui vitrine do comprador (busca, filtros, perfil do artesão, carrinho, avaliações), painel do artesão (catálogo, estoque, pedidos), painel administrativo e indicadores de venda.
+
+## Problema de Negócio
+
+Artesãos e produtores criativos têm pouca visibilidade digital, dependem de intermediários e enfrentam gestão precária de catálogo, pedidos e estoque. O Origem cria um canal direto entre essa produção e os compradores, destacando origem, técnica e o impacto de comprar de quem faz.
+
+## Integrantes
+- Aguinaldo Anselmo da Costa Neto
+- Caliel Feijó de Melo Silva
+- Elis Maidi Tenório Chaprão
+- Eulália Regina Silva de Albuquerque
+- Giulia Marianna Ferreira
+- Sarah Cyrne Ferreira
+
+## Tecnologias utilizadas
+
+- Next.js utilizando a biblioteca ChakraUI na linguagem TypeScript.
+
+
+(Liste frontend, backend, banco, autenticação, cache, fila e demais tecnologias.)
+
+## Como executar localmente
+Explique o passo a passo para rodar frontend e backend.
+
+## Variáveis de ambiente
+Explique as variáveis necessárias e inclua um arquivo .env.example.
+
+## Funcionalidades implementadas
+Liste as funcionalidades entregues.
+
+## Rotas da API
+Liste endpoints, métodos, parâmetros e exemplos de resposta.
+
+## Deploy
+Inclua os links publicados.
+
+## Evidências
+Inclua prints, vídeo, testes ou observações relevantes.
