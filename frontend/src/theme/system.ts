@@ -16,6 +16,8 @@ const config = defineConfig({
           textoSuave: { value: "#958177" },// medidas, preços
           busca: { value: "#E7D8CA" },     // campo de busca
           categoria: { value: "#DDB79B" }, // botões de categoria
+          passoFundo: { value: "#DBD6CE" },   // fundo da pílula
+          passoInativo: { value: "#D8BCA9" }, // bolinhas inativas
         },
       },
     },
