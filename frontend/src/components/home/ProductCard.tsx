@@ -23,31 +23,22 @@ export function ProductCard({ product }: { product: Product }) {
       <Stack gap="1" p="4">
         <HStack gap="2">
           {tags.map((tag) => (
-            <Badge
-              key={tag}
-              bg="origem.laranja"
-              color="white"
-              textTransform="uppercase"
-              borderRadius="full"
-              px="3"
-            >
-              {tag}
-            </Badge>
+            <Badge key={tag}>{tag}</Badge>
           ))}
         </HStack>
 
-        <Heading as="h3" size="2xl" color="origem.laranja">
+        <Heading as="h3" size="2xl">
           {title}
         </Heading>
 
         <Text fontWeight="bold" textTransform="uppercase" fontSize="sm">
           {artisan}, {city}
         </Text>
-        <Text fontSize="xs" color="origem.textoSuave">
+        <Text fontSize="xs">
           {dimensions}
         </Text>
 
-        <Text textAlign="right" fontSize="lg" color="origem.marrom" mt="2">
+        <Text textAlign="right" fontSize="lg" mt="2">
           R$ {inteiro},
           <Text as="span" fontSize="sm">{centavos}</Text>
         </Text>

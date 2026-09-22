@@ -15,14 +15,7 @@ export function AuthCard({ title, children }: AuthCardProps) {
       w="full"
       maxW="md"
     >
-      <Heading
-        as="h1"
-        size="3xl"
-        textAlign="center"
-        textTransform="uppercase"
-        color="origem.laranja"
-        mb="8"
-      >
+      <Heading as="h1" variant="destaque" size="3xl" textAlign="center" mb="8">
         {title}
       </Heading>
       {children}

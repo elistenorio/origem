@@ -11,16 +11,7 @@ type RegisterStepProps = {
 export function RegisterStep({ title, current, total = 5, children }: RegisterStepProps) {
   return (
     <Box w="full" maxW="500px" mx="auto" px="4" py={{ base: 10, md: 20 }}>
-      <Heading
-        as="h1"
-        size="xl"
-        fontFamily="body"
-        fontWeight="bold"
-        textAlign="center"
-        textTransform="uppercase"
-        color="origem.texto"
-        mb="10"
-      >
+      <Heading as="h1" variant="secao" size="xl" textAlign="center" mb="10">
         {title}
       </Heading>
       {children}

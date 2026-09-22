@@ -1,6 +1,6 @@
 import NextLink from "next/link"
 import { Stack, Text } from "@chakra-ui/react"
-import { PrimaryButton } from "@/components/common/PrimaryButton"
+import { Button } from "@chakra-ui/react"
 
 type RoleOptionProps = {
   href: string
@@ -12,12 +12,12 @@ type RoleOptionProps = {
 export function RoleOption({ href, label, highlight, description }: RoleOptionProps) {
   return (
     <Stack align="center" gap="2" textAlign="center">
-      <PrimaryButton asChild>
+      <Button asChild>
         <NextLink href={href}>
           {label}{" "}
           <Text as="span" fontWeight="bold">{highlight}</Text>
         </NextLink>
-      </PrimaryButton>
+      </Button>
       <Text color="origem.texto" maxW="260px">
         {description}
       </Text>

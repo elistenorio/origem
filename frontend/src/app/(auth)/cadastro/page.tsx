@@ -17,7 +17,7 @@ export default function PreRegisterPage() {
           <RoleOption
             href="/cadastro/comprador"
             label="Quero"
-            highlight="comprar"
+            highlight="Comprar"
             description="Crie sua conta para comprar peças e acompanhar seus pedidos."
           />
         </Stack>

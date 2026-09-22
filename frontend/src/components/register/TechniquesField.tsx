@@ -1,6 +1,5 @@
 import { Fieldset, Grid, HStack, Input } from "@chakra-ui/react"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
-import { labelStyle } from "@/theme/formStyles"
 
 const TECNICAS = [
   "Modelagem manual", "Torneamento", "Bordado", "Tecelagem", "Entalhe", "Cestaria",
@@ -24,7 +23,7 @@ export function TechniquesField({ selected, onChange, other, onOtherChange }: Te
 
   return (
     <Fieldset.Root>
-      <Fieldset.Legend {...labelStyle}>Técnicas que utiliza</Fieldset.Legend>
+      <Fieldset.Legend>Técnicas que utiliza</Fieldset.Legend>
       <Fieldset.HelperText color="origem.texto" fontWeight="medium">
         Selecione todas as opções que se aplicam
       </Fieldset.HelperText>

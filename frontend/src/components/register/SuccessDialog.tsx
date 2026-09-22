@@ -2,7 +2,7 @@
 
 import NextLink from "next/link"
 import { Dialog, Heading, Portal, Stack, Text } from "@chakra-ui/react"
-import { PrimaryButton } from "@/components/common/PrimaryButton"
+import { Button } from "@chakra-ui/react"
 
 export function SuccessDialog({ open }: { open: boolean }) {
   return (
@@ -19,8 +19,8 @@ export function SuccessDialog({ open }: { open: boolean }) {
             <Dialog.Body>
               <Stack align="center" gap="5">
                 <Dialog.Title asChild>
-                  <Heading as="h2" size="3xl" fontWeight="normal"
-                           textTransform="uppercase" color="origem.laranja">
+                  {/* fontWeight: o estilo do Dialog.Title (semibold) vence a variante */}
+                  <Heading as="h2" variant="destaque" size="3xl" fontWeight="normal">
                     Seu cadastro foi enviado!
                   </Heading>
                 </Dialog.Title>
@@ -38,9 +38,9 @@ export function SuccessDialog({ open }: { open: boolean }) {
                   Status: em análise
                 </Text>
 
-                <PrimaryButton asChild>
+                <Button asChild>
                   <NextLink href="/">Voltar ao Menu</NextLink>
-                </PrimaryButton>
+                </Button>
               </Stack>
             </Dialog.Body>
           </Dialog.Content>

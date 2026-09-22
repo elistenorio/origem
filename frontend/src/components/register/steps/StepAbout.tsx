@@ -3,7 +3,6 @@
 import { Fieldset, SimpleGrid } from "@chakra-ui/react"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
-import { labelStyle } from "@/theme/formStyles"
 import type { StepProps } from "@/types/artisan-registration"
 import { StepForm } from "../StepForm"
 import { TechniquesField } from "../TechniquesField"
@@ -46,7 +45,7 @@ export function StepAbout({ data, onChange, onNext }: StepProps) {
       />
 
       <Fieldset.Root>
-        <Fieldset.Legend {...labelStyle}>Local onde produz</Fieldset.Legend>
+        <Fieldset.Legend>Local onde produz</Fieldset.Legend>
         <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
           <FormField label="Cidade" value={data.cidade}
             onChange={(e) => onChange("cidade", e.target.value)} />

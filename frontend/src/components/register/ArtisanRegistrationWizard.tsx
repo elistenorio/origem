@@ -9,14 +9,16 @@ import { RegisterStep } from "./RegisterStep"
 import { SuccessDialog } from "./SuccessDialog"
 import { StepIdentification } from "./steps/StepIdentification"
 import { StepAbout } from "./steps/StepAbout"
-// StepStory, StepProof e StepPhotos entram quando forem criadas
+import { StepStory } from "./steps/StepStory"
+import { StepProof } from "./steps/StepProof"
+import { StepPhotos } from "./steps/StepPhotos"
 
 const steps = [
   { title: "Identificação", Component: StepIdentification },
   { title: "Conte sobre você", Component: StepAbout },
-  // { title: "Conte sobre sua trajetória", Component: StepStory },
-  // { title: "Compartilhe suas comprovações", Component: StepProof },
-  // { title: "Mostre um pouco", Component: StepPhotos },
+  { title: "Conte sobre sua trajetória", Component: StepStory },
+  { title: "Compartilhe suas comprovações", Component: StepProof },
+  { title: "Mostre um pouco", Component: StepPhotos },
 ]
 
 export function ArtisanRegistrationWizard() {

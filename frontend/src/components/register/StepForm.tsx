@@ -1,5 +1,5 @@
 import { Stack } from "@chakra-ui/react"
-import { PrimaryButton } from "@/components/common/PrimaryButton"
+import { Button } from "@chakra-ui/react"
 
 type StepFormProps = {
   onSubmit: () => void
@@ -18,9 +18,9 @@ export function StepForm({ onSubmit, children, submitLabel = "Continuar", disabl
     >
       <Stack gap="5">
         {children}
-        <PrimaryButton type="submit" alignSelf="center" mt="4" disabled={disabled}>
+        <Button type="submit" alignSelf="center" mt="4" disabled={disabled}>
           {submitLabel}
-        </PrimaryButton>
+        </Button>
       </Stack>
     </form>
   )

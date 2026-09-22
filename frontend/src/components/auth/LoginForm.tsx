@@ -4,7 +4,7 @@ import { useState } from "react"
 import NextLink from "next/link"
 import { Flex, Link, Stack, Text } from "@chakra-ui/react"
 import { FormField } from "@/components/common/FormField"
-import { PrimaryButton } from "@/components/common/PrimaryButton"
+import { Button } from "@chakra-ui/react"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -48,9 +48,9 @@ export function LoginForm() {
           </Text>
         </Flex>
 
-        <PrimaryButton type="submit" alignSelf="center" mt="4">
+        <Button type="submit" alignSelf="center" mt="4">
           Entrar
-        </PrimaryButton>
+        </Button>
       </Stack>
     </form>
   )
