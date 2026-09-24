@@ -1,7 +1,7 @@
 import { defineRecipe, defineStyle } from "@chakra-ui/react"
 
 // Visual comum a input e textarea
-const campoOrigem = defineStyle({
+export const campoOrigem = defineStyle({
   bg: "origem.busca",
   borderWidth: "0",
   borderRadius: "lg",
