@@ -1,5 +1,6 @@
 import { TopNav } from "@/components/layout/TopNav"
 import { Header } from "@/components/layout/Header"
+import { Footer } from "@/components/layout/Footer"
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +8,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <TopNav />
       <Header />
       <main>{children}</main>
-      {/* <Footer /> entra aqui */}
+      <Footer />
     </>
   )
 }
