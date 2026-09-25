@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import type { ItemCarrinho } from "@/types/carrinho"
+import type { OpcaoFrete } from "@/types/frete"
 import type { Produto } from "@/types/produto"
 
 // Carrinho global (aula 05): qualquer tela lê e altera sem passar props.
@@ -8,6 +9,8 @@ import type { Produto } from "@/types/produto"
 // Na Avaliação 2 as ações passam a sincronizar com o backend por um service.
 type CartStore = {
   items: ItemCarrinho[]
+  frete: OpcaoFrete | null   // escolhido no carrinho e usado no checkout
+  setFrete: (frete: OpcaoFrete | null) => void
   addItem: (produto: Produto, quantidade?: number) => void
   removeItem: (produtoId: string) => void
   updateQuantity: (produtoId: string, quantidade: number) => void
@@ -23,6 +26,9 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      frete: null,
+
+      setFrete: (frete) => set({ frete }),
 
       addItem: (produto, quantidade = 1) =>
         set((state) => {
@@ -48,7 +54,7 @@ export const useCartStore = create<CartStore>()(
         }))
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], frete: null }),
 
       totalItems: () => get().items.reduce((soma, item) => soma + item.quantidade, 0),
 

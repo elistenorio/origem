@@ -160,8 +160,12 @@ Perfil público do artesão. As peças dele vêm de `GET /produtos?artesaoId={id
   "estado": "PE",
   "regiao": "zona-da-mata",
   "bio": "Há mais de 40 anos transforma o barro de Tracunhaém em jarros, moringas e santos.",
-  "historia": "Foi em Tracunhaém que comecei a trabalhar com o barro...",
+  "historia": "Foi em Tracunhaém que comecei a trabalhar com o barro...\n\nGosto do barro porque...",
   "citacao": "O barro guarda a memória de quem coloca a mão nele.",
+  "trabalho": "Trabalho principalmente com barro e cerâmica...",
+  "origemTrabalho": "Aqui o trabalho com o barro está muito presente...",
+  "citacaoOrigem": "Tracunhaém faz parte do que eu faço.",
+  "gostaDeFazer": "Gosto principalmente de trabalhar com peças...",
   "fotoUrl": "https://images.unsplash.com/photo-...",
   "tecnicas": ["Cerâmica", "Modelagem manual"],
   "categorias": ["ceramica-barro"],
@@ -171,6 +175,9 @@ Perfil público do artesão. As peças dele vêm de `GET /produtos?artesaoId={id
   "criadoEm": "2026-03-10T10:00:00Z"
 }
 ```
+
+- `historia` pode ter vários parágrafos, separados por uma linha em branco (`\n\n`).
+- `trabalho`, `origemTrabalho`, `citacaoOrigem` e `gostaDeFazer` são **opcionais** (seções "Meu trabalho", "De onde vem o meu trabalho" e "O que gosto de fazer" do perfil). Só aparecem para quem tem o texto; hoje, só o Mestre Joãozinho.
 
 Erro: `404 NOT_FOUND` se o artesão não existe ou não está publicado.
 

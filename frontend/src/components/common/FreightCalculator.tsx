@@ -2,56 +2,34 @@
 
 import { useState, type FormEvent } from "react"
 import { Box, Button, HStack, Stack, Text } from "@chakra-ui/react"
-import { BiMapPin, BiPackage } from "react-icons/bi"
-import type { IconType } from "react-icons"
+import { BiPackage } from "react-icons/bi"
 import { FormField } from "@/components/common/FormField"
 import { SectionCard } from "@/components/common/SectionCard"
+import { ApiError } from "@/services/api"
+import { freteService } from "@/services/frete.service"
 import { formatCurrency } from "@/utils/formatCurrency"
+import type { OpcaoFrete } from "@/types/frete"
 
-type OpcaoFrete = {
-  id: string
-  nome: string
-  prazo: string
-  preco: number | "gratis"
-  icon: IconType
-}
-
-type ResultadoFrete = {
-  regiao: string
-  opcoes: OpcaoFrete[]
-}
-
-// TODO(fake-api): trocar por `fretesService.calcular(cep)` (GET /frete?cep=...) quando a
-// Fake API existir. Por enquanto estima pela faixa do CEP (50-56 = Pernambuco).
-function buscarOpcoesFrete(cep: string): ResultadoFrete {
-  const prefixo = Number(cep.replace(/\D/g, "").slice(0, 2))
-  const local = prefixo >= 50 && prefixo <= 56
-  return {
-    regiao: local ? "Recife/PE" : "fora de Pernambuco",
-    opcoes: [
-      { id: "pac", nome: "PAC", prazo: local ? "6 a 8 dias úteis" : "8 a 12 dias úteis", preco: local ? 24.9 : 38.9, icon: BiPackage },
-      { id: "sedex", nome: "SEDEX", prazo: local ? "2 a 3 dias úteis" : "4 a 6 dias úteis", preco: local ? 42.5 : 59.9, icon: BiPackage },
-      { id: "retirada", nome: "Retirada com o artesão", prazo: "Combinar horário", preco: "gratis", icon: BiMapPin },
-    ],
-  }
-}
-
-const formatarPreco = (preco: OpcaoFrete["preco"]) => (preco === "gratis" ? "Grátis" : formatCurrency(preco))
-
+// Simulação de frete (detalhe da peça e página de ajuda): GET /frete?cep=.
+// A API valida o CEP e manda a mensagem de erro.
 export function FreightCalculator() {
   const [cep, setCep] = useState("")
-  const [resultado, setResultado] = useState<ResultadoFrete | null>(null)
+  const [opcoes, setOpcoes] = useState<OpcaoFrete[] | null>(null)
   const [erro, setErro] = useState<string>()
+  const [calculando, setCalculando] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (cep.replace(/\D/g, "").length !== 8) {
-      setErro("Informe um CEP válido com 8 números.")
-      setResultado(null)
-      return
-    }
+    setCalculando(true)
     setErro(undefined)
-    setResultado(buscarOpcoesFrete(cep))
+    try {
+      setOpcoes(await freteService.calcular(cep))
+    } catch (e) {
+      setOpcoes(null)
+      setErro(e instanceof ApiError ? e.message : "Não foi possível calcular o frete.")
+    } finally {
+      setCalculando(false)
+    }
   }
 
   return (
@@ -69,29 +47,29 @@ export function FreightCalculator() {
             onChange={(event) => setCep(event.target.value)}
             error={erro}
           />
-          <Button type="submit" variant="origem" w="full">
+          <Button type="submit" variant="origem" w="full" loading={calculando}>
             Calcular
           </Button>
         </Stack>
       </form>
 
-      {resultado && (
+      {opcoes && (
         <Stack gap={3}>
           <Text fontWeight="bold" textTransform="uppercase" fontSize="sm" color="origem.texto">
-            Resultado para {resultado.regiao}
+            Resultado para o CEP {cep}
           </Text>
-          {resultado.opcoes.map((opcao) => (
-            <HStack key={opcao.id} justify="space-between" bg="origem.fundo" borderRadius="lg" p={3}>
+          {opcoes.map((opcao) => (
+            <HStack key={opcao.modalidade} justify="space-between" bg="origem.fundo" borderRadius="lg" p={3}>
               <HStack gap={3}>
                 <Box color="origem.laranja">
-                  <opcao.icon size={20} />
+                  <BiPackage size={20} />
                 </Box>
                 <Box>
                   <Text fontWeight="bold" fontSize="sm" color="origem.texto">{opcao.nome}</Text>
                   <Text fontSize="xs" color="origem.textoSuave">{opcao.prazo}</Text>
                 </Box>
               </HStack>
-              <Text fontWeight="bold" color="origem.texto">{formatarPreco(opcao.preco)}</Text>
+              <Text fontWeight="bold" color="origem.texto">{formatCurrency(opcao.valor)}</Text>
             </HStack>
           ))}
         </Stack>

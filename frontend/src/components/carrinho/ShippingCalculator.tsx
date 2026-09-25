@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { Button, Field, HStack, Input, RadioCard, Stack, Text } from "@chakra-ui/react"
-import { opcoesFrete } from "@/dados-exemplo/consultas"
+import { ApiError } from "@/services/api"
+import { freteService } from "@/services/frete.service"
 import { formatCurrency } from "@/utils/formatCurrency"
 import type { OpcaoFrete } from "@/types/frete"
 
@@ -11,22 +12,28 @@ type ShippingCalculatorProps = {
   onEscolher?: (frete: OpcaoFrete | null) => void   // no carrinho o comprador escolhe a modalidade; sem isso só consulta
 }
 
-// Campo de CEP + opções de frete. Por enquanto as opções são de exemplo (sem API).
+// Campo de CEP + opções de frete (GET /frete?cep=). A API valida o CEP e manda a mensagem de erro.
 export function ShippingCalculator({ frete = null, onEscolher }: ShippingCalculatorProps) {
   const selecionavel = !!onEscolher
   const [cep, setCep] = useState("")
   const [erro, setErro] = useState<string>()
   const [opcoes, setOpcoes] = useState<OpcaoFrete[]>([])
+  const [calculando, setCalculando] = useState(false)
 
-  function handleCalcular() {
-    if (cep.replace(/\D/g, "").length !== 8) {
-      setErro("Informe um CEP válido com 8 números.")
-      return
-    }
-    const resultado = opcoesFrete(cep)
+  async function handleCalcular() {
+    setCalculando(true)
     setErro(undefined)
-    setOpcoes(resultado)
-    onEscolher?.(resultado[0])
+    try {
+      const resultado = await freteService.calcular(cep)
+      setOpcoes(resultado)
+      onEscolher?.(resultado[0])
+    } catch (e) {
+      setOpcoes([])
+      onEscolher?.(null)
+      setErro(e instanceof ApiError ? e.message : "Não foi possível calcular o frete.")
+    } finally {
+      setCalculando(false)
+    }
   }
 
   return (
@@ -35,7 +42,7 @@ export function ShippingCalculator({ frete = null, onEscolher }: ShippingCalcula
         <Field.Label>Frete</Field.Label>
         <HStack w="full">
           <Input value={cep} onChange={(e) => setCep(e.target.value)} placeholder="Digite seu CEP (00000-000)" inputMode="numeric" maxLength={9} />
-          <Button variant="claro" onClick={handleCalcular}>
+          <Button variant="claro" onClick={handleCalcular} loading={calculando}>
             Calcular
           </Button>
         </HStack>

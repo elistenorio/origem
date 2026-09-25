@@ -8,7 +8,6 @@ import { produtosExemplo } from "./produtos"
 import type { Acompanhamento, PainelAdmin, TipoCuradoria } from "@/types/admin"
 import type { ResumoPainelArtesao } from "@/types/artesao"
 import type { FiltrosProduto, Produto, StatusProduto } from "@/types/produto"
-import type { OpcaoFrete } from "@/types/frete"
 
 // Filtros e contas feitos direto nos dados de exemplo, só para as telas terem o que mostrar.
 // Ao integrar com a Fake API, cada função aqui vira uma chamada a um service.
@@ -78,16 +77,6 @@ export function resumoPainelArtesao(minhas: Produto[] = meusProdutos()): ResumoP
       esgotadas: ativas.filter((p) => p.estoque === 0).length,
     },
   }
-}
-
-// Simulação de frete: CEPs de Pernambuco (50 a 56) pagam menos.
-export function opcoesFrete(cep: string): OpcaoFrete[] {
-  const prefixo = Number(cep.replace(/\D/g, "").slice(0, 2))
-  const local = prefixo >= 50 && prefixo <= 56
-  return [
-    { modalidade: "pac", nome: "PAC", valor: local ? 18.9 : 32.4, prazo: local ? "6 a 8 dias úteis" : "8 a 12 dias úteis" },
-    { modalidade: "sedex", nome: "SEDEX", valor: local ? 27.5 : 49.9, prazo: local ? "2 a 4 dias úteis" : "4 a 6 dias úteis" },
-  ]
 }
 
 export const painelAdmin: PainelAdmin = {

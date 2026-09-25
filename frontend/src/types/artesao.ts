@@ -11,8 +11,13 @@ export type Artesao = {
   estado: string        // UF
   regiao: string        // id de constants/regioes.ts
   bio: string           // resumo curto para o card
-  historia: string      // texto longo do perfil
+  historia: string      // texto longo do perfil; parágrafos separados por linha em branco ("\n\n")
   citacao: string
+  // Seções da faixa laranja do perfil. Opcionais: a seção só aparece para quem tem o texto.
+  trabalho?: string        // "Meu trabalho"
+  origemTrabalho?: string  // "De onde vem o meu trabalho"
+  citacaoOrigem?: string   // frase em destaque dessa seção
+  gostaDeFazer?: string    // "O que gosto de fazer"
   fotoUrl: string
   tecnicas: string[]    // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
   categorias: string[]  // ids de constants/categorias.ts
