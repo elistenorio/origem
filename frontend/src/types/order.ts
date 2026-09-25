@@ -1,4 +1,4 @@
-export type OrderStatus = "pending" | "confirmed" | "cancelled"
+import type { StatusKey } from "@/components/common/StatusBadge"
 
 // O que o front ENVIA em POST /orders
 export type CreateOrderInput = {
@@ -15,7 +15,7 @@ export type CreateOrderInput = {
 // O que a API DEVOLVE
 export type Order = {
   id: string
-  status: OrderStatus
+  status: StatusKey // vocabulário oficial de status fica em components/common/StatusBadge
   createdAt: string        // ISO 8601
   items: {
     productId: string

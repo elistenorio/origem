@@ -1,10 +1,11 @@
 "use client"
 
-import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Badge, Image, Link } from "@chakra-ui/react"
+import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Separator, Badge, Image, Link } from "@chakra-ui/react"
 import NextLink from "next/link"
 import { BiPlus, BiMinus, BiSearch } from "react-icons/bi"
 import { ProductCard } from "@/components/home/ProductCard"
 import { FaqAccordion } from "@/components/common/FaqAccordion"
+import { FreightCalculator } from "@/components/ajuda/FreightCalculator"
 
 // Mock product data to reuse ProductCard
 const RELATED_PRODUCTS = Array(8).fill(null).map((_, i) => ({
@@ -76,19 +77,7 @@ export default function ProdutoDetailPage() {
             </HStack>
           </Box>
 
-          <Box>
-            <Text color="origem.texto" fontWeight="bold" fontSize="sm" mb={1}>Frete</Text>
-            <Text color="origem.textoSuave" fontSize="sm" mb={2}>Calcular o CEP</Text>
-            <HStack gap={2}>
-              <Input bg="origem.busca" placeholder="00000-000" variant="unstyled" px={4} py={2} w="150px" borderRadius="md" />
-              <Button bg="origem.passoFundo" color="origem.texto" borderRadius="md" px={6} _hover={{ bg: "origem.busca" }}>Calcular</Button>
-            </HStack>
-            <Text fontSize="xs" color="origem.textoSuave" mt={2}>
-              Frete expresso: R$ 45<br/>
-              Entrega de 5 a 10 dias úteis<br/>
-              *Não fazemos entregas fora do estado de PE
-            </Text>
-          </Box>
+          <FreightCalculator />
 
           <Box bg="origem.passoFundo" p={4} borderRadius="md">
             <Text fontWeight="bold" fontSize="sm" mb={2}>Formas de pagamento</Text>
