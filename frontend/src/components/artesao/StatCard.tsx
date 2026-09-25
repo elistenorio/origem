@@ -1,4 +1,5 @@
-import { Box, Heading, Text } from "@chakra-ui/react"
+import { Heading, Text } from "@chakra-ui/react"
+import { Tile } from "@/components/common/Tile"
 
 interface StatCardProps {
   title: string
@@ -8,10 +9,7 @@ interface StatCardProps {
 
 export function StatCard({ title, subtitle, value }: StatCardProps) {
   return (
-    <Box
-      bg="origem.passoFundo"
-      borderRadius="xl"
-      p={6}
+    <Tile
       display="flex"
       flexDirection="column"
       gap={2}
@@ -28,6 +26,6 @@ export function StatCard({ title, subtitle, value }: StatCardProps) {
       <Text as="div" color="origem.laranja" fontFamily="heading" fontSize="5xl" textAlign="center" mt={2} lineHeight="1">
         {value}
       </Text>
-    </Box>
+    </Tile>
   )
 }
