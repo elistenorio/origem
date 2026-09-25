@@ -7,6 +7,7 @@ import { fieldsetOrigem } from "./fieldset"
 import { nativeSelectOrigem } from "./native-select"
 import { checkboxOrigem } from "./checkbox"
 import { tabsOrigem } from "./tabs"
+import { switchOrigem } from "./switch"
 
 export const recipes = {
   input: inputRecipe,
@@ -22,4 +23,5 @@ export const slotRecipes = {
   nativeSelect: nativeSelectOrigem, // atenção: "nativeSelect" com S maiúsculo
   checkbox: checkboxOrigem,
   tabs: tabsOrigem,
+  switch: switchOrigem,
 }

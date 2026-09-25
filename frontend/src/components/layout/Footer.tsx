@@ -22,6 +22,8 @@ const LINKS_INSTITUCIONAL = [
   { label: "Termos de uso", href: "/institucional/termos-de-uso" },
   { label: "Política de privacidade", href: "/institucional/politica-de-privacidade" },
   { label: "Política de cookies", href: "/institucional/politica-de-cookies" },
+  // Mesma tela da política, só que já rolando até o painel de toggles.
+  { label: "Preferências de cookies", href: "/institucional/politica-de-cookies#gerenciamento-de-preferencias" },
 ]
 
 export function Footer() {
