@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Box, Button, Card, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiFile } from "react-icons/bi"
-import { Panel } from "@/components/common/Panel"
+import { Tile } from "@/components/common/Tile"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { TextareaField } from "@/components/common/TextareaField"
 import { formatDateTime } from "@/utils/formatDate"
@@ -21,7 +21,7 @@ export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
   }
 
   return (
-    <Panel flex="1" w="full">
+    <Tile flex="1" w="full">
       <Stack gap="6">
         <Flex gap="5" align="center" direction={{ base: "column", sm: "row" }}>
           <Image src={item.imagemUrl} alt={item.titulo} boxSize="24" borderRadius="full" objectFit="cover" />
@@ -78,6 +78,6 @@ export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
           </HStack>
         </Flex>
       </Stack>
-    </Panel>
+    </Tile>
   )
 }

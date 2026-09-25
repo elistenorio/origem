@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import NextLink from "next/link"
 import { Alert, Box, Button, Flex, Stack } from "@chakra-ui/react"
 import { BiPlus } from "react-icons/bi"
-import { Panel } from "@/components/common/Panel"
+import { Tile } from "@/components/common/Tile"
 import { SearchField } from "@/components/common/SearchField"
 import { SelectField } from "@/components/common/SelectField"
 import { DataState } from "@/components/feedback/DataState"
@@ -83,7 +83,7 @@ export function StockView() {
           </Box>
           <Box w={{ base: "full", md: "200px" }}><SelectField label="Categoria" options={[{ value: "", label: "Todas" }, ...CATEGORIAS]} value={valores.categoria ?? ""} onChange={(v) => atualizar({ categoria: v || undefined })} /></Box>
         </Flex>
-        <Panel>
+        <Tile>
           <DataState loading={false} vazio={pecas.length === 0} mensagemVazio="Nenhuma peça no estoque">
             <Stack gap="0">
               {pecas.map((p) => (
@@ -103,7 +103,7 @@ export function StockView() {
               ))}
             </Stack>
           </DataState>
-        </Panel>
+        </Tile>
       </Stack>
       {editando && <EditStockDialog produto={editando} onClose={() => setEditando(null)} onSalvar={handleSalvar} />}
     </ArtisanShell>

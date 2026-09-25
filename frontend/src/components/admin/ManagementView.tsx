@@ -4,7 +4,7 @@ import { useState } from "react"
 import NextLink from "next/link"
 import { Badge, HStack, IconButton, Image, Stack, Table, Tabs, Text } from "@chakra-ui/react"
 import { BiShow, BiBlock, BiCheckCircle } from "react-icons/bi"
-import { Panel } from "@/components/common/Panel"
+import { Tile } from "@/components/common/Tile"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
 import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
@@ -87,7 +87,7 @@ export function ManagementView() {
           <Tabs.Trigger value="categorias">Categorias</Tabs.Trigger>
           <Tabs.Trigger value="conteudos">Conteúdos</Tabs.Trigger>
         </Tabs.List>
-        <Panel>
+        <Tile>
           <Tabs.Content value="artesaos">
             <ManagementTable itens={artesaos} textoBusca={(a) => `${a.nome} ${a.email} ${a.cidade}`} status={(a) => a.status} colunas={colunasArtesao} opcoesStatus={STATUS_ARTESAO} placeholder="Buscar por nome, e-mail ou cidade" />
           </Tabs.Content>
@@ -111,7 +111,7 @@ export function ManagementView() {
           <Tabs.Content value="conteudos">
             <EmptyMessage titulo="Nenhum conteúdo cadastrado" descricao="Os conteúdos da newsletter e do blog serão gerenciados aqui." />
           </Tabs.Content>
-        </Panel>
+        </Tile>
       </Tabs.Root>
     </AdminShell>
   )

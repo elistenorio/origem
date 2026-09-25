@@ -6,7 +6,7 @@ import { Box, Button, Flex, Link, Stack, Text } from "@chakra-ui/react"
 import { BiRightArrowAlt } from "react-icons/bi"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
 import { carrinhoExemplo } from "@/dados-exemplo/pedidos"
 import type { ItemCarrinho, OpcaoFrete } from "@/dados-exemplo/tipos"
@@ -45,9 +45,9 @@ export function CartView() {
             </Link>
           </Stack>
           <Stack w={{ base: "full", lg: "400px" }} gap="4" flexShrink={0}>
-            <Panel title="Frete">
+            <SectionCard title="Frete">
               <ShippingCalculator frete={frete} onEscolher={setFrete} />
-            </Panel>
+            </SectionCard>
             <OrderSummary quantidade={quantidade} subtotal={subtotal} frete={frete}>
               {frete ? (
                 <Button asChild variant="origem" w="full">

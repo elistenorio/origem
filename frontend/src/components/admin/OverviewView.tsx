@@ -1,5 +1,5 @@
 import { Alert, Card, HStack, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { DataState } from "@/components/feedback/DataState"
 import { StatCard } from "@/components/artesao/StatCard"
 import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
@@ -29,13 +29,13 @@ export function OverviewView() {
           <StatCard title="PEÇAS" subtitle="publicadas" value={formatCompact(d.produtosPublicados)} />
         </SimpleGrid>
         <SimpleGrid columns={{ base: 1, xl: 2 }} gap="6">
-          <Panel title="Faturamento" description="Últimos 12 meses">
+          <SectionCard title="Faturamento" description="Últimos 12 meses">
             <ColumnChart titulo="Faturamento nos últimos 12 meses" rotulos={d.faturamentoMensal.map((m) => m.mes)} series={[{ nome: "Faturamento", cor: "origem.laranja", valores: d.faturamentoMensal.map((m) => m.atual) }]} formatar={formatCurrency} />
-          </Panel>
-          <Panel title="Principais categorias" description="% das peças vendidas">
+          </SectionCard>
+          <SectionCard title="Principais categorias" description="% das peças vendidas">
             <HBarChart titulo="Principais categorias" dados={d.vendasPorCategoria.map((c) => ({ rotulo: c.categoria, valor: Math.round((c.quantidade / totalCategorias) * 100) }))} formatar={(v) => `${v}%`} />
-          </Panel>
-          <Panel title="Peças mais recentes">
+          </SectionCard>
+          <SectionCard title="Peças mais recentes">
             <DataState loading={false} vazio={maisRecentes.length === 0}>
               <Stack gap="3">
                 {maisRecentes.map((p, i) => (
@@ -48,8 +48,8 @@ export function OverviewView() {
                 ))}
               </Stack>
             </DataState>
-          </Panel>
-          <Panel title="Alertas e atividades">
+          </SectionCard>
+          <SectionCard title="Alertas e atividades">
             {acompanhamento.alertas.map((a) => (
               <Alert.Root key={a.id} status={a.gravidade === "alta" ? "error" : "warning"}>
                 <Alert.Indicator />
@@ -61,7 +61,7 @@ export function OverviewView() {
                 <Card.Body><Card.Title>{a.autor} {a.descricao}</Card.Title><Card.Description>{formatDateTime(a.data)}</Card.Description></Card.Body>
               </Card.Root>
             ))}
-          </Panel>
+          </SectionCard>
         </SimpleGrid>
       </Stack>
     </AdminShell>

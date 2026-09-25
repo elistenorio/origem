@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Alert, Button, Flex, SimpleGrid, Stack, Text } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { FormField } from "@/components/common/FormField"
 import { TextareaField } from "@/components/common/TextareaField"
 import { SelectField } from "@/components/common/SelectField"
@@ -49,15 +49,15 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
     <Stack gap="6">
       <Flex gap="6" direction={{ base: "column", lg: "row" }} align="flex-start">
         <Stack w={{ base: "full", lg: "380px" }} gap="6" flexShrink={0}>
-          <Panel title="Fotos da peça" description="Adicione de 3 a 8 fotos com boa iluminação. A primeira será a capa.">
+          <SectionCard title="Fotos da peça" description="Adicione de 3 a 8 fotos com boa iluminação. A primeira será a capa.">
             <FileField label="Fotos da peça" value={fotos} onChange={setFotos} multiple />
             <Text textStyle="apoio">Dica: mostre a peça de frente, de lado, os detalhes da técnica e uma foto em uso para dar noção de tamanho.</Text>
-          </Panel>
+          </SectionCard>
           {lateral}
         </Stack>
 
         <Stack flex="1" gap="6" w="full">
-          <Panel title="Sobre a peça">
+          <SectionCard title="Sobre a peça">
             <FormField label="Nome da peça" placeholder="Ex.: Jarro Tradicional" {...texto("titulo")} />
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
               <SelectField label="Categoria" options={selecione(CATEGORIAS)} value={dados.categoria} onChange={(v) => alterar("categoria", v)} error={erros.categoria} />
@@ -65,18 +65,18 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
             </SimpleGrid>
             <TextareaField label="Descrição" placeholder="Conte a história da peça, como ela foi feita e o que a torna especial." value={dados.descricao} onChange={(e) => alterar("descricao", e.target.value)} error={erros.descricao} rows={5} />
             <SelectField label="Material principal" options={selecione(MATERIAIS)} value={dados.material} onChange={(v) => alterar("material", v)} />
-          </Panel>
+          </SectionCard>
 
-          <Panel title="Medidas e peso" description="Informe as medidas da peça pronta, sem a embalagem.">
+          <SectionCard title="Medidas e peso" description="Informe as medidas da peça pronta, sem a embalagem.">
             <SimpleGrid columns={{ base: 2, md: 4 }} gap="4">
               <FormField label="Altura (cm)" inputMode="decimal" {...texto("altura")} />
               <FormField label="Largura (cm)" inputMode="decimal" {...texto("largura")} />
               <FormField label="Prof. (cm)" inputMode="decimal" {...texto("profundidade")} />
               <FormField label="Peso (kg)" inputMode="decimal" {...texto("peso")} />
             </SimpleGrid>
-          </Panel>
+          </SectionCard>
 
-          <Panel title="Estoque e preço">
+          <SectionCard title="Estoque e preço">
             <AppCheckbox checked={dados.pecaUnica} onCheckedChange={(e) => { alterar("pecaUnica", !!e.checked); if (e.checked) alterar("estoque", 1) }}>
               Peça única (apenas 1 unidade)
             </AppCheckbox>
@@ -87,15 +87,15 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
             <Text textStyle="apoio">
               O Origem retém {TAXA_ORIGEM * 100}% do valor de cada venda. Você recebe {formatCurrency(dados.preco * (1 - TAXA_ORIGEM))} por unidade.
             </Text>
-          </Panel>
+          </SectionCard>
 
-          <Panel title="Informações de envio" description="Usamos esses dados para calcular o frete e o prazo para o comprador.">
+          <SectionCard title="Informações de envio" description="Usamos esses dados para calcular o frete e o prazo para o comprador.">
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
               <SelectField label="Prazo para postagem" options={PRAZOS} value={dados.prazoPostagem} onChange={(v) => alterar("prazoPostagem", v)} />
               <SelectField label="Tipo de embalagem" options={EMBALAGENS} value={dados.embalagem} onChange={(v) => alterar("embalagem", v)} />
             </SimpleGrid>
             <TextareaField label="Cuidados no envio (opcional)" placeholder="Ex.: peça frágil, enviar com plástico bolha." value={dados.cuidadosEnvio} onChange={(e) => alterar("cuidadosEnvio", e.target.value)} />
-          </Panel>
+          </SectionCard>
         </Stack>
       </Flex>
 

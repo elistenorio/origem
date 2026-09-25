@@ -1,5 +1,5 @@
 import { Flex, Separator, Stack, Text } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { Price } from "@/components/common/Price"
 import { formatCurrency } from "@/utils/formatCurrency"
 import type { OpcaoFrete } from "@/dados-exemplo/tipos"
@@ -17,7 +17,7 @@ const PARCELAS_SEM_JUROS = 6
 export function OrderSummary({ quantidade, subtotal, frete, children }: OrderSummaryProps) {
   const total = subtotal + (frete?.valor ?? 0)
   return (
-    <Panel title="Resumo do pedido">
+    <SectionCard title="Resumo do pedido">
       <Stack gap="3">
         <Flex justify="space-between">
           <Text>Subtotal ({quantidade} {quantidade === 1 ? "item" : "itens"})</Text>
@@ -35,6 +35,6 @@ export function OrderSummary({ quantidade, subtotal, frete, children }: OrderSum
         <Text textStyle="apoio">ou {PARCELAS_SEM_JUROS}x de {formatCurrency(total / PARCELAS_SEM_JUROS)} sem juros</Text>
         {children}
       </Stack>
-    </Panel>
+    </SectionCard>
   )
 }

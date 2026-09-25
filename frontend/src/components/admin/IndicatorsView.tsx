@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { SimpleGrid, Stack, Tabs } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { StatCard } from "@/components/artesao/StatCard"
 import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
 import { indicadoresExemplo } from "@/dados-exemplo/admin"
@@ -41,7 +41,7 @@ export function IndicatorsView() {
           <StatCard title="VISUALIZAÇÕES" subtitle="Páginas de peças vistas" value={formatCompact(data.visualizacoes)} />
         </SimpleGrid>
         <SimpleGrid columns={{ base: 1, xl: 2 }} gap="6">
-          <Panel title="Faturamento mensal" description="Últimos 12 meses x 12 meses anteriores">
+          <SectionCard title="Faturamento mensal" description="Últimos 12 meses x 12 meses anteriores">
             <ColumnChart
               titulo="Faturamento mensal, últimos 12 meses comparados aos 12 anteriores"
               rotulos={data.faturamentoMensal.map((m) => m.mes)}
@@ -51,13 +51,13 @@ export function IndicatorsView() {
               ]}
               formatar={formatCurrency}
             />
-          </Panel>
-          <Panel title="Vendas por categoria" description="Peças vendidas no período">
+          </SectionCard>
+          <SectionCard title="Vendas por categoria" description="Peças vendidas no período">
             <HBarChart titulo="Vendas por categoria" dados={data.vendasPorCategoria.map((c) => ({ rotulo: c.categoria, valor: c.quantidade }))} />
-          </Panel>
-          <Panel title="Pedidos por semana" description="Últimas 8 semanas">
+          </SectionCard>
+          <SectionCard title="Pedidos por semana" description="Últimas 8 semanas">
             <ColumnChart titulo="Pedidos por semana nas últimas 8 semanas" rotulos={data.pedidosPorSemana.map((s) => s.semana)} series={[{ nome: "Pedidos", cor: "origem.laranja", valores: data.pedidosPorSemana.map((s) => s.quantidade) }]} />
-          </Panel>
+          </SectionCard>
         </SimpleGrid>
       </Stack>
     </AdminShell>

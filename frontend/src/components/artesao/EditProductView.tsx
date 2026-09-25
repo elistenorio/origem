@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import NextLink from "next/link"
 import { Box, Button, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react"
 import { BiShow, BiTrash } from "react-icons/bi"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
@@ -43,13 +43,13 @@ export function EditProductView({ id }: { id: string }) {
               onSalvar={() => router.push("/artesao/catalogo")}
               lateral={
                 <>
-                  <Panel title="Status da peça">
+                  <SectionCard title="Status da peça">
                     <HStack gap="3" wrap="wrap">
                       <StatusBadge status={produto.status} />
                       <Text textStyle="apoio">Cadastrada em {formatDate(produto.criadoEm)}</Text>
                     </HStack>
-                  </Panel>
-                  <Panel title="Vendas e estoque">
+                  </SectionCard>
+                  <SectionCard title="Vendas e estoque">
                     <SimpleGrid columns={2} gap="3">
                       <Box bg="origem.fundo" borderRadius="lg" p="3">
                         <Text textStyle="numero">{produto.estoque}</Text>
@@ -60,7 +60,7 @@ export function EditProductView({ id }: { id: string }) {
                         <Text textStyle="apoio">Tipo de peça</Text>
                       </Box>
                     </SimpleGrid>
-                  </Panel>
+                  </SectionCard>
                   <Button variant="perigo" onClick={() => setConfirmarExclusao(true)}><BiTrash /> Excluir peça</Button>
                 </>
               }
