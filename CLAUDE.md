@@ -20,6 +20,12 @@ Frontend responsivo consumindo uma Fake API estruturada, com deploy público. O 
 - Antes de criar uma tela, uma funcionalidade ou uma mudança em vários arquivos, apresente um plano (arquivos a criar/alterar, componentes, tipos, services, stores) e espere aprovação. Correções pequenas podem ir direto.
 - Ao terminar, explique o que foi feito e por quê: todos os integrantes precisam saber explicar o código na apresentação.
 
+## Idioma
+- **Português, sem acento**, em tudo que é do domínio: rotas da API (`/produtos`, `/artesaos`, `/pedidos`, `/minha-conta`), tipos e seus campos (`Produto`, `titulo`, `preco`, `artesaoId`), parâmetros de filtro e seus valores (`busca`, `categoria`, `ordenar=menor_preco`), services e suas funções (`produtos.service.ts`, `listar`), mocks (`produtos.mock.ts`), constantes (`constants/categorias.ts`) e hooks de domínio (`useProdutos`).
+- **Inglês** no que é técnico: formato das respostas (`Paginated`, `ApiError`, `{ error: { code, message } }`), códigos de erro (`NOT_FOUND`, `VALIDATION`), paginação (`page`, `pageSize`), `http.ts`, stores (`cartStore.ts`), utils (`normalizeText.ts`), nomes de componentes (`ProductCard`) e hooks genéricos (`useAuth`).
+- Textos da interface, comentários e documentação em português.
+- Mensagens de commit em inglês, no formato Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:` (ex.: `feat: add products fake api`).
+
 ## Documentação
 - Criou ou alterou uma rota da Fake API: atualize `docs/api.md` (método, rota, parâmetros, exemplo de resposta, erros e como será trocada pelo backend real).
 - Documente só o que existe no código.
@@ -28,7 +34,7 @@ Frontend responsivo consumindo uma Fake API estruturada, com deploy público. O 
 ## Declaração de uso de IA
 O arquivo oficial é `docs/uso-de-ia.md` (obrigatório e avaliado). Durante o desenvolvimento, cada integrante registra seus usos num arquivo local, fora do git: `docs/uso-de-ia.local.md` (está no `.gitignore`). Os registros são juntados no arquivo oficial antes de cada entrega.
 
-Ao concluir uma contribuição relevante (código, arquitetura, documentação ou decisão importante; não dúvidas rápidas nem correções pequenas):
+Ao concluir uma contribuição relevante (código, arquitetura, documentação ou decisão importante; não dúvidas rápidas nem correções pequenas), registre na hora, antes da resposta final daquela tarefa, e não no fim da sessão. Na dúvida se é relevante, pergunte ao integrante:
 - Adicione uma linha em `docs/uso-de-ia.local.md`, no formato da tabela da seção 3 do arquivo oficial: data (dd/mm/aaaa), ferramenta "Claude Code", uso realizado, parte do projeto impactada, se foi incorporado e "Revisão feita pela equipe". Se o arquivo não existir, crie-o com o nome do integrante (`git config user.name`) no topo.
 - Anote também as partes do projeto que tiveram apoio (lista da seção 5) e, em decisões grandes, a descrição do pedido e como a resposta foi utilizada (seção 4).
 - Pergunte ao integrante como ele revisou, adaptou ou testou o resultado e como usou a resposta. Preencha "Revisão feita pela equipe" e "Como a resposta foi utilizada" com as palavras dele, sem acrescentar nada que ele não tenha confirmado. Se ele ainda não revisou, deixe `_pendente_`.

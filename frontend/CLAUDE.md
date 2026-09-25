@@ -24,11 +24,11 @@ components/<assunto>/ componentes por domínio (auth, register, layout, home...)
 components/common/    campos de formulário reutilizáveis
 components/feedback/  estados de carregamento, erro e vazio
 components/ui/        snippets gerados pelo Chakra (provider, toaster...)
-services/             única camada que faz requisições: http.ts + um arquivo por recurso
+services/             única camada que faz requisições: http.ts + um <recurso>.service.ts por recurso
 store/                stores Zustand
 hooks/                lógica reutilizável (ex.: buscar dados com loading/erro)
 types/                entidades e formatos de resposta da API
-mocks/                dados sintéticos da Fake API
+mocks/                dados sintéticos da Fake API (<recurso>.mock.ts)
 utils/ constants/     funções auxiliares e valores fixos (categorias, regiões, técnicas)
 theme/                system e recipes do Chakra
 ```
@@ -44,8 +44,8 @@ Componente → hook → service (`src/services/`) → `http()` → `/api/*` (Fak
 - Recursos da Fake API: produtos, artesãos, usuários, categorias, técnicas, regiões, pedidos, avaliações e recomendações iniciais.
 
 ## Estado global (Zustand)
-- Estado compartilhado entre telas (carrinho; depois, usuário logado) fica em `src/store/`, um store por assunto — ex.: `store/cart.ts` exportando `useCartStore`. Não use Context nem Redux para isso.
-- Carrinho: Zustand com `persist` (localStorage), usando os tipos de `src/types/cart.ts`. Totais e contagem são calculados a partir dos itens, não guardados no estado. Na Avaliação 2 ele passa a sincronizar com o backend por um service.
+- Estado compartilhado entre telas (carrinho; depois, usuário logado) fica em `src/store/`, um store por assunto — ex.: `store/cartStore.ts` exportando `useCartStore`. Não use Context nem Redux para isso.
+- Carrinho: Zustand com `persist` (localStorage), usando os tipos de `src/types/carrinho.ts`. Totais e contagem são calculados a partir dos itens, não guardados no estado. Na Avaliação 2 ele passa a sincronizar com o backend por um service.
 - Stores não fazem requisições; se uma ação precisar da API, ela chama um service.
 - Componentes que usam store são Client Components (`"use client"`). Com `persist`, o servidor renderiza o carrinho vazio: valores como o contador do carrinho só aparecem depois de montar no navegador, para evitar erro de hidratação.
 
@@ -63,9 +63,9 @@ Componente → hook → service (`src/services/`) → `http()` → `/api/*` (Fak
 - Tipos das entidades ficam em `src/types/` e são os mesmos para Fake API, services, stores e componentes.
 
 ## Convenções
-- Arquivos, variáveis, funções e tipos em inglês; URLs, textos da interface, comentários e documentação em português.
+- Idioma dos nomes: seção "Idioma" do `CLAUDE.md` da raiz (domínio em português sem acento, técnico em inglês, commits em inglês).
+- Os arquivos antigos em inglês (`types/product.ts`, `types/artisan.ts`, `types/order.ts`, `types/cart.ts`, `services/products.ts`, `services/artisans.ts`, `services/orders.ts`) estão sendo substituídos pelas versões em português. Não use em código novo; eles saem quando as telas migrarem.
 - Imports com o alias `@/` (= `src/`).
-- Commits no formato `feat:`, `fix:`, `docs:`, `chore:`.
 
 ## Antes de dar uma tela por pronta
 - [ ] Dados vêm de um service, nada fixo na tela
