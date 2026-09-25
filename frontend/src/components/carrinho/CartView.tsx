@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import NextLink from "next/link"
 import { Box, Button, Flex, Link, Stack, Text } from "@chakra-ui/react"
 import { BiRightArrowAlt } from "react-icons/bi"
@@ -8,23 +7,31 @@ import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
 import { SectionCard } from "@/components/common/SectionCard"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
-import { carrinhoExemplo } from "@/dados-exemplo/pedidos"
-import type { ItemCarrinho } from "@/types/carrinho"
-import type { OpcaoFrete } from "@/types/frete"
+import { LoadingState } from "@/components/feedback/LoadingState"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useCartStore } from "@/store/cartStore"
 import { CartItemRow } from "./CartItemRow"
 import { ShippingCalculator } from "./ShippingCalculator"
 import { OrderSummary } from "./OrderSummary"
 
-// Carrinho (Tela 06): itens + frete + resumo. Por enquanto com itens de exemplo em estado local.
+// Carrinho (Tela 06): itens + frete + resumo. Os itens e o frete ficam no cartStore (salvo no navegador).
 export function CartView() {
-  const [itens, setItens] = useState<ItemCarrinho[]>(carrinhoExemplo)
-  const [frete, setFrete] = useState<OpcaoFrete | null>(null)
-  const quantidade = itens.reduce((soma, i) => soma + i.quantidade, 0)
-  const subtotal = itens.reduce((soma, i) => soma + i.produto.preco * i.quantidade, 0)
+  const montado = useHasMounted()
+  const itens = useCartStore((state) => state.items)
+  const frete = useCartStore((state) => state.frete)
+  const setFrete = useCartStore((state) => state.setFrete)
+  const updateQuantity = useCartStore((state) => state.updateQuantity)
+  const removeItem = useCartStore((state) => state.removeItem)
+  const quantidade = useCartStore((state) => state.totalItems())
+  const subtotal = useCartStore((state) => state.totalPrice())
 
-  const alterarQuantidade = (id: string, q: number) =>
-    setItens((atual) => atual.map((i) => (i.produto.id === id ? { ...i, quantidade: Math.min(Math.max(q, 1), Math.max(i.produto.estoque, 1)) } : i)))
-  const remover = (id: string) => setItens((atual) => atual.filter((i) => i.produto.id !== id))
+  if (!montado) {
+    return (
+      <PageContainer>
+        <LoadingState mensagem="Carregando seu carrinho..." />
+      </PageContainer>
+    )
+  }
 
   return (
     <PageContainer>
@@ -39,7 +46,7 @@ export function CartView() {
         <Flex gap="10" direction={{ base: "column", lg: "row" }} align="flex-start">
           <Stack flex="1" w="full">
             {itens.map((item) => (
-              <CartItemRow key={item.produto.id} item={item} onAlterarQuantidade={(q) => alterarQuantidade(item.produto.id, q)} onRemover={() => remover(item.produto.id)} />
+              <CartItemRow key={item.produto.id} item={item} onAlterarQuantidade={(q) => updateQuantity(item.produto.id, q)} onRemover={() => removeItem(item.produto.id)} />
             ))}
             <Link asChild variant="origem" mt="4">
               <NextLink href="/catalogo">← Continuar comprando</NextLink>
