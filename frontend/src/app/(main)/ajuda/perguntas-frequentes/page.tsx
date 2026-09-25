@@ -4,7 +4,8 @@ import { useState } from "react"
 import NextLink from "next/link"
 import { Box, Button, Grid, Heading, Link, Stack, Text, Wrap } from "@chakra-ui/react"
 import { BiEnvelope } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { SearchField } from "@/components/common/SearchField"
 import { SectionCard } from "@/components/common/SectionCard"
 import { FaqAccordion, type FaqItem } from "@/components/common/FaqAccordion"
@@ -116,23 +117,12 @@ export default function PerguntasFrequentesPage() {
       : GRUPOS.filter((grupo) => grupo.categorias.includes(categoria))
 
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Ajuda" },
-          { label: "Perguntas frequentes" },
-        ]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Ajuda" }, { label: "Perguntas frequentes" }]}
+        titulo="Perguntas frequentes"
+        subtitulo="Tire suas dúvidas sobre compras, pedidos, entregas, pagamentos, trocas e cadastro."
       />
-
-      <Box mt={6} mb={6}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          Perguntas frequentes
-        </Heading>
-        <Text color="origem.texto">
-          Tire suas dúvidas sobre compras, pedidos, entregas, pagamentos, trocas e cadastro.
-        </Text>
-      </Box>
 
       <Box mb={6}>
         <SearchField placeholder='Busque por uma palavra, como "frete" ou "troca"' />
@@ -187,6 +177,6 @@ export default function PerguntasFrequentesPage() {
           </SectionCard>
         </Stack>
       </Grid>
-    </Box>
+    </PageContainer>
   )
 }

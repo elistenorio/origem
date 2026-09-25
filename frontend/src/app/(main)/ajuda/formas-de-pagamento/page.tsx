@@ -1,6 +1,7 @@
 import { Box, Grid, Heading, HStack, Separator, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiCreditCard, BiFile, BiTransferAlt } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { SectionCard } from "@/components/common/SectionCard"
 import { formatCurrency } from "@/utils/formatCurrency"
 import { PaymentMethodCard } from "@/components/ajuda/PaymentMethodCard"
@@ -50,23 +51,12 @@ const PRAZOS_CONFIRMACAO = [
 
 export default function FormasDePagamentoPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Ajuda" },
-          { label: "Formas de pagamento" },
-        ]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Ajuda" }, { label: "Formas de pagamento" }]}
+        titulo="Formas de pagamento"
+        subtitulo="Pague do jeito que preferir, com segurança em todas as etapas."
       />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          Formas de pagamento
-        </Heading>
-        <Text color="origem.texto">
-          Pague do jeito que preferir, com segurança em todas as etapas.
-        </Text>
-      </Box>
 
       <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
         {METODOS.map((metodo) => (
@@ -131,6 +121,6 @@ export default function FormasDePagamentoPage() {
           </Text>
         </Box>
       </Grid>
-    </Box>
+    </PageContainer>
   )
 }

@@ -1,10 +1,11 @@
 import NextLink from "next/link"
-import { Box, Button, Flex, Grid, Heading, HStack, Image, Link, Separator, Stack, Text } from "@chakra-ui/react"
-import { BiCreditCard, BiFile, BiLockAlt, BiMapPin, BiPencil, BiPlus } from "react-icons/bi"
+import { Box, Button, Flex, Grid, HStack, Image, Link, Separator, Stack, Text } from "@chakra-ui/react"
+import { BiCreditCard, BiFile, BiLockAlt, BiMapPin, BiPencil, BiPlus, BiTrash } from "react-icons/bi"
 import { AccountSidebar } from "@/components/conta/AccountSidebar"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
 import { FormField } from "@/components/common/FormField"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { SectionCard } from "@/components/common/SectionCard"
 import { StatusBadge, type StatusKey } from "@/components/common/StatusBadge"
 
@@ -54,17 +55,12 @@ const formasPagamento = [
 
 export default function MinhaContaPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Minha conta" }]} />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "4xl" }} mb={2}>
-          Minha conta
-        </Heading>
-        <Text color="origem.texto">
-          Olá, {usuario.nome.split(" ")[0]}! Aqui você gerencia seus dados, pedidos e preferências.
-        </Text>
-      </Box>
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Minha conta" }]}
+        titulo="Minha conta"
+        subtitulo={`Olá, ${usuario.nome.split(" ")[0]}! Aqui você gerencia seus dados, pedidos e preferências.`}
+      />
 
       <Flex gap={10} flexDir={{ base: "column", lg: "row" }} align="flex-start">
         <AccountSidebar activeItem="dados-pessoais" />
@@ -197,15 +193,13 @@ export default function MinhaContaPage() {
                 removidos. Essa ação não poderá ser desfeita.
               </Text>
               <HStack gap={4}>
-                <Button bg="origem.marrom" color="origem.fundo" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
-                  Excluir a minha conta
-                </Button>
+                <Button variant="perigo"><BiTrash /> Excluir a minha conta</Button>
                 <Link color="origem.perigo" fontWeight="medium">Sair</Link>
               </HStack>
             </Box>
           </SectionCard>
         </Stack>
       </Flex>
-    </Box>
+    </PageContainer>
   )
 }

@@ -1,6 +1,8 @@
 import NextLink from "next/link"
 import { Box, Button, Grid, Heading, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiGroup, BiMapPin, BiShield, BiTransferAlt } from "react-icons/bi"
+import { Banner } from "@/components/common/Banner"
+import { Tile } from "@/components/common/Tile"
 import { Quote } from "@/components/institucional/Quote"
 import { StatHighlight } from "@/components/institucional/StatHighlight"
 import { ValueCard } from "@/components/institucional/ValueCard"
@@ -118,11 +120,10 @@ export default function SobrePage() {
         </Box>
 
         {/* Relação com os artesãos */}
-        <Grid
-          templateColumns={{ base: "1fr", md: "1.2fr 1fr" }}
+        <Tile
+          display="grid"
+          gridTemplateColumns={{ base: "1fr", md: "1.2fr 1fr" }}
           gap={8}
-          bg="origem.passoFundo"
-          borderRadius="2xl"
           p={{ base: 6, md: 10 }}
           mb={16}
           alignItems="stretch"
@@ -143,23 +144,23 @@ export default function SobrePage() {
             Antes eu vendia só na feira. Hoje minhas peças chegam no Brasil inteiro, e o cliente sabe
             quem fez.
           </Quote>
-        </Grid>
+        </Tile>
 
         {/* CTA final */}
-        <Box bg="origem.laranja" color="white" borderRadius="2xl" p={{ base: 8, md: 12 }} mb={16} textAlign="center">
+        <Banner tom="laranja" p={{ base: 8, md: 12 }} mb={16} textAlign="center">
           <Heading as="h2" fontFamily="heading" fontWeight="normal" fontSize={{ base: "2xl", md: "3xl" }} mb={2}>
             Faça parte dessa história
           </Heading>
           <Text mb={6}>Compre de quem faz ou venda o seu trabalho no Origem.</Text>
           <Stack direction={{ base: "column", sm: "row" }} justify="center" gap={4}>
-            <Button asChild bg="origem.fundo" color="origem.texto" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
+            <Button asChild variant="claro">
               <NextLink href="/artesaos">→ Conheça os artesãos</NextLink>
             </Button>
-            <Button asChild bg="origem.marrom" color="white" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
+            <Button asChild variant="secundario">
               <NextLink href="/cadastro">+ Faça parte</NextLink>
             </Button>
           </Stack>
-        </Box>
+        </Banner>
       </Box>
     </Box>
   )

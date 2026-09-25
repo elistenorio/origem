@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { Box, chakra, Field, Text } from "@chakra-ui/react"
-import { IoShareOutline } from "react-icons/io5"
+import { BiUpload } from "react-icons/bi"
 
 const TIPOS_ACEITOS = ["image/png", "image/jpeg"]
 const TAMANHO_MAXIMO = 5 * 1024 * 1024 // 5 MB
@@ -79,7 +79,7 @@ export function FileField({ label, value, onChange, multiple = false }: FileFiel
           {texto}
         </Text>
         <Box as="span" color="origem.texto" fontSize="xl" flexShrink={0}>
-          <IoShareOutline />
+          <BiUpload />
         </Box>
       </chakra.button>
       <Field.ErrorText>{error}</Field.ErrorText>

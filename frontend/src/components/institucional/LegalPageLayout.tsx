@@ -1,6 +1,7 @@
 import { Box, Grid, Heading, Separator, Stack, Text } from "@chakra-ui/react"
 import { BiFile } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { TableOfContents } from "@/components/institucional/TableOfContents"
 
 export type LegalSection = {
@@ -22,19 +23,14 @@ type LegalPageLayoutProps = {
 // lateral com destaque de leitura e as seções numeradas.
 export function LegalPageLayout({ breadcrumbAtual, titulo, atualizadoEm, intro, secoes }: LegalPageLayoutProps) {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[{ label: "Home", href: "/" }, { label: "Institucional" }, { label: breadcrumbAtual }]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Institucional" }, { label: breadcrumbAtual }]}
+        titulo={titulo}
       />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          {titulo}
-        </Heading>
-        <Text color="origem.textoSuave" fontSize="sm">
-          Última atualização: {atualizadoEm}
-        </Text>
-      </Box>
+      <Text color="origem.textoSuave" fontSize="sm" mt={-6} mb={8}>
+        Última atualização: {atualizadoEm}
+      </Text>
 
       <Grid templateColumns={{ base: "1fr", lg: "260px 1fr" }} gap={10} alignItems="flex-start">
         <Stack
@@ -66,6 +62,6 @@ export function LegalPageLayout({ breadcrumbAtual, titulo, atualizadoEm, intro, 
           ))}
         </Stack>
       </Grid>
-    </Box>
+    </PageContainer>
   )
 }
