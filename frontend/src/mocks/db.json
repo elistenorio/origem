@@ -1,0 +1,517 @@
+{
+  "produtos": [
+    {
+      "id": "p1", "titulo": "Jarro Tradicional", "artesaoId": "a1", "artesaoNome": "Mestre Joãozinho", "cidade": "Tracunhaém",
+      "tags": ["Peça única", "Barro"], "medidas": "15 × 27 × 15cm", "preco": 167.9,
+      "imagemUrl": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+      "imagens": [
+        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+        "https://picsum.photos/seed/origem-p1-2/600/600", "https://picsum.photos/seed/origem-p1-3/600/600", "https://picsum.photos/seed/origem-p1-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "modelagem-manual", "material": "barro", "regiao": "zona-da-mata",
+      "estoque": 1, "pecaUnica": true, "status": "publicado",
+      "descricao": "Produzido manualmente em barro, o Jarro Tradicional carrega a simplicidade e a força da cerâmica popular de Tracunhaém. Sua forma arredondada e o acabamento natural revelam as marcas do processo artesanal, tornando cada peça única.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-20T10:00:00Z"
+    },
+    {
+      "id": "p2", "titulo": "Natureza Onírica", "artesaoId": "a2", "artesaoNome": "Carla Maria", "cidade": "Recife",
+      "tags": ["Peça única", "Pintura"], "medidas": "50 × 72 × 4cm", "preco": 242.12,
+      "imagemUrl": "https://picsum.photos/seed/origem-natureza-onirica/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-natureza-onirica/600/600",
+        "https://picsum.photos/seed/origem-p2-2/600/600", "https://picsum.photos/seed/origem-p2-3/600/600", "https://picsum.photos/seed/origem-p2-4/600/600"
+      ],
+      "categoria": "pintura", "tecnica": "pintura-mao", "material": "tela", "regiao": "metropolitana",
+      "estoque": 1, "pecaUnica": true, "status": "publicado",
+      "descricao": "Pintura em acrílica sobre tela com paisagem onírica inspirada nas cores do litoral pernambucano.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p3", "titulo": "Conj. Brasileiro", "artesaoId": "a3", "artesaoNome": "Zezinha do Barro", "cidade": "Caruaru",
+      "tags": ["Conjunto", "Cerâmica"], "medidas": "10 × 10 × 1,5cm", "preco": 167.9,
+      "imagemUrl": "https://picsum.photos/seed/origem-conj-brasileiro/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-conj-brasileiro/600/600",
+        "https://picsum.photos/seed/origem-p3-2/600/600", "https://picsum.photos/seed/origem-p3-3/600/600", "https://picsum.photos/seed/origem-p3-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "pintura-mao", "material": "barro", "regiao": "agreste",
+      "estoque": 6, "pecaUnica": false, "status": "publicado",
+      "descricao": "Conjunto de azulejos pintados à mão com padrões geométricos inspirados na azulejaria colonial.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p4", "titulo": "Renda Renascença", "artesaoId": "a4", "artesaoNome": "Nara Azevedo", "cidade": "Passira",
+      "tags": ["Peça única", "Tecido"], "medidas": "156 × 156cm", "preco": 557,
+      "imagemUrl": "https://picsum.photos/seed/origem-renda-renascenca/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-renda-renascenca/600/600",
+        "https://picsum.photos/seed/origem-p4-2/600/600", "https://picsum.photos/seed/origem-p4-3/600/600", "https://picsum.photos/seed/origem-p4-4/600/600"
+      ],
+      "categoria": "tecidos-bordados", "tecnica": "renda", "material": "algodao", "regiao": "agreste",
+      "estoque": 1, "pecaUnica": true, "status": "publicado",
+      "descricao": "Toalha em renda renascença feita à mão por bordadeiras de Passira, com motivos florais tradicionais.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p5", "titulo": "Moringa Pintada", "artesaoId": "a1", "artesaoNome": "Mestre Joãozinho", "cidade": "Tracunhaém",
+      "tags": ["Barro", "Pintura"], "medidas": "18 × 32 × 18cm", "preco": 189,
+      "imagemUrl": "https://picsum.photos/seed/origem-moringa/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-moringa/600/600",
+        "https://picsum.photos/seed/origem-p5-2/600/600", "https://picsum.photos/seed/origem-p5-3/600/600", "https://picsum.photos/seed/origem-p5-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "pintura-mao", "material": "barro", "regiao": "zona-da-mata",
+      "estoque": 0, "pecaUnica": false, "status": "indisponivel",
+      "descricao": "Moringa de barro com pintura à mão em pigmentos naturais. Mantém a água fresca.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p6", "titulo": "Painel Azulejado", "artesaoId": "a3", "artesaoNome": "Zezinha do Barro", "cidade": "Caruaru",
+      "tags": ["Peça única", "Cerâmica"], "medidas": "40 × 40 × 2cm", "preco": 320,
+      "imagemUrl": "https://picsum.photos/seed/origem-painel-azulejado/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-painel-azulejado/600/600",
+        "https://picsum.photos/seed/origem-p6-2/600/600", "https://picsum.photos/seed/origem-p6-3/600/600", "https://picsum.photos/seed/origem-p6-4/600/600"
+      ],
+      "categoria": "decoracao", "tecnica": "pintura-mao", "material": "barro", "regiao": "agreste",
+      "estoque": 1, "pecaUnica": true, "status": "publicado",
+      "descricao": "Painel de azulejos pintados à mão, pronto para pendurar.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p7", "titulo": "Toalha de Renda", "artesaoId": "a4", "artesaoNome": "Nara Azevedo", "cidade": "Passira",
+      "tags": ["Tecido", "Bordado"], "medidas": "120 × 80cm", "preco": 389.9,
+      "imagemUrl": "https://picsum.photos/seed/origem-toalha-renda/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-toalha-renda/600/600",
+        "https://picsum.photos/seed/origem-p7-2/600/600", "https://picsum.photos/seed/origem-p7-3/600/600", "https://picsum.photos/seed/origem-p7-4/600/600"
+      ],
+      "categoria": "tecidos-bordados", "tecnica": "bordado", "material": "algodao", "regiao": "agreste",
+      "estoque": 3, "pecaUnica": false, "status": "publicado",
+      "descricao": "Toalha de mesa bordada em ponto cheio com barrado de renda.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p8", "titulo": "Céu de Agreste", "artesaoId": "a2", "artesaoNome": "Carla Maria", "cidade": "Recife",
+      "tags": ["Peça única", "Pintura"], "medidas": "60 × 40 × 3cm", "preco": 275,
+      "imagemUrl": "https://picsum.photos/seed/origem-ceu-agreste/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-ceu-agreste/600/600",
+        "https://picsum.photos/seed/origem-p8-2/600/600", "https://picsum.photos/seed/origem-p8-3/600/600", "https://picsum.photos/seed/origem-p8-4/600/600"
+      ],
+      "categoria": "pintura", "tecnica": "pintura-mao", "material": "tela", "regiao": "metropolitana",
+      "estoque": 1, "pecaUnica": true, "status": "emAnalise",
+      "descricao": "Pintura em acrílica do céu do agreste ao entardecer.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p9", "titulo": "Vaso de Barro Biscoito", "artesaoId": "a1", "artesaoNome": "Mestre Joãozinho", "cidade": "Tracunhaém",
+      "tags": ["Barro"], "medidas": "20 × 30 × 20cm", "preco": 120.46,
+      "imagemUrl": "https://picsum.photos/seed/origem-vaso-biscoito/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-vaso-biscoito/600/600",
+        "https://picsum.photos/seed/origem-p9-2/600/600", "https://picsum.photos/seed/origem-p9-3/600/600", "https://picsum.photos/seed/origem-p9-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "torneamento", "material": "barro", "regiao": "zona-da-mata",
+      "estoque": 4, "pecaUnica": false, "status": "publicado",
+      "descricao": "Vaso em barro biscoito (queimado sem esmalte), torneado e acabado à mão.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p10", "titulo": "Quartinha", "artesaoId": "a1", "artesaoNome": "Mestre Joãozinho", "cidade": "Tracunhaém",
+      "tags": ["Barro"], "medidas": "14 × 24 × 14cm", "preco": 98,
+      "imagemUrl": "https://picsum.photos/seed/origem-quartinha/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-quartinha/600/600",
+        "https://picsum.photos/seed/origem-p10-2/600/600", "https://picsum.photos/seed/origem-p10-3/600/600", "https://picsum.photos/seed/origem-p10-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "modelagem-manual", "material": "barro", "regiao": "zona-da-mata",
+      "estoque": 8, "pecaUnica": false, "status": "publicado",
+      "descricao": "Quartinha tradicional de barro para água, modelada à mão.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p11", "titulo": "Cesto de Ouricuri", "artesaoId": "a6", "artesaoNome": "Rita Bezerra", "cidade": "Goiana",
+      "tags": ["Palha"], "medidas": "30 × 30 × 20cm", "preco": 89,
+      "imagemUrl": "https://picsum.photos/seed/origem-cesto-ouricuri/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-cesto-ouricuri/600/600",
+        "https://picsum.photos/seed/origem-p11-2/600/600", "https://picsum.photos/seed/origem-p11-3/600/600", "https://picsum.photos/seed/origem-p11-4/600/600"
+      ],
+      "categoria": "palha-fibras", "tecnica": "cestaria", "material": "palha", "regiao": "zona-da-mata",
+      "estoque": 5, "pecaUnica": false, "status": "publicado",
+      "descricao": "Cesto trançado à mão com palha de ouricuri colhida em Goiana.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p12", "titulo": "Xilogravura do Cangaço", "artesaoId": "a5", "artesaoNome": "Severino Lima", "cidade": "Bezerros",
+      "tags": ["Gravura", "Cordel"], "medidas": "30 × 42cm", "preco": 145,
+      "imagemUrl": "https://picsum.photos/seed/origem-xilogravura/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-xilogravura/600/600",
+        "https://picsum.photos/seed/origem-p12-2/600/600", "https://picsum.photos/seed/origem-p12-3/600/600", "https://picsum.photos/seed/origem-p12-4/600/600"
+      ],
+      "categoria": "gravura", "tecnica": "xilogravura", "material": "madeira", "regiao": "agreste",
+      "estoque": 10, "pecaUnica": false, "status": "publicado",
+      "descricao": "Impressão de xilogravura em papel artesanal com cena do cangaço.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p13", "titulo": "Santo de Barro", "artesaoId": "a1", "artesaoNome": "Mestre Joãozinho", "cidade": "Tracunhaém",
+      "tags": ["Peça única", "Barro"], "medidas": "12 × 35 × 12cm", "preco": 210,
+      "imagemUrl": "https://picsum.photos/seed/origem-santo-barro/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-santo-barro/600/600",
+        "https://picsum.photos/seed/origem-p13-2/600/600", "https://picsum.photos/seed/origem-p13-3/600/600", "https://picsum.photos/seed/origem-p13-4/600/600"
+      ],
+      "categoria": "ceramica-barro", "tecnica": "modelagem-manual", "material": "barro", "regiao": "zona-da-mata",
+      "estoque": 1, "pecaUnica": true, "status": "rascunho",
+      "descricao": "Imagem sacra modelada em barro, com acabamento natural.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "p14", "titulo": "Luminária de Palha", "artesaoId": "a6", "artesaoNome": "Rita Bezerra", "cidade": "Goiana",
+      "tags": ["Palha", "Decoração"], "medidas": "35 × 45 × 35cm", "preco": 159,
+      "imagemUrl": "https://picsum.photos/seed/origem-luminaria-palha/600/600",
+      "imagens": [
+        "https://picsum.photos/seed/origem-luminaria-palha/600/600",
+        "https://picsum.photos/seed/origem-p14-2/600/600", "https://picsum.photos/seed/origem-p14-3/600/600", "https://picsum.photos/seed/origem-p14-4/600/600"
+      ],
+      "categoria": "palha-fibras", "tecnica": "cestaria", "material": "palha", "regiao": "zona-da-mata",
+      "estoque": 2, "pecaUnica": false, "status": "publicado",
+      "descricao": "Luminária pendente trançada em palha de ouricuri.",
+      "cuidados": "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos.",
+      "criadoEm": "2026-09-01T10:00:00Z"
+    }
+  ],
+
+  "artesaos": [
+    {
+      "id": "a1", "nome": "Mestre Joãozinho", "oficio": "Ceramista", "cidade": "Tracunhaém", "estado": "PE", "regiao": "zona-da-mata",
+      "bio": "Há mais de 40 anos transforma o barro de Tracunhaém em jarros, moringas e santos.",
+      "historia": "Foi em Tracunhaém que comecei a trabalhar com o barro. Aprendi muito observando os mais velhos quando produziam as quartinhas e, com o tempo, fui encontrando minha própria maneira de fazer as peças. Gosto do barro porque ele permite fazer muita coisa: cada peça tem um tempo e um jeito.",
+      "citacao": "O barro guarda a memória de quem coloca a mão nele.",
+      "fotoUrl": "https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=800&auto=format&fit=crop",
+      "tecnicas": ["Cerâmica", "Modelagem manual"], "categorias": ["ceramica-barro"],
+      "totalProdutos": 6, "email": "joaozinho@email.com", "status": "publicado", "criadoEm": "2026-03-10T10:00:00Z"
+    },
+    {
+      "id": "a2", "nome": "Carla Maria", "oficio": "Pintora", "cidade": "Recife", "estado": "PE", "regiao": "metropolitana",
+      "bio": "Pinta paisagens oníricas inspiradas nas cores do litoral e do agreste.",
+      "historia": "Comecei a pintar ainda criança, nas paredes de casa. Hoje trabalho com acrílica sobre tela e procuro traduzir em cor as memórias das viagens pelo interior de Pernambuco.",
+      "citacao": "Cada cor que eu uso vem de um lugar que eu conheci.",
+      "fotoUrl": "https://picsum.photos/seed/origem-carla/600/800",
+      "tecnicas": ["Pintura", "Acrílica"], "categorias": ["pintura"],
+      "totalProdutos": 3, "email": "carla.maria@email.com", "status": "publicado", "criadoEm": "2026-04-02T10:00:00Z"
+    },
+    {
+      "id": "a3", "nome": "Zezinha do Barro", "oficio": "Ceramista", "cidade": "Caruaru", "estado": "PE", "regiao": "agreste",
+      "bio": "Aprendeu com a mãe no Alto do Moura e hoje cria peças e painéis azulejados.",
+      "historia": "Aprendi com a minha mãe no Alto do Moura. Participo da Fenearte desde 2012 e vendo em feiras de Caruaru e Recife. A produção é familiar, com a minha filha e o meu genro.",
+      "citacao": "O Alto do Moura mora nas minhas mãos.",
+      "fotoUrl": "https://picsum.photos/seed/origem-zezinha/600/800",
+      "tecnicas": ["Cerâmica", "Azulejaria"], "categorias": ["ceramica-barro", "decoracao"],
+      "totalProdutos": 3, "email": "zezinha@email.com", "status": "publicado", "criadoEm": "2026-02-20T10:00:00Z"
+    },
+    {
+      "id": "a4", "nome": "Nara Azevedo", "oficio": "Bordadeira", "cidade": "Passira", "estado": "PE", "regiao": "agreste",
+      "bio": "Bordadeira de Passira, guarda o ponto renascença herdado da avó.",
+      "historia": "Na minha família todas as mulheres bordam. Aprendi a renda renascença com a minha avó e hoje ensino as meninas da associação de bordadeiras de Passira.",
+      "citacao": "Cada ponto é uma conversa com quem veio antes.",
+      "fotoUrl": "https://picsum.photos/seed/origem-nara/600/800",
+      "tecnicas": ["Bordado", "Renda renascença"], "categorias": ["tecidos-bordados"],
+      "totalProdutos": 2, "email": "nara.azevedo@email.com", "status": "publicado", "criadoEm": "2026-01-15T10:00:00Z"
+    },
+    {
+      "id": "a5", "nome": "Severino Lima", "oficio": "Xilogravurista", "cidade": "Bezerros", "estado": "PE", "regiao": "agreste",
+      "bio": "Grava em madeira as histórias do sertão que ilustram cordéis.",
+      "historia": "Comecei ilustrando os cordéis do meu tio. Hoje minhas xilogravuras contam histórias do sertão, do cangaço e das festas juninas.",
+      "citacao": "A madeira fala quando a gente escuta.",
+      "fotoUrl": "https://picsum.photos/seed/origem-severino/600/800",
+      "tecnicas": ["Xilogravura", "Cordel"], "categorias": ["gravura", "papel-cordel"],
+      "totalProdutos": 1, "email": "severino.lima@email.com", "status": "indisponivel", "criadoEm": "2026-05-03T10:00:00Z"
+    },
+    {
+      "id": "a6", "nome": "Rita Bezerra", "oficio": "Cesteira", "cidade": "Goiana", "estado": "PE", "regiao": "zona-da-mata",
+      "bio": "Tece cestos e luminárias com palha de ouricuri colhida na região.",
+      "historia": "A palha de ouricuri sempre fez parte da vida em Goiana. Transformo essa tradição em cestos, luminárias e peças de decoração.",
+      "citacao": "A palha ensina paciência.",
+      "fotoUrl": "https://picsum.photos/seed/origem-rita/600/800",
+      "tecnicas": ["Cestaria", "Palha"], "categorias": ["palha-fibras"],
+      "totalProdutos": 1, "email": "rita.b@email.com", "status": "ajustesSolicitados", "criadoEm": "2026-09-22T10:00:00Z"
+    },
+    {
+      "id": "a7", "nome": "Antônio Lopes", "oficio": "Mascareiro", "cidade": "Bezerros", "estado": "PE", "regiao": "agreste",
+      "bio": "Máscaras e gravuras do carnaval de Bezerros, feitas à mão.",
+      "historia": "Faço as máscaras dos papangus de Bezerros desde menino. Cada máscara leva dias de trabalho entre modelagem e pintura.",
+      "citacao": "O papangu é a alegria que a gente veste.",
+      "fotoUrl": "https://picsum.photos/seed/origem-antonio/600/800",
+      "tecnicas": ["Entalhe", "Pintura à mão"], "categorias": ["madeira"],
+      "totalProdutos": 0, "email": "antonio.lopes@email.com", "status": "emAnalise", "criadoEm": "2026-09-21T10:00:00Z"
+    },
+    {
+      "id": "a8", "nome": "Maria de Fátima", "oficio": "Bordadeira", "cidade": "Passira", "estado": "PE", "regiao": "agreste",
+      "bio": "Borda toalhas e roupas em ponto cheio com motivos florais.",
+      "historia": "Bordo desde os doze anos. Meus trabalhos têm flores do agreste e são feitos em linho e algodão.",
+      "citacao": "Bordar é desenhar com a linha.",
+      "fotoUrl": "https://picsum.photos/seed/origem-fatima/600/800",
+      "tecnicas": ["Bordado"], "categorias": ["tecidos-bordados"],
+      "totalProdutos": 0, "email": "fatima@email.com", "status": "emAnalise", "criadoEm": "2026-09-20T10:00:00Z"
+    }
+  ],
+
+  "usuarios": [
+    { "id": "u1", "nome": "Ana Beatriz Souza", "email": "ana.beatriz@email.com", "perfil": "comprador", "status": "ativo", "cidade": "Recife/PE", "criadoEm": "2026-06-12T10:00:00Z" },
+    { "id": "u2", "nome": "Pedro Henrique", "email": "pedro.h@email.com", "perfil": "comprador", "status": "ativo", "cidade": "Olinda/PE", "criadoEm": "2026-07-01T10:00:00Z" },
+    { "id": "u3", "nome": "Luana Souza", "email": "luana.souza@email.com", "perfil": "comprador", "status": "ativo", "cidade": "Caruaru/PE", "criadoEm": "2026-07-20T10:00:00Z" },
+    { "id": "u4", "nome": "João Silva", "email": "joao.silva@email.com", "perfil": "comprador", "status": "suspenso", "cidade": "João Pessoa/PB", "criadoEm": "2026-08-05T10:00:00Z" },
+    { "id": "u5", "nome": "Júlia Rocha", "email": "julia.rocha@email.com", "perfil": "comprador", "status": "ativo", "cidade": "Natal/RN", "criadoEm": "2026-09-02T10:00:00Z" }
+  ],
+
+  "contas": [
+    {
+      "usuarioId": "u1", "cpf": "***.456.789-**", "telefone": "(81) 99876-5432",
+      "endereco": { "cep": "50030-170", "rua": "Rua do Bom Jesus", "numero": "123", "complemento": "Apto. 402", "bairro": "Recife Antigo", "cidade": "Recife", "estado": "PE" },
+      "formasPagamento": [
+        { "titulo": "Cartão de crédito final 4821", "detalhe": "Visa · vence em 08/2029 · Principal" },
+        { "titulo": "Pix", "detalhe": "Pagamento na hora, sem cadastro" }
+      ]
+    }
+  ],
+
+  "pedidos": [
+    {
+      "id": "10495", "codigo": "#10495", "status": "emSeparacao", "criadoEm": "2026-09-20T11:43:00Z",
+      "itens": [
+        { "produtoId": "p1", "titulo": "Jarro Tradicional", "imagemUrl": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop", "artesaoNome": "Mestre Joãozinho", "precoUnitario": 167.9, "quantidade": 2 },
+        { "produtoId": "p10", "titulo": "Quartinha", "imagemUrl": "https://picsum.photos/seed/origem-quartinha/600/600", "artesaoNome": "Mestre Joãozinho", "precoUnitario": 98, "quantidade": 1 }
+      ],
+      "subtotal": 433.8, "frete": { "modalidade": "pac", "valor": 18.9, "prazo": "6 a 8 dias úteis" }, "total": 452.7,
+      "comprador": { "nome": "Ana Beatriz Souza", "cpf": "123.456.789-00", "email": "ana.beatriz@email.com", "telefone": "(81) 99876-5432" },
+      "endereco": { "cep": "50030-170", "rua": "Rua do Bom Jesus", "numero": "123", "complemento": "Apto. 402", "bairro": "Recife Antigo", "cidade": "Recife", "estado": "PE" },
+      "pagamento": "cartao", "parcelas": 2,
+      "codigoRastreio": "BR123456789BR", "previsaoEntrega": "2026-10-02T00:00:00Z",
+      "eventos": [
+        { "titulo": "Pagamento confirmado", "data": "2026-09-20T11:43:00Z" },
+        { "titulo": "Pedido separado", "data": "2026-09-20T18:56:00Z" }
+      ],
+      "avaliado": false
+    },
+    {
+      "id": "10402", "codigo": "#10402", "status": "entregue", "criadoEm": "2026-09-02T09:10:00Z",
+      "itens": [
+        { "produtoId": "p4", "titulo": "Renda Renascença", "imagemUrl": "https://picsum.photos/seed/origem-renda-renascenca/600/600", "artesaoNome": "Nara Azevedo", "precoUnitario": 557, "quantidade": 1 }
+      ],
+      "subtotal": 557, "frete": { "modalidade": "sedex", "valor": 27.5, "prazo": "2 a 4 dias úteis" }, "total": 584.5,
+      "comprador": { "nome": "Ana Beatriz Souza", "cpf": "123.456.789-00", "email": "ana.beatriz@email.com", "telefone": "(81) 99876-5432" },
+      "endereco": { "cep": "50030-170", "rua": "Rua do Bom Jesus", "numero": "123", "complemento": "Apto. 402", "bairro": "Recife Antigo", "cidade": "Recife", "estado": "PE" },
+      "pagamento": "pix", "parcelas": 1,
+      "codigoRastreio": "BR987654321BR", "previsaoEntrega": "2026-09-06T00:00:00Z",
+      "eventos": [
+        { "titulo": "Pagamento confirmado", "data": "2026-09-02T09:12:00Z" },
+        { "titulo": "Pedido enviado", "data": "2026-09-03T14:00:00Z" },
+        { "titulo": "Pedido entregue", "data": "2026-09-05T16:20:00Z" }
+      ],
+      "avaliado": false
+    },
+    {
+      "id": "10494", "codigo": "#10494", "status": "enviado", "criadoEm": "2026-09-19T15:00:00Z",
+      "itens": [
+        { "produtoId": "p7", "titulo": "Toalha de Renda", "imagemUrl": "https://picsum.photos/seed/origem-toalha-renda/600/600", "artesaoNome": "Nara Azevedo", "precoUnitario": 389.9, "quantidade": 1 }
+      ],
+      "subtotal": 389.9, "frete": { "modalidade": "pac", "valor": 18.9, "prazo": "6 a 8 dias úteis" }, "total": 408.8,
+      "comprador": { "nome": "Pedro Henrique", "cpf": "123.456.789-00", "email": "pedro.h@email.com", "telefone": "(81) 99876-5432" },
+      "endereco": { "cep": "50030-170", "rua": "Rua do Bom Jesus", "numero": "123", "complemento": "Apto. 402", "bairro": "Recife Antigo", "cidade": "Olinda", "estado": "PE" },
+      "pagamento": "cartao", "parcelas": 1,
+      "eventos": [
+        { "titulo": "Pagamento confirmado", "data": "2026-09-19T15:05:00Z" }
+      ],
+      "avaliado": false
+    },
+    {
+      "id": "10490", "codigo": "#10490", "status": "cancelado", "criadoEm": "2026-09-18T10:00:00Z",
+      "itens": [
+        { "produtoId": "p12", "titulo": "Xilogravura do Cangaço", "imagemUrl": "https://picsum.photos/seed/origem-xilogravura/600/600", "artesaoNome": "Severino Lima", "precoUnitario": 145, "quantidade": 1 }
+      ],
+      "subtotal": 145, "frete": { "modalidade": "pac", "valor": 18.9, "prazo": "6 a 8 dias úteis" }, "total": 163.9,
+      "comprador": { "nome": "Júlia Rocha", "cpf": "123.456.789-00", "email": "julia.rocha@email.com", "telefone": "(81) 99876-5432" },
+      "endereco": { "cep": "50030-170", "rua": "Rua do Bom Jesus", "numero": "123", "complemento": "Apto. 402", "bairro": "Recife Antigo", "cidade": "Natal", "estado": "RN" },
+      "pagamento": "boleto", "parcelas": 1,
+      "eventos": [],
+      "avaliado": false, "motivoCancelamento": "Comprei por engano"
+    }
+  ],
+
+  "avaliacoes": [],
+
+  "curadoria": [
+    {
+      "id": "c1", "tipo": "artesaos", "titulo": "Zezinha do Barro", "subtitulo": "Caruaru/PE · Cerâmica", "enviadoEm": "2026-09-23T14:32:00Z",
+      "imagemUrl": "https://picsum.photos/seed/origem-zezinha/600/800",
+      "fotos": [
+        "https://picsum.photos/seed/origem-conj-brasileiro/600/600",
+        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+        "https://picsum.photos/seed/origem-painel-azulejado/600/600",
+        "https://picsum.photos/seed/origem-zezinha-4/600/600"
+      ],
+      "descricao": "Peças utilitárias e decorativas em barro vermelho, modeladas à mão e pintadas com pigmentos naturais. Produção familiar, com a filha e o genro.",
+      "trajetoria": "Aprendeu com a mãe no Alto do Moura. Participa da Fenearte desde 2012 e vende hoje em feiras de Caruaru e Recife.",
+      "documentos": [
+        { "nome": "RG_frente_verso.pdf", "tamanho": "1,2 MB" },
+        { "nome": "Comprovante_residencia.pdf", "tamanho": "640 KB" },
+        { "nome": "Carteira_artesao.jpg", "tamanho": "2,4 MB" }
+      ],
+      "historico": [
+        { "titulo": "Cadastro concluído", "data": "2026-09-23T14:32:00Z" },
+        { "titulo": "Documentos verificados automaticamente", "data": "2026-09-23T14:35:00Z" }
+      ]
+    },
+    {
+      "id": "c2", "tipo": "artesaos", "titulo": "Antônio Lopes", "subtitulo": "Bezerros/PE · Entalhe", "enviadoEm": "2026-09-21T10:00:00Z",
+      "imagemUrl": "https://picsum.photos/seed/origem-antonio/600/800",
+      "fotos": [
+        "https://picsum.photos/seed/origem-mascara-1/600/600",
+        "https://picsum.photos/seed/origem-mascara-2/600/600",
+        "https://picsum.photos/seed/origem-mascara-3/600/600"
+      ],
+      "descricao": "Máscaras de papangu entalhadas em madeira e pintadas à mão.",
+      "trajetoria": "Faz máscaras do carnaval de Bezerros desde menino.",
+      "documentos": [{ "nome": "RG.pdf", "tamanho": "900 KB" }],
+      "historico": [{ "titulo": "Cadastro concluído", "data": "2026-09-21T10:00:00Z" }]
+    },
+    {
+      "id": "c3", "tipo": "artesaos", "titulo": "Maria de Fátima", "subtitulo": "Passira/PE · Bordado", "enviadoEm": "2026-09-20T09:00:00Z",
+      "imagemUrl": "https://picsum.photos/seed/origem-fatima/600/800",
+      "fotos": [
+        "https://picsum.photos/seed/origem-bordado-1/600/600",
+        "https://picsum.photos/seed/origem-bordado-2/600/600"
+      ],
+      "descricao": "Toalhas e roupas bordadas em ponto cheio com motivos florais.",
+      "trajetoria": "Borda desde os doze anos e participa da associação de bordadeiras de Passira.",
+      "documentos": [
+        { "nome": "RG.pdf", "tamanho": "1,1 MB" },
+        { "nome": "Declaracao_associacao.pdf", "tamanho": "300 KB" }
+      ],
+      "historico": [{ "titulo": "Cadastro concluído", "data": "2026-09-20T09:00:00Z" }]
+    },
+    {
+      "id": "c4", "tipo": "pecas", "titulo": "Céu de Agreste", "subtitulo": "Carla Maria · Pintura", "enviadoEm": "2026-09-22T12:00:00Z",
+      "imagemUrl": "https://picsum.photos/seed/origem-ceu-agreste/600/600",
+      "fotos": [
+        "https://picsum.photos/seed/origem-ceu-agreste/600/600",
+        "https://picsum.photos/seed/origem-p8-2/600/600",
+        "https://picsum.photos/seed/origem-p8-3/600/600"
+      ],
+      "descricao": "Pintura em acrílica do céu do agreste ao entardecer. 60 × 40 × 3cm, R$ 275,00.",
+      "documentos": [],
+      "historico": [{ "titulo": "Peça enviada para análise", "data": "2026-09-22T12:00:00Z" }]
+    }
+  ],
+
+  "atividades": [
+    { "id": "at1", "autor": "Maria Clara", "descricao": "aprovou a peça “Natureza Onírica”", "data": "2026-09-25T13:55:00Z" },
+    { "id": "at2", "autor": "Sarah Cyrne", "descricao": "suspendeu o cliente joao.silva@email.com", "data": "2026-09-25T13:38:00Z" },
+    { "id": "at3", "autor": "Elis Tenório", "descricao": "publicou o conteúdo “As Bordadeiras de Passira”", "data": "2026-09-25T13:00:00Z" },
+    { "id": "at4", "autor": "Giulia Ferreira", "descricao": "criou a categoria “Instrumentos Musicais”", "data": "2026-09-25T11:00:00Z" },
+    { "id": "at5", "autor": "Caliel Melo", "descricao": "respondeu a solicitação de troca do pedido #10431", "data": "2026-09-24T17:00:00Z" }
+  ],
+
+  "notificacoesAdmin": [
+    { "id": "n1", "titulo": "Novo artesão cadastrado", "descricao": "Zezinha do Barro, Caruaru, enviou documentos para análise." },
+    { "id": "n2", "titulo": "Pedido #10402 entregue", "descricao": "Renda Renascença entregue em Recife/PE." },
+    { "id": "n3", "titulo": "Avaliação negativa", "descricao": "Cliente avaliou o pedido #10455 com 2 estrelas." },
+    { "id": "n4", "titulo": "Pagamento recusado", "descricao": "Pedido #10490 teve o pagamento recusado pelo cartão." }
+  ],
+
+  "alertas": [
+    { "id": "al1", "titulo": "Envio atrasado", "descricao": "Pedido #10471 sem código de rastreio há 6 dias", "gravidade": "alta" },
+    { "id": "al2", "titulo": "Troca solicitada", "descricao": "Pedido #10431: peça chegou trincada", "gravidade": "media" }
+  ],
+
+  "resumoPlataforma": { "pedidosHoje": 18, "vendasMes": 24380, "clientes": 5 },
+
+  "indicadores": [
+    {
+      "periodo": "7d", "faturamento": 6095, "pedidos": 78, "ticketMedio": 78.14, "pecasVendidas": 101,
+      "artesaosAtivos": 142, "clientes": 5914, "produtosPublicados": 1286, "visualizacoes": 12050,
+      "variacoes": { "faturamento": 20, "pedidos": 14, "ticketMedio": 5, "pecasVendidas": 11 },
+      "faturamentoMensal": [
+        { "mes": "out", "atual": 12400, "anterior": 8100 }, { "mes": "nov", "atual": 14100, "anterior": 9400 },
+        { "mes": "dez", "atual": 21800, "anterior": 15200 }, { "mes": "jan", "atual": 11200, "anterior": 7800 },
+        { "mes": "fev", "atual": 10900, "anterior": 7500 }, { "mes": "mar", "atual": 13500, "anterior": 9200 },
+        { "mes": "abr", "atual": 14800, "anterior": 10100 }, { "mes": "mai", "atual": 16200, "anterior": 10800 },
+        { "mes": "jun", "atual": 15100, "anterior": 11400 }, { "mes": "jul", "atual": 17900, "anterior": 12000 },
+        { "mes": "ago", "atual": 20300, "anterior": 13900 }, { "mes": "set", "atual": 24400, "anterior": 15600 }
+      ],
+      "vendasPorCategoria": [
+        { "categoria": "Cerâmica e Barro", "quantidade": 32 }, { "categoria": "Tecidos e Bordados", "quantidade": 21 },
+        { "categoria": "Pintura", "quantidade": 15 }, { "categoria": "Palha e Fibras", "quantidade": 12 },
+        { "categoria": "Madeira", "quantidade": 8 }, { "categoria": "Outras", "quantidade": 12 }
+      ],
+      "pedidosPorSemana": [
+        { "semana": "S1", "quantidade": 26 }, { "semana": "S2", "quantidade": 31 }, { "semana": "S3", "quantidade": 24 },
+        { "semana": "S4", "quantidade": 35 }, { "semana": "S5", "quantidade": 33 }, { "semana": "S6", "quantidade": 37 },
+        { "semana": "S7", "quantidade": 41 }, { "semana": "S8", "quantidade": 46 }
+      ]
+    },
+    {
+      "periodo": "30d", "faturamento": 24380, "pedidos": 312, "ticketMedio": 78.14, "pecasVendidas": 402,
+      "artesaosAtivos": 142, "clientes": 5914, "produtosPublicados": 1286, "visualizacoes": 48200,
+      "variacoes": { "faturamento": 20, "pedidos": 14, "ticketMedio": 5, "pecasVendidas": 11 },
+      "faturamentoMensal": [
+        { "mes": "out", "atual": 12400, "anterior": 8100 }, { "mes": "nov", "atual": 14100, "anterior": 9400 },
+        { "mes": "dez", "atual": 21800, "anterior": 15200 }, { "mes": "jan", "atual": 11200, "anterior": 7800 },
+        { "mes": "fev", "atual": 10900, "anterior": 7500 }, { "mes": "mar", "atual": 13500, "anterior": 9200 },
+        { "mes": "abr", "atual": 14800, "anterior": 10100 }, { "mes": "mai", "atual": 16200, "anterior": 10800 },
+        { "mes": "jun", "atual": 15100, "anterior": 11400 }, { "mes": "jul", "atual": 17900, "anterior": 12000 },
+        { "mes": "ago", "atual": 20300, "anterior": 13900 }, { "mes": "set", "atual": 24400, "anterior": 15600 }
+      ],
+      "vendasPorCategoria": [
+        { "categoria": "Cerâmica e Barro", "quantidade": 128 }, { "categoria": "Tecidos e Bordados", "quantidade": 84 },
+        { "categoria": "Pintura", "quantidade": 61 }, { "categoria": "Palha e Fibras", "quantidade": 47 },
+        { "categoria": "Madeira", "quantidade": 33 }, { "categoria": "Outras", "quantidade": 49 }
+      ],
+      "pedidosPorSemana": [
+        { "semana": "S1", "quantidade": 52 }, { "semana": "S2", "quantidade": 61 }, { "semana": "S3", "quantidade": 48 },
+        { "semana": "S4", "quantidade": 70 }, { "semana": "S5", "quantidade": 66 }, { "semana": "S6", "quantidade": 74 },
+        { "semana": "S7", "quantidade": 81 }, { "semana": "S8", "quantidade": 92 }
+      ]
+    },
+    {
+      "periodo": "12m", "faturamento": 219420, "pedidos": 2808, "ticketMedio": 78.14, "pecasVendidas": 3618,
+      "artesaosAtivos": 142, "clientes": 5914, "produtosPublicados": 1286, "visualizacoes": 433800,
+      "variacoes": { "faturamento": 20, "pedidos": 14, "ticketMedio": 5, "pecasVendidas": 11 },
+      "faturamentoMensal": [
+        { "mes": "out", "atual": 12400, "anterior": 8100 }, { "mes": "nov", "atual": 14100, "anterior": 9400 },
+        { "mes": "dez", "atual": 21800, "anterior": 15200 }, { "mes": "jan", "atual": 11200, "anterior": 7800 },
+        { "mes": "fev", "atual": 10900, "anterior": 7500 }, { "mes": "mar", "atual": 13500, "anterior": 9200 },
+        { "mes": "abr", "atual": 14800, "anterior": 10100 }, { "mes": "mai", "atual": 16200, "anterior": 10800 },
+        { "mes": "jun", "atual": 15100, "anterior": 11400 }, { "mes": "jul", "atual": 17900, "anterior": 12000 },
+        { "mes": "ago", "atual": 20300, "anterior": 13900 }, { "mes": "set", "atual": 24400, "anterior": 15600 }
+      ],
+      "vendasPorCategoria": [
+        { "categoria": "Cerâmica e Barro", "quantidade": 1152 }, { "categoria": "Tecidos e Bordados", "quantidade": 756 },
+        { "categoria": "Pintura", "quantidade": 549 }, { "categoria": "Palha e Fibras", "quantidade": 423 },
+        { "categoria": "Madeira", "quantidade": 297 }, { "categoria": "Outras", "quantidade": 441 }
+      ],
+      "pedidosPorSemana": [
+        { "semana": "S1", "quantidade": 468 }, { "semana": "S2", "quantidade": 549 }, { "semana": "S3", "quantidade": 432 },
+        { "semana": "S4", "quantidade": 630 }, { "semana": "S5", "quantidade": 594 }, { "semana": "S6", "quantidade": 666 },
+        { "semana": "S7", "quantidade": 729 }, { "semana": "S8", "quantidade": 828 }
+      ]
+    }
+  ]
+}
