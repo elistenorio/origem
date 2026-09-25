@@ -1,7 +1,7 @@
 import { Box, Grid, Heading, HStack, Separator, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiCreditCard, BiFile, BiTransferAlt } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { formatCurrency } from "@/utils/formatCurrency"
 import { PaymentMethodCard } from "@/components/ajuda/PaymentMethodCard"
 
@@ -75,7 +75,7 @@ export default function FormasDePagamentoPage() {
       </SimpleGrid>
 
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={10}>
-        <Panel title="Parcelamento no cartão">
+        <SectionCard title="Parcelamento no cartão">
           <Text fontSize="sm" color="origem.textoSuave" mt={-2}>
             Exemplo para uma compra de {formatCurrency(VALOR_EXEMPLO)}
           </Text>
@@ -97,9 +97,9 @@ export default function FormasDePagamentoPage() {
               </HStack>
             ))}
           </Stack>
-        </Panel>
+        </SectionCard>
 
-        <Panel title="Prazo de confirmação">
+        <SectionCard title="Prazo de confirmação">
           <Stack gap={3}>
             {PRAZOS_CONFIRMACAO.map((item) => (
               <HStack key={item.forma} justify="space-between">
@@ -112,7 +112,7 @@ export default function FormasDePagamentoPage() {
           <Text fontSize="xs" color="origem.textoSuave">
             O artesão só começa a separar a peça depois que o pagamento é aprovado.
           </Text>
-        </Panel>
+        </SectionCard>
       </Grid>
 
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={10}>

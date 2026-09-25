@@ -1,6 +1,6 @@
 import NextLink from "next/link"
 import { Alert, Card, Flex, HStack, Link, SimpleGrid, Stack, Table, Text } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { AvatarItem } from "@/components/common/AvatarItem"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { DataState } from "@/components/feedback/DataState"
@@ -30,7 +30,7 @@ export function MonitoringView() {
 
         <Flex gap="6" direction={{ base: "column", xl: "row" }} align="flex-start">
           <Stack flex="1" gap="6" w="full">
-            <Panel title="Pedidos recentes" actions={<Link asChild variant="origem" fontSize="sm"><NextLink href="/admin/gestao">Ver todos →</NextLink></Link>}>
+            <SectionCard title="Pedidos recentes" action={<Link asChild variant="origem" fontSize="sm"><NextLink href="/admin/gestao">Ver todos →</NextLink></Link>}>
               <DataState loading={false} vazio={pedidos.length === 0}>
                 <Table.ScrollArea>
                   <Table.Root size="sm">
@@ -49,34 +49,34 @@ export function MonitoringView() {
                   </Table.Root>
                 </Table.ScrollArea>
               </DataState>
-            </Panel>
-            <Panel title="Atividades recentes">
+            </SectionCard>
+            <SectionCard title="Atividades recentes">
               {data.atividades.map((a) => (
                 <Card.Root key={a.id} variant="item">
                   <Card.Body><Card.Title>{a.autor} {a.descricao}</Card.Title><Card.Description>{formatDateTime(a.data)}</Card.Description></Card.Body>
                 </Card.Root>
               ))}
-            </Panel>
+            </SectionCard>
           </Stack>
 
           <Stack w={{ base: "full", xl: "380px" }} gap="6" flexShrink={0}>
-            <Panel title="Alertas e pendências">
+            <SectionCard title="Alertas e pendências">
               {data.alertas.map((a) => (
                 <Alert.Root key={a.id} status={a.gravidade === "alta" ? "error" : "warning"}>
                   <Alert.Indicator />
                   <Alert.Content><Alert.Title>{a.titulo}</Alert.Title><Alert.Description>{a.descricao}</Alert.Description></Alert.Content>
                 </Alert.Root>
               ))}
-            </Panel>
-            <Panel title="Artesãos recém-cadastrados">
+            </SectionCard>
+            <SectionCard title="Artesãos recém-cadastrados">
               {data.artesaosRecentes.map((a) => (
                 <HStack key={a.id} justify="space-between" gap="3">
                   <AvatarItem src={a.fotoUrl} titulo={a.nome} subtitulo={`${a.cidade}/${a.estado}`} formato="redondo" />
                   <Link asChild variant="origem" fontSize="sm"><NextLink href={`/artesaos/${a.id}`}>Ver artesão</NextLink></Link>
                 </HStack>
               ))}
-            </Panel>
-            <Panel title="Produtos pendentes" actions={<Link asChild variant="origem" fontSize="sm"><NextLink href="/admin/curadoria">Curadoria →</NextLink></Link>}>
+            </SectionCard>
+            <SectionCard title="Produtos pendentes" action={<Link asChild variant="origem" fontSize="sm"><NextLink href="/admin/curadoria">Curadoria →</NextLink></Link>}>
               {data.produtosPendentes.length === 0 && <Text textStyle="apoio">Nenhuma peça aguardando análise.</Text>}
               {data.produtosPendentes.map((p) => (
                 <HStack key={p.id} justify="space-between" gap="3">
@@ -84,7 +84,7 @@ export function MonitoringView() {
                   <StatusBadge status={p.status} />
                 </HStack>
               ))}
-            </Panel>
+            </SectionCard>
           </Stack>
         </Flex>
       </Stack>

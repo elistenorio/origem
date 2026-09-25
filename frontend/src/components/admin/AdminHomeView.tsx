@@ -1,7 +1,7 @@
 import NextLink from "next/link"
 import { Box, Button, Card, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiSliderAlt, BiBadgeCheck, BiPulse, BiBarChartAlt2 } from "react-icons/bi"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { StatCard } from "@/components/common/StatCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
 import { painelAdmin } from "@/dados-exemplo/consultas"
@@ -36,7 +36,7 @@ export function AdminHomeView() {
         </SimpleGrid>
 
         <SimpleGrid columns={{ base: 1, lg: 3 }} gap="6">
-          <Panel title="Pendências">
+          <SectionCard title="Pendências">
             <Stack gap="3">
               {data.pendencias.map((p) => (
                 <Card.Root key={p.id} asChild variant="item" _hover={{ opacity: 0.85 }}>
@@ -49,13 +49,13 @@ export function AdminHomeView() {
                 </Card.Root>
               ))}
             </Stack>
-          </Panel>
-          <Panel title="Notificações recentes">
+          </SectionCard>
+          <SectionCard title="Notificações recentes">
             <Stack gap="4">
               {data.notificacoes.map((n) => <NotificationItem key={n.id} title={n.titulo} description={n.descricao} />)}
             </Stack>
-          </Panel>
-          <Panel title="Atalhos">
+          </SectionCard>
+          <SectionCard title="Atalhos">
             <Stack gap="3">
               {ATALHOS.map((a) => (
                 <Button key={a.href} asChild variant="origem" justifyContent="flex-start">
@@ -63,10 +63,10 @@ export function AdminHomeView() {
                 </Button>
               ))}
             </Stack>
-          </Panel>
+          </SectionCard>
         </SimpleGrid>
 
-        <Panel title="Atividades recentes">
+        <SectionCard title="Atividades recentes">
           <Stack gap="0">
             {data.atividades.map((a) => (
               <HStack key={a.id} justify="space-between" py="3" borderBottomWidth="1px" borderColor="origem.marrom/30" gap="4">
@@ -75,7 +75,7 @@ export function AdminHomeView() {
               </HStack>
             ))}
           </Stack>
-        </Panel>
+        </SectionCard>
       </Stack>
     </AdminShell>
   )

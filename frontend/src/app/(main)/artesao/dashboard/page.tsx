@@ -3,7 +3,7 @@ import { BiSearch, BiBarChart, BiStar } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
 import { StatCard } from "@/components/common/StatCard"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
 import { EducationalDialog } from "@/components/artesao/EducationalDialog"
 import NextLink from "next/link"
@@ -85,7 +85,7 @@ export default function ArtesaoDashboardPage() {
 
         {/* Bottom Sections */}
         <SimpleGrid columns={{ base: 1, lg: 3 }} gap={6}>
-          <Panel title="NOTIFICAÇÕES">
+          <SectionCard title="NOTIFICAÇÕES">
             <VStack alignItems="stretch" gap={4}>
               <NotificationItem
                 title="Novo pedido recebido"
@@ -100,9 +100,9 @@ export default function ArtesaoDashboardPage() {
                 description={<>Seu perfil esta disponível para<br />os visitantes do Origem</>}
               />
             </VStack>
-          </Panel>
+          </SectionCard>
 
-          <Panel title="PEDIDOS RECENTES">
+          <SectionCard title="PEDIDOS RECENTES">
             <VStack alignItems="stretch" gap={6}>
               <Box>
                 <Text fontWeight="bold" color="origem.texto" fontSize="sm" mb={1}>Jarro Tradicional</Text>
@@ -116,9 +116,9 @@ export default function ArtesaoDashboardPage() {
                 <Text fontSize="sm" color="origem.textoSuave" fontStyle="italic">Entregue</Text>
               </Box>
             </VStack>
-          </Panel>
+          </SectionCard>
 
-          <Panel title="MEU CATÁLOGO">
+          <SectionCard title="MEU CATÁLOGO">
             <VStack alignItems="stretch" gap={4}>
               <Button asChild variant="origem" w="full">
                 <NextLink href="/artesao/catalogo">Editar catálogo</NextLink>
@@ -130,7 +130,7 @@ export default function ArtesaoDashboardPage() {
                 <NextLink href="/artesao/estoque">Ver estoque</NextLink>
               </Button>
             </VStack>
-          </Panel>
+          </SectionCard>
         </SimpleGrid>
       </Box>
     </Flex>

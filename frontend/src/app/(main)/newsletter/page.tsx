@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react"
 import { Box, Button, Flex, Grid, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
 import { BiCheckCircle, BiEnvelope } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { FormField } from "@/components/common/FormField"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
 
@@ -99,7 +99,7 @@ export default function NewsletterPage() {
               </Text>
             </Stack>
           ) : (
-            <Panel title="Assine gratuitamente">
+            <SectionCard title="Assine gratuitamente">
               <Text fontSize="sm" color="origem.textoSuave" mt={-2}>
                 Preencha seus dados para receber a próxima edição.
               </Text>
@@ -120,7 +120,7 @@ export default function NewsletterPage() {
                   </Text>
                 </Stack>
               </form>
-            </Panel>
+            </SectionCard>
           )}
         </Stack>
       </Grid>

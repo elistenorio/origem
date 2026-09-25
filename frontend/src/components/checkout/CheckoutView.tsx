@@ -6,7 +6,7 @@ import { Alert, Button, Flex, SimpleGrid, Stack } from "@chakra-ui/react"
 import { BiCheck } from "react-icons/bi"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
@@ -77,15 +77,15 @@ export function CheckoutView() {
       <form onSubmit={handleFinalizar} noValidate>
         <Flex gap="6" direction={{ base: "column", lg: "row" }} align="flex-start">
           <Stack flex="1" gap="6" w="full">
-            <Panel title="Identificação">
+            <SectionCard title="Identificação">
               <FormField label="Nome completo" autoComplete="name" {...campo("nome")} />
               <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
                 <FormField label="CPF" inputMode="numeric" placeholder="000.000.000-00" {...campo("cpf")} />
                 <FormField label="Telefone" inputMode="tel" placeholder="(DDD) 00000-0000" autoComplete="tel" {...campo("telefone")} />
               </SimpleGrid>
               <FormField label="E-mail" type="email" placeholder="email@exemplo.com" autoComplete="email" {...campo("email")} />
-            </Panel>
-            <Panel title="Endereço de entrega">
+            </SectionCard>
+            <SectionCard title="Endereço de entrega">
               <SimpleGrid columns={{ base: 1, md: 3 }} gap="4">
                 <FormField label="CEP" inputMode="numeric" placeholder="00000-000" autoComplete="postal-code" {...campo("cep")} />
                 <FormField label="Rua" autoComplete="address-line1" {...campo("rua")} />
@@ -99,13 +99,13 @@ export function CheckoutView() {
                 <FormField label="Cidade" autoComplete="address-level2" {...campo("cidade")} />
                 <SelectField label="Estado" options={[{ value: "", label: "UF" }, ...ESTADOS]} value={dados.estado} onChange={(v) => alterar("estado", v)} error={erros.estado} />
               </SimpleGrid>
-            </Panel>
+            </SectionCard>
           </Stack>
 
           <Stack w={{ base: "full", lg: "420px" }} gap="6" flexShrink={0}>
-            <Panel title="Forma de pagamento">
+            <SectionCard title="Forma de pagamento">
               <PaymentFields dados={dados} erros={erros} total={subtotal + frete.valor} onChange={alterar} />
-            </Panel>
+            </SectionCard>
             <OrderSummary quantidade={quantidade} subtotal={subtotal} frete={frete}>
               {Object.keys(erros).length > 0 && (
                 <Alert.Root status="warning">

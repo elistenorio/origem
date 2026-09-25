@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button, HStack, Stack } from "@chakra-ui/react"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { SelectField } from "@/components/common/SelectField"
 import { FormField } from "@/components/common/FormField"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
@@ -35,7 +35,7 @@ export function FilterPanel({ valores, onAplicar, onLimpar }: FilterPanelProps) 
   const alterar = (campo: keyof FiltrosPainel) => (valor: string) => setRascunho((r) => ({ ...r, [campo]: valor || undefined }))
 
   return (
-    <Panel title="Filtros" w={{ base: "full", lg: "300px" }} flexShrink={0} alignSelf="flex-start">
+    <SectionCard title="Filtros" w={{ base: "full", lg: "300px" }} flexShrink={0} alignSelf="flex-start">
       <Stack gap="5">
         <SelectField label="Categoria" options={comTodas(CATEGORIAS)} value={rascunho.categoria ?? ""} onChange={alterar("categoria")} />
         <SelectField label="Técnica" options={comTodas(TECNICAS)} value={rascunho.tecnica ?? ""} onChange={alterar("tecnica")} />
@@ -55,6 +55,6 @@ export function FilterPanel({ valores, onAplicar, onLimpar }: FilterPanelProps) 
           Limpar filtros
         </Button>
       </Stack>
-    </Panel>
+    </SectionCard>
   )
 }

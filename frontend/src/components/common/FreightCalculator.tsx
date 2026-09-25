@@ -5,7 +5,7 @@ import { Box, Button, HStack, Stack, Text } from "@chakra-ui/react"
 import { BiMapPin, BiPackage } from "react-icons/bi"
 import type { IconType } from "react-icons"
 import { FormField } from "@/components/common/FormField"
-import { Panel } from "@/components/common/Panel"
+import { SectionCard } from "@/components/common/SectionCard"
 import { formatCurrency } from "@/utils/formatCurrency"
 
 type OpcaoFrete = {
@@ -55,7 +55,7 @@ export function FreightCalculator() {
   }
 
   return (
-    <Panel title="Calcular frete">
+    <SectionCard title="Calcular frete">
       <Text fontSize="sm" color="origem.textoSuave" mt={-2}>
         Simule o frete de uma peça até o seu endereço.
       </Text>
@@ -96,6 +96,6 @@ export function FreightCalculator() {
           ))}
         </Stack>
       )}
-    </Panel>
+    </SectionCard>
   )
 }
