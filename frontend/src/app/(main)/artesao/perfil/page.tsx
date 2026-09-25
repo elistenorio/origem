@@ -17,10 +17,10 @@ export default function ArtesaoPerfilPage() {
   return (
     <Flex>
       <DashboardSidebar activeItem="perfil" />
-      
+
       {/* Main Content Area */}
       <Flex flex="1" p={{ base: 6, md: 10 }} gap={10} flexDir={{ base: "column", lg: "row" }} alignItems="flex-start">
-        
+
         {/* Left Action Column */}
         <VStack w={{ base: "full", lg: "200px" }} gap={4} position={{ lg: "sticky" }} top={{ lg: "100px" }}>
           <Button variant="origem" w="full">Salvar alterações</Button>
@@ -29,7 +29,7 @@ export default function ArtesaoPerfilPage() {
 
         {/* Form Column */}
         <VStack flex="1" maxW="700px" align="stretch" gap={8}>
-          
+
           {/* Avatar Section */}
           <Box position="relative" w="150px" h="180px" borderRadius="xl" overflow="hidden" bg="origem.passoFundo">
             <Box w="full" h="full" bgImage="url('https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=200&auto=format&fit=crop')" bgSize="cover" backgroundPosition="center" />
@@ -143,8 +143,8 @@ export default function ArtesaoPerfilPage() {
               EXCLUIR CONTA
             </Heading>
             <Text color="origem.textoSuave" fontSize="sm" mb={4} maxW="600px">
-              Ao excluir sua conta, seu perfil e suas informações deixarão de estar disponíveis no Origem. 
-              <Text as="span" fontWeight="bold"> Essa ação não poderá ser desfeita.</Text> Antes de continuar, 
+              Ao excluir sua conta, seu perfil e suas informações deixarão de estar disponíveis no Origem.
+              <Text as="span" fontWeight="bold"> Essa ação não poderá ser desfeita.</Text> Antes de continuar,
               certifique-se de que não possui pedidos ou outras atividades pendentes.
             </Text>
             <Button bg="origem.marrom" color="origem.fundo" borderRadius="lg" px={6} py={6} _hover={{ opacity: 0.9 }}>
