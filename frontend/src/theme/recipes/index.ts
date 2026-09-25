@@ -2,6 +2,7 @@ import { inputRecipe, textareaRecipe } from "./campos"
 import { buttonRecipe } from "./button"
 import { badgeRecipe } from "./badge"
 import { headingRecipe } from "./heading"
+import { bannerRecipe } from "./banner"
 import { fieldOrigem } from "./field"
 import { fieldsetOrigem } from "./fieldset"
 import { nativeSelectOrigem } from "./native-select"
@@ -25,6 +26,7 @@ export const recipes = {
   badge: badgeRecipe,
   heading: headingRecipe,
   link: linkRecipe,
+  banner: bannerRecipe,
 }
 
 export const slotRecipes = {

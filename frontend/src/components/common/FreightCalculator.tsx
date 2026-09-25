@@ -21,14 +21,15 @@ type ResultadoFrete = {
 }
 
 // TODO(fake-api): trocar por `fretesService.calcular(cep)` (GET /frete?cep=...) quando a
-// Fake API existir. Por enquanto devolve sempre o mesmo resultado, para qualquer CEP.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- cep entra em uso quando ligar na API
+// Fake API existir. Por enquanto estima pela faixa do CEP (50-56 = Pernambuco).
 function buscarOpcoesFrete(cep: string): ResultadoFrete {
+  const prefixo = Number(cep.replace(/\D/g, "").slice(0, 2))
+  const local = prefixo >= 50 && prefixo <= 56
   return {
-    regiao: "Recife/PE",
+    regiao: local ? "Recife/PE" : "fora de Pernambuco",
     opcoes: [
-      { id: "pac", nome: "PAC", prazo: "6 a 8 dias úteis", preco: 24.9, icon: BiPackage },
-      { id: "sedex", nome: "SEDEX", prazo: "2 a 3 dias úteis", preco: 42.5, icon: BiPackage },
+      { id: "pac", nome: "PAC", prazo: local ? "6 a 8 dias úteis" : "8 a 12 dias úteis", preco: local ? 24.9 : 38.9, icon: BiPackage },
+      { id: "sedex", nome: "SEDEX", prazo: local ? "2 a 3 dias úteis" : "4 a 6 dias úteis", preco: local ? 42.5 : 59.9, icon: BiPackage },
       { id: "retirada", nome: "Retirada com o artesão", prazo: "Combinar horário", preco: "gratis", icon: BiMapPin },
     ],
   }
@@ -46,8 +47,8 @@ export function FreightCalculator() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!cep.trim()) {
-      setErro("Informe um CEP.")
+    if (cep.replace(/\D/g, "").length !== 8) {
+      setErro("Informe um CEP válido com 8 números.")
       setResultado(null)
       return
     }
