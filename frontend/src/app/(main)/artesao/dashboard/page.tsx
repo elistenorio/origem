@@ -52,7 +52,7 @@ export default function ArtesaoDashboardPage() {
               </HStack>
             }
           />
-          
+
           <Flex alignItems="center" justify="center" pl={2}>
             <IconButton
               aria-label="Buscar"
@@ -106,7 +106,7 @@ export default function ArtesaoDashboardPage() {
                 <Text fontSize="sm" color="origem.textoSuave">1 unidade - R$ 167,90</Text>
                 <Text fontSize="sm" color="origem.textoSuave" fontStyle="italic">Aguardando envio</Text>
               </Box>
-              
+
               <Box>
                 <Text fontWeight="bold" color="origem.texto" fontSize="sm" mb={1}>Vaso de Barro Biscoito</Text>
                 <Text fontSize="sm" color="origem.textoSuave">2 unidades - R$ 240,92</Text>
