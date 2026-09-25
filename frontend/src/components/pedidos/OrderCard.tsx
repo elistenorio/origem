@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/common/StatusBadge"
 import { Timeline } from "@/components/common/Timeline"
 import { formatCurrency } from "@/utils/formatCurrency"
 import { formatDate } from "@/utils/formatDate"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import type { Pedido } from "@/types/pedido"
 
 type OrderCardProps = {
   pedido: Pedido

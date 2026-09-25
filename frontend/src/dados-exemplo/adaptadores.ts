@@ -1,6 +1,7 @@
 import type { Artisan } from "@/types/artisan"
 import type { Product } from "@/types/product"
-import type { Artesao, Produto } from "./tipos"
+import type { Artesao } from "@/types/artesao"
+import type { Produto } from "@/types/produto"
 
 // Converte os dados de exemplo para os tipos que ProductCard e ArtisanCard já recebem.
 export const paraProduct = (p: Produto): Product => ({

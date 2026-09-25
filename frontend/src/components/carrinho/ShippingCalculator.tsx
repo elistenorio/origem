@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button, Field, HStack, Input, RadioCard, Stack, Text } from "@chakra-ui/react"
 import { opcoesFrete } from "@/dados-exemplo/consultas"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { OpcaoFrete } from "@/dados-exemplo/tipos"
+import type { OpcaoFrete } from "@/types/frete"
 
 type ShippingCalculatorProps = {
   frete?: OpcaoFrete | null

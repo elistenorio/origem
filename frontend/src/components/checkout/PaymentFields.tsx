@@ -4,8 +4,8 @@ import { MdPix } from "react-icons/md"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { DadosCheckout, ErrosCheckout } from "@/dados-exemplo/tipos"
-import type { FormaPagamento } from "@/dados-exemplo/tipos"
+import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
+import type { FormaPagamento } from "@/types/pedido"
 
 type PaymentFieldsProps = {
   dados: DadosCheckout

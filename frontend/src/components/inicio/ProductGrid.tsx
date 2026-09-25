@@ -2,7 +2,7 @@ import NextLink from "next/link"
 import { LinkBox, LinkOverlay, SimpleGrid, VisuallyHidden } from "@chakra-ui/react"
 import { ProductCard } from "./ProductCard"
 import { paraProduct } from "@/dados-exemplo/adaptadores"
-import type { Produto } from "@/dados-exemplo/tipos"
+import type { Produto } from "@/types/produto"
 
 type ProductGridProps = {
   produtos: Produto[]

@@ -2,7 +2,7 @@ import { Image, Stack, Text } from "@chakra-ui/react"
 import { Tile } from "@/components/common/Tile"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import type { Pedido } from "@/types/pedido"
 
 // Resumo curto do pedido usado dentro dos pop-ups (cancelar, avaliar).
 export function OrderMiniSummary({ pedido }: { pedido: Pedido }) {

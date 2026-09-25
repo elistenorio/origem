@@ -2,7 +2,7 @@ import { Flex, Separator, Stack, Text } from "@chakra-ui/react"
 import { SectionCard } from "@/components/common/SectionCard"
 import { Price } from "@/components/common/Price"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { OpcaoFrete } from "@/dados-exemplo/tipos"
+import type { OpcaoFrete } from "@/types/frete"
 
 type OrderSummaryProps = {
   quantidade: number

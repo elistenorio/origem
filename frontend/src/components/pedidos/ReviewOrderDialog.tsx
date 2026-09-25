@@ -7,8 +7,8 @@ import { StarRating } from "@/components/common/StarRating"
 import { Tile } from "@/components/common/Tile"
 import { TextareaField } from "@/components/common/TextareaField"
 import { FileField } from "@/components/common/FileField"
-import type { NotasAvaliacao } from "@/dados-exemplo/tipos"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import type { NotasAvaliacao } from "@/types/avaliacao"
+import type { Pedido } from "@/types/pedido"
 import { OrderMiniSummary } from "./OrderMiniSummary"
 
 type ReviewOrderDialogProps = {

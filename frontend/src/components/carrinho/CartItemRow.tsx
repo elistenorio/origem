@@ -3,7 +3,7 @@ import { Badge, Flex, Heading, HStack, IconButton, Image, Link, Stack, Text } fr
 import { BiTrash } from "react-icons/bi"
 import { Price } from "@/components/common/Price"
 import { QuantityStepper } from "@/components/common/QuantityStepper"
-import type { ItemCarrinho } from "@/dados-exemplo/tipos"
+import type { ItemCarrinho } from "@/types/carrinho"
 
 type CartItemRowProps = {
   item: ItemCarrinho

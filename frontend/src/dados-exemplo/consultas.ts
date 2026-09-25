@@ -6,17 +6,10 @@ import { atividadesExemplo, curadoriaExemplo, notificacoesAdminExemplo } from ".
 import { artesaosExemplo } from "./artesaos"
 import { EMAIL_COMPRADOR_DEMO, pedidosExemplo } from "./pedidos"
 import { produtosExemplo } from "./produtos"
-import type {
-  Acompanhamento,
-  FiltrosArtesao,
-  FiltrosProduto,
-  OpcaoFrete,
-  PainelAdmin,
-  Produto,
-  ResumoPainelArtesao,
-  StatusProduto,
-  TipoCuradoria,
-} from "./tipos"
+import type { Acompanhamento, PainelAdmin, TipoCuradoria } from "@/types/admin"
+import type { FiltrosArtesao, ResumoPainelArtesao } from "@/types/artesao"
+import type { FiltrosProduto, Produto, StatusProduto } from "@/types/produto"
+import type { OpcaoFrete } from "@/types/frete"
 
 // Filtros e contas feitos direto nos dados de exemplo, só para as telas terem o que mostrar.
 // Ao integrar com a Fake API, cada função aqui vira uma chamada a um service.

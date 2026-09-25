@@ -1,4 +1,4 @@
-import type { Atividade, Indicadores, ItemCuradoria, PeriodoIndicadores } from "./tipos"
+import type { Atividade, Indicadores, ItemCuradoria, PeriodoIndicadores } from "@/types/admin"
 import { FOTO_JARRO, imagem } from "./imagens"
 
 export const atividadesExemplo: Atividade[] = [

@@ -1,4 +1,4 @@
-import type { ProdutoDetalhe, ProdutoInput } from "@/dados-exemplo/tipos"
+import type { Produto, ProdutoInput } from "@/types/produto"
 
 export const PRODUTO_VAZIO: ProdutoInput = {
   titulo: "", categoria: "", descricao: "", material: "", tecnica: "",
@@ -14,7 +14,7 @@ function lerMedidas(medidas: string) {
 }
 
 // Preenche o formulário de edição a partir da peça salva.
-export const produtoParaFormulario = (p: ProdutoDetalhe): ProdutoInput => ({
+export const produtoParaFormulario = (p: Produto): ProdutoInput => ({
   ...PRODUTO_VAZIO,
   ...lerMedidas(p.medidas),
   titulo: p.titulo, categoria: p.categoria, descricao: p.descricao, material: p.material, tecnica: p.tecnica,

@@ -13,7 +13,7 @@ import { TECNICAS } from "@/constants/tecnicas"
 import { MATERIAIS } from "@/constants/materiais"
 import { validarFormularioProduto } from "@/utils/productForm"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { ProdutoInput } from "@/dados-exemplo/tipos"
+import type { ProdutoInput } from "@/types/produto"
 
 const TAXA_ORIGEM = 0.12
 const PRAZOS = [{ value: "1", label: "Até 1 dia útil" }, { value: "3", label: "Até 3 dias úteis" }, { value: "7", label: "Até 7 dias úteis (sob encomenda)" }]

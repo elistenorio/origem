@@ -6,7 +6,7 @@ import { DataState } from "@/components/feedback/DataState"
 import { filaCuradoria } from "@/dados-exemplo/consultas"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { formatDate } from "@/utils/formatDate"
-import type { TipoCuradoria } from "@/dados-exemplo/tipos"
+import type { TipoCuradoria } from "@/types/admin"
 import { AdminShell } from "./AdminShell"
 import { CurationDetail } from "./CurationDetail"
 

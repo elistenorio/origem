@@ -6,7 +6,7 @@ import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { TextareaField } from "@/components/common/TextareaField"
 import { MOTIVOS_CANCELAMENTO } from "@/constants/pedidos"
 import { formatCurrency } from "@/utils/formatCurrency"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import type { Pedido } from "@/types/pedido"
 import { OrderMiniSummary } from "./OrderMiniSummary"
 
 type CancelOrderDialogProps = {

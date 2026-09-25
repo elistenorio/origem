@@ -13,7 +13,7 @@ import { DataState } from "@/components/feedback/DataState"
 import { filtrarProdutos } from "@/dados-exemplo/consultas"
 import { useUrlFilters } from "@/hooks/useUrlFilters"
 import { ORDENACOES } from "@/constants/pedidos"
-import type { FiltrosProduto, OrdenacaoProduto } from "@/dados-exemplo/tipos"
+import type { FiltrosProduto, OrdenacaoProduto } from "@/types/produto"
 import { FilterPanel } from "./FilterPanel"
 import { ActiveFilters } from "./ActiveFilters"
 

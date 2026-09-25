@@ -1,12 +1,12 @@
-import type { ProdutoDetalhe } from "./tipos"
+import type { Produto } from "@/types/produto"
 import { FOTO_JARRO, imagem } from "./imagens"
 
-type Base = Omit<ProdutoDetalhe, "imagens" | "cuidados" | "criadoEm"> & { criadoEm?: string }
+type Base = Omit<Produto, "imagens" | "cuidados" | "criadoEm"> & { criadoEm?: string }
 
 const CUIDADOS_PADRAO =
   "Por se tratar de uma peça artesanal, pequenas diferenças de tamanho, textura e tonalidade são naturais. Manter em local seco, limpar com pano macio e evitar produtos abrasivos."
 
-const peca = (p: Base, capa: string): ProdutoDetalhe => ({
+const peca = (p: Base, capa: string): Produto => ({
   cuidados: CUIDADOS_PADRAO,
   criadoEm: "2026-09-01T10:00:00Z",
   ...p,
@@ -14,7 +14,7 @@ const peca = (p: Base, capa: string): ProdutoDetalhe => ({
   imagens: [capa, imagem(`${p.id}-2`), imagem(`${p.id}-3`), imagem(`${p.id}-4`)],
 })
 
-export const produtosExemplo: ProdutoDetalhe[] = [
+export const produtosExemplo: Produto[] = [
   peca({ id: "p1", titulo: "Jarro Tradicional", artesaoId: "a1", artesaoNome: "Mestre Joãozinho", cidade: "Tracunhaém", tags: ["Peça única", "Barro"], medidas: "15 × 27 × 15cm", preco: 167.9, imagemUrl: "", categoria: "ceramica-barro", tecnica: "modelagem-manual", material: "barro", regiao: "zona-da-mata", estoque: 1, pecaUnica: true, status: "publicado", criadoEm: "2026-09-20T10:00:00Z",
     descricao: "Produzido manualmente em barro, o Jarro Tradicional carrega a simplicidade e a força da cerâmica popular de Tracunhaém. Sua forma arredondada e o acabamento natural revelam as marcas do processo artesanal, tornando cada peça única." }, FOTO_JARRO),
   peca({ id: "p2", titulo: "Natureza Onírica", artesaoId: "a2", artesaoNome: "Carla Maria", cidade: "Recife", tags: ["Peça única", "Pintura"], medidas: "50 × 72 × 4cm", preco: 242.12, imagemUrl: "", categoria: "pintura", tecnica: "pintura-mao", material: "tela", regiao: "metropolitana", estoque: 1, pecaUnica: true, status: "publicado",

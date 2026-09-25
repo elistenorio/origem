@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button, Text } from "@chakra-ui/react"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { QuantityStepper } from "@/components/common/QuantityStepper"
-import type { Produto } from "@/dados-exemplo/tipos"
+import type { Produto } from "@/types/produto"
 
 type EditStockDialogProps = {
   produto: Produto

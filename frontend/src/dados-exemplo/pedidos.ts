@@ -1,4 +1,5 @@
-import type { ItemCarrinho, Pedido } from "./tipos"
+import type { ItemCarrinho } from "@/types/carrinho"
+import type { Pedido } from "@/types/pedido"
 import { produtosExemplo } from "./produtos"
 import { FOTO_JARRO, imagem } from "./imagens"
 
