@@ -1,4 +1,4 @@
-import type { ApiError } from "@/services/http"
+import type { ApiError } from "@/services/api"
 import { LoadingState } from "./LoadingState"
 import { ErrorState } from "./ErrorState"
 import { EmptyMessage } from "./EmptyMessage"
