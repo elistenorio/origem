@@ -84,7 +84,7 @@ export function ArtisanCatalogView() {
                 status={p.status}
                 visible={p.status !== "indisponivel"}
                 onEdit={() => router.push(`/artesao/catalogo/${p.id}`)}
-                onView={() => router.push("/produto")}
+                onView={() => router.push(`/produto/${p.id}`)}
                 onToggleVisibility={() => alternarVisibilidade(p.id, p.status)}
               />
             ))}

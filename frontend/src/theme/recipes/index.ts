@@ -19,6 +19,7 @@ import { linkRecipe } from "./link"
 import { radioGroupOrigem } from "./radio-group"
 import { switchOrigem } from "./switch"
 import { sideMenuRecipe } from "./side-menu"
+import { thumbnailRecipe } from "./thumbnail"
 
 export const recipes = {
   input: inputRecipe,
@@ -28,6 +29,7 @@ export const recipes = {
   heading: headingRecipe,
   link: linkRecipe,
   banner: bannerRecipe,
+  thumbnail: thumbnailRecipe,
 }
 
 export const slotRecipes = {
