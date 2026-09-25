@@ -1,7 +1,6 @@
 import NextLink from "next/link"
 import { LinkBox, LinkOverlay, SimpleGrid, VisuallyHidden } from "@chakra-ui/react"
 import { ProductCard } from "./ProductCard"
-import { paraProduct } from "@/dados-exemplo/adaptadores"
 import type { Produto } from "@/types/produto"
 
 type ProductGridProps = {
@@ -15,9 +14,9 @@ export function ProductGrid({ produtos, colunas = { base: 1, sm: 2, lg: 4 } }: P
     <SimpleGrid columns={colunas} gap="6">
       {produtos.map((produto) => (
         <LinkBox key={produto.id}>
-          <ProductCard product={paraProduct(produto)} />
+          <ProductCard produto={produto} />
           <LinkOverlay asChild>
-            <NextLink href="/produto">
+            <NextLink href={`/produtos/${produto.id}`}>
               <VisuallyHidden>Ver {produto.titulo}</VisuallyHidden>
             </NextLink>
           </LinkOverlay>

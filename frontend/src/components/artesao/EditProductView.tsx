@@ -33,7 +33,7 @@ export function EditProductView({ id }: { id: string }) {
           <>
             <PanelPageHeader titulo="Editar peça" descricao="Mudanças em fotos, nome, descrição ou preço passam por uma nova análise rápida da curadoria.">
               <Button asChild variant="claro">
-                <NextLink href={"/produto"}><BiShow /> Visualizar peça</NextLink>
+                <NextLink href={`/produtos/${produto.id}`}><BiShow /> Visualizar peça</NextLink>
               </Button>
             </PanelPageHeader>
             <ProductForm

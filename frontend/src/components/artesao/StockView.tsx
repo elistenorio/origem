@@ -98,7 +98,7 @@ export function StockView() {
                   status={statusEstoque(p)}
                   onEditQuantity={() => setEditando(p)}
                   onRemove={() => alterarPeca(p.id, { status: "indisponivel" })}
-                  onView={() => router.push("/produto")}
+                  onView={() => router.push(`/produtos/${p.id}`)}
                 />
               ))}
             </Stack>

@@ -1,13 +1,12 @@
 import type { Paginated } from "@/types/api"
 import { LIMITE_BAIXO_ESTOQUE } from "@/constants/pedidos"
-import { TECNICAS } from "@/constants/tecnicas"
 import { normalizeText } from "@/utils/normalizeText"
 import { atividadesExemplo, curadoriaExemplo, notificacoesAdminExemplo } from "./admin"
 import { artesaosExemplo } from "./artesaos"
 import { EMAIL_COMPRADOR_DEMO, pedidosExemplo } from "./pedidos"
 import { produtosExemplo } from "./produtos"
 import type { Acompanhamento, PainelAdmin, TipoCuradoria } from "@/types/admin"
-import type { FiltrosArtesao, ResumoPainelArtesao } from "@/types/artesao"
+import type { ResumoPainelArtesao } from "@/types/artesao"
 import type { FiltrosProduto, Produto, StatusProduto } from "@/types/produto"
 import type { OpcaoFrete } from "@/types/frete"
 
@@ -52,21 +51,6 @@ export function filtrarProdutos(filtros: FiltrosProduto & { status?: StatusProdu
 }
 
 export const buscarProduto = (id: string) => produtosExemplo.find((p) => p.id === id)
-
-export function filtrarArtesaos(filtros: FiltrosArtesao) {
-  const busca = normalizeText(filtros.busca ?? "")
-  const tecnica = TECNICAS.find((t) => t.value === filtros.tecnica)?.label
-
-  const artesaos = artesaosExemplo.filter((a) => {
-    if (a.status !== "publicado") return false
-    if (busca && !normalizeText(`${a.nome} ${a.cidade} ${a.oficio}`).includes(busca)) return false
-    if (filtros.regiao && a.regiao !== filtros.regiao) return false
-    if (filtros.categoria && !a.categorias.includes(filtros.categoria)) return false
-    if (tecnica && !a.tecnicas.some((t) => normalizeText(t) === normalizeText(tecnica))) return false
-    return true
-  })
-  return paginar(artesaos, filtros.page, filtros.pageSize ?? 8)
-}
 
 export const meusPedidos = () => pedidosExemplo.filter((p) => p.comprador.email === EMAIL_COMPRADOR_DEMO)
 

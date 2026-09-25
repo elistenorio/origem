@@ -1,22 +1,15 @@
 "use client"
 
 import { Box, Flex, Grid, Heading, Text, VStack, Image } from "@chakra-ui/react"
-import { ProductCard } from "@/components/inicio/ProductCard"
+import { ProductGrid } from "@/components/inicio/ProductGrid"
+import { useApi } from "@/hooks/useApi"
+import { produtosService } from "@/services/produtos.service"
 
-// Mock product data to reuse ProductCard
-const CATALOG_PRODUCTS = Array(12).fill(null).map((_, i) => ({
-  id: `cat-${i}`,
-  title: "Jarro Tradicional",
-  tags: ["Peça única", "Barro"],
-  artisan: "Mestre Joãozinho",
-  artisanId: "joaozinho",
-  city: "Tracunhaém",
-  dimensions: "15 x 27 x 15cm",
-  price: 167.9,
-  imageUrl: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=300&auto=format&fit=crop"
-}))
-
+// TODO(bloco 3): esta página ainda é estática (Mestre Joãozinho) e passa a usar GET /artesaos/{id}.
+// Por enquanto só "Meu catálogo de peças" vem da API.
 export default function PublicArtisanPage() {
+  const { data: pecas } = useApi(() => produtosService.listar({ artesaoId: "a1" }), [])
+
   return (
     <Box pt={10}>
       
@@ -150,11 +143,7 @@ export default function PublicArtisanPage() {
         <Text fontWeight="bold" fontSize="lg" mb={8} textTransform="uppercase" color="origem.texto">
           MEU CATÁLOGO DE PEÇAS
         </Text>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }} gap={6}>
-          {CATALOG_PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </Grid>
+        <ProductGrid produtos={pecas?.items ?? []} />
       </Box>
 
     </Box>

@@ -10,8 +10,9 @@ import { ProductGrid } from "@/components/inicio/ProductGrid"
 import { SelectField } from "@/components/common/SelectField"
 import { PaginationBar } from "@/components/common/PaginationBar"
 import { DataState } from "@/components/feedback/DataState"
-import { filtrarProdutos } from "@/dados-exemplo/consultas"
+import { useApi } from "@/hooks/useApi"
 import { useUrlFilters } from "@/hooks/useUrlFilters"
+import { produtosService } from "@/services/produtos.service"
 import { ORDENACOES } from "@/constants/pedidos"
 import type { FiltrosProduto, OrdenacaoProduto } from "@/types/produto"
 import { FilterPanel } from "./FilterPanel"
@@ -31,7 +32,8 @@ export function CatalogView() {
     disponivel: valores.disponivel === "sim" ? "sim" : undefined, ordenar: (valores.ordenar as OrdenacaoProduto) ?? "relevancia",
     page, pageSize: POR_PAGINA,
   }
-  const data = filtrarProdutos({ ...filtros, status: "publicado" })
+  // JSON.stringify: o objeto de filtros é recriado a cada render; o texto só muda quando um filtro muda.
+  const { data, loading, error, recarregar } = useApi(() => produtosService.listar(filtros), [JSON.stringify(filtros)])
   const qtdFiltros = CHAVES.filter((c) => c !== "ordenar" && c !== "busca" && valores[c]).length
 
   return (
@@ -61,17 +63,19 @@ export function CatalogView() {
             />
           )}
           <Stack flex="1" gap="4" w="full">
-            <Text textStyle="apoio">{data.total} {data.total === 1 ? "peça encontrada" : "peças encontradas"}</Text>
+            {data && <Text textStyle="apoio">{data.total} {data.total === 1 ? "peça encontrada" : "peças encontradas"}</Text>}
             <DataState
-              loading={false}
-              vazio={data.items.length === 0}
+              loading={loading}
+              error={error}
+              onRetry={recarregar}
+              vazio={data?.items.length === 0}
               mensagemVazio="Nenhuma peça encontrada"
               descricaoVazio="Tente outra palavra ou remova alguns filtros."
               acaoVazio={<Button variant="origem" onClick={limpar}>Limpar filtros</Button>}
             >
-              <ProductGrid produtos={data.items} colunas={filtrosAbertos ? { base: 1, sm: 2, xl: 3 } : undefined} />
+              {data && <ProductGrid produtos={data.items} colunas={filtrosAbertos ? { base: 1, sm: 2, xl: 3 } : undefined} />}
             </DataState>
-            <PaginationBar page={data.page} pageSize={data.pageSize} total={data.total} onChange={(p) => atualizar({ page: String(p) })} />
+            {data && <PaginationBar page={data.page} pageSize={data.pageSize} total={data.total} onChange={(p) => atualizar({ page: String(p) })} />}
           </Stack>
         </Flex>
       </Stack>

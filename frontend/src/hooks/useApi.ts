@@ -24,7 +24,9 @@ export function useApi<T>(buscar: () => Promise<T>, deps: DependencyList) {
         const resultado = await buscar()
         if (ativo) setData(resultado)
       } catch (erro) {
-        if (ativo) setError(erro instanceof ApiError ? erro : new ApiError("UNKNOWN", "Erro inesperado.", 0))
+        if (!ativo) return
+        setData(undefined) // descarta o resultado anterior, para a tela não mostrar dados velhos junto com o erro
+        setError(erro instanceof ApiError ? erro : new ApiError("UNKNOWN", "Erro inesperado.", 0))
       } finally {
         if (ativo) setLoading(false)
       }
