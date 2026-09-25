@@ -9,10 +9,30 @@ import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { TextareaField } from "@/components/common/TextareaField"
 import { TechniquesField } from "@/components/register/TechniquesField"
+import { artesaosExemplo } from "@/dados-exemplo/artesaos"
+import { CATEGORIAS } from "@/constants/categorias"
+
+// EXEMPLOS: confirme as faixas reais com o time (não tem campo equivalente em dados-exemplo ainda).
+const TEMPO_ATUACAO = [
+  { value: "menos-1", label: "Menos de 1 ano" },
+  { value: "1-3", label: "1 a 3 anos" },
+  { value: "3-10", label: "3 a 10 anos" },
+  { value: "mais-10", label: "Mais de 10 anos" },
+]
+
+// Artesão logado (Avaliação 1: sem autenticação real, sempre o Mestre Joãozinho de exemplo).
+const artesao = artesaosExemplo.find((a) => a.id === "a1")!
 
 export default function ArtesaoPerfilPage() {
-  const [tecnicas, setTecnicas] = useState<string[]>([])
+  const [tecnicas, setTecnicas] = useState<string[]>(artesao.tecnicas)
   const [outraTecnica, setOutraTecnica] = useState("")
+  const [tempoAtuacao, setTempoAtuacao] = useState(TEMPO_ATUACAO[0].value)
+  const [areaAtuacao, setAreaAtuacao] = useState(artesao.categorias[0])
+
+  // TODO(fake-api): trocar por artesaosService.atualizarPerfil(dados) quando a Fake API existir.
+  function handleSalvar() {
+    console.log({ tecnicas, outraTecnica, tempoAtuacao, areaAtuacao })
+  }
 
   return (
     <Flex>
@@ -23,7 +43,7 @@ export default function ArtesaoPerfilPage() {
 
         {/* Left Action Column */}
         <VStack w={{ base: "full", lg: "200px" }} gap={4} position={{ lg: "sticky" }} top={{ lg: "100px" }}>
-          <Button variant="origem" w="full">Salvar alterações</Button>
+          <Button variant="origem" w="full" onClick={handleSalvar}>Salvar alterações</Button>
           <Button variant="origem" w="full">Visualizar perfil</Button>
         </VStack>
 
@@ -54,7 +74,7 @@ export default function ArtesaoPerfilPage() {
             <HStack bg="origem.busca" w="fit-content" borderRadius="full" px={4} py={2} mb={1}>
               <Input
                 variant="unstyled"
-                defaultValue="Mestre Joãozinho"
+                defaultValue={artesao.nome}
                 fontFamily="heading"
                 fontSize="4xl"
                 color="origem.laranja"
@@ -72,10 +92,10 @@ export default function ArtesaoPerfilPage() {
 
           {/* Basic Info Grid */}
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-            <FormField label="CIDADE" placeholder="" />
-            <FormField label="ESTADO" placeholder="" />
+            <FormField label="CIDADE" defaultValue={artesao.cidade} />
+            <FormField label="ESTADO" defaultValue={artesao.estado} />
             <Grid gridColumn={{ md: "span 2" }}>
-              <FormField label="EMAIL" placeholder="email@exemplo.com" />
+              <FormField label="EMAIL" defaultValue={artesao.email} />
             </Grid>
             <FormField label="TELEFONE" placeholder="(DDD) 00000-0000" />
             <FormField label="CELULAR" placeholder="(DDD) 00000-0000" />
@@ -89,10 +109,16 @@ export default function ArtesaoPerfilPage() {
               SOBRE VOCÊ
             </Heading>
             <VStack align="stretch" gap={6}>
-              <TextareaField label="Sua história" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              <TextareaField label="Seu trabalho" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              <TextareaField label="De onde vem o seu trabalho?" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              <TextareaField label="O que você gosta de fazer?" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
+              <TextareaField label="Sua história" minH="120px" defaultValue={artesao.historia} resize="vertical" />
+              <TextareaField label="Seu trabalho" minH="120px"
+                placeholder="Fale sobre o que você faz e como trabalha: quais peças produz, quais materiais e técnicas utiliza e como costuma ser seu processo de criação."
+                resize="vertical" />
+              <TextareaField label="De onde vem o seu trabalho?" minH="120px"
+                placeholder="Conte sobre as pessoas, lugares e conhecimentos que fazem parte da sua trajetória: quem te ensinou, onde aprendeu seu ofício, quais tradições procura manter."
+                resize="vertical" />
+              <TextareaField label="O que você gosta de fazer?" minH="120px"
+                placeholder="Fale sobre as peças, técnicas ou etapas do trabalho que você mais gosta de fazer."
+                resize="vertical" />
             </VStack>
           </Box>
 
@@ -106,21 +132,15 @@ export default function ArtesaoPerfilPage() {
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={8}>
               <SelectField
                 label="TEMPO DE ATUAÇÃO"
-                value="Menos de 1 ano"
-                onChange={() => {}}
-                options={[
-                  { value: "Menos de 1 ano", label: "Menos de 1 ano" },
-                  { value: "1 a 3 anos", label: "1 a 3 anos" },
-                ]}
+                value={tempoAtuacao}
+                onChange={setTempoAtuacao}
+                options={TEMPO_ATUACAO}
               />
               <SelectField
                 label="ÁREA DE ATUAÇÃO"
-                value="Cerâmica"
-                onChange={() => {}}
-                options={[
-                  { value: "Cerâmica", label: "Cerâmica" },
-                  { value: "Madeira", label: "Madeira" },
-                ]}
+                value={areaAtuacao}
+                onChange={setAreaAtuacao}
+                options={CATEGORIAS}
               />
             </Grid>
 
