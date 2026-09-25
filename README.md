@@ -7,6 +7,10 @@
 
 Artesãos e produtores criativos têm pouca visibilidade digital, dependem de intermediários e enfrentam gestão precária de catálogo, pedidos e estoque. O Origem cria um canal direto entre essa produção e os compradores, destacando origem, técnica e o impacto de comprar de quem faz.
 
+## Documentação
+- [Arquitetura do frontend](docs/arquitetura.md): organização das pastas, camada de dados e como a Fake API será substituída pelo backend real
+- [Fluxos implementados](docs/fluxos.md): o que cada perfil (comprador, artesão e administrador) consegue fazer na aplicação
+
 ## Integrantes
 - Aguinaldo Anselmo da Costa Neto
 - Caliel Feijó de Melo Silva
