@@ -28,8 +28,10 @@ export function Header() {
 
         {/* Right: Actions */}
         <HStack gap={4}>
-          <Button variant="outline" px={6}>
-            <BiUser /> Acesso / Minha Conta
+          <Button asChild variant="outline" px={6}>
+            <NextLink href="/minha-conta">
+              <BiUser /> Acesso / Minha Conta
+            </NextLink>
           </Button>
           <Button variant="origem" px={6}>
             <BiBasket /> Meu Carrinho
