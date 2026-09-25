@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Textarea, IconButton } from "@chakra-ui/react"
 import { BiPencil } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
+import { Greeting } from "@/components/artesao/Greeting"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { TechniquesField } from "@/components/register/TechniquesField"
@@ -30,7 +31,7 @@ export default function ArtesaoPerfilPage() {
           
           {/* Avatar Section */}
           <Box position="relative" w="150px" h="180px" borderRadius="xl" overflow="hidden" bg="origem.passoFundo">
-            <Box w="full" h="full" bgImage="url('https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=200&auto=format&fit=crop')" bgSize="cover" bgPosition="center" />
+            <Box w="full" h="full" bgImage="url('https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=200&auto=format&fit=crop')" bgSize="cover" backgroundPosition="center" />
             <Button
               position="absolute"
               bottom={2}
@@ -48,9 +49,7 @@ export default function ArtesaoPerfilPage() {
 
           {/* Name Section */}
           <Box>
-            <Text textTransform="uppercase" fontFamily="body" fontSize="sm" color="origem.texto" mb={1}>
-              OLÁ,
-            </Text>
+            <Greeting mb={1} />
             <HStack bg="origem.busca" w="fit-content" borderRadius="full" px={4} py={2} mb={1}>
               <Input
                 variant="unstyled"

@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, HStack, Text, VStack, IconButton, Button, SimpleGrid } from "@chakra-ui/react"
 import { BiSearch, BiBarChart, BiBell, BiStar } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
+import { Greeting } from "@/components/artesao/Greeting"
 import { StatCard } from "@/components/artesao/StatCard"
 import { SectionCard } from "@/components/artesao/SectionCard"
 
@@ -11,9 +12,7 @@ export default function ArtesaoDashboardPage() {
       <Box flex="1" p={{ base: 6, md: 10 }}>
         {/* Header */}
         <Box mb={8}>
-          <Text textTransform="uppercase" fontFamily="body" fontSize="sm" color="origem.texto" mb={-1}>
-            OLÁ,
-          </Text>
+          <Greeting />
           <Heading variant="titulo" fontSize="5xl">
             Mestre Joãozinho
           </Heading>

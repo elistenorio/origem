@@ -18,8 +18,19 @@ export const campoOrigem = defineStyle({
   },
 })
 
+// Para inputs que moram dentro de um pill/HStack que já tem o fundo:
+// sem cor, sem borda, sem padding próprio.
+const campoSemEstilo = defineStyle({
+  bg: "transparent",
+  borderWidth: "0",
+  borderRadius: "0",
+  minH: "auto",
+  px: "0",
+  _focusVisible: { outline: "none" },
+})
+
 export const inputRecipe = defineRecipe({
-  variants: { variant: { origem: campoOrigem } },
+  variants: { variant: { origem: campoOrigem, unstyled: campoSemEstilo } },
   defaultVariants: { variant: "origem" }, // vira o padrão de todo <Input />
 })
 

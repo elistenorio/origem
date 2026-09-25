@@ -24,7 +24,8 @@ export function StatCard({ title, subtitle, value }: StatCardProps) {
       <Text color="origem.textoSuave" fontSize="xs" minH="32px">
         {subtitle}
       </Text>
-      <Text color="origem.laranja" fontFamily="heading" fontSize="5xl" textAlign="center" mt={2} lineHeight="1">
+      {/* as="div": value pode trazer outro Text (<p>) dentro, e <p> não aceita <p> aninhado */}
+      <Text as="div" color="origem.laranja" fontFamily="heading" fontSize="5xl" textAlign="center" mt={2} lineHeight="1">
         {value}
       </Text>
     </Box>

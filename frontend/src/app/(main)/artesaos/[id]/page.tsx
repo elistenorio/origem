@@ -57,7 +57,7 @@ export default function PublicArtisanPage() {
 
             <VStack align="stretch" gap={4} color="origem.texto" fontSize="md" lineHeight="1.7">
               <Text fontStyle="italic" fontWeight="medium">
-                "O barro guarda a memória de quem coloca a mão nele."
+                &ldquo;O barro guarda a memória de quem coloca a mão nele.&rdquo;
               </Text>
               <Text>
                 Foi em Tracunhaém que comecei a trabalhar com o barro. Aprendi muito observando os mais velhos quando 
@@ -99,7 +99,7 @@ export default function PublicArtisanPage() {
             <Box>
               <Text fontWeight="bold" fontSize="sm" textTransform="uppercase" mb={4}>DE ONDE VEM O MEU TRABALHO</Text>
               <Text fontStyle="italic" mb={2}>
-                "Tracunhaém faz parte do que eu faço."
+                &ldquo;Tracunhaém faz parte do que eu faço.&rdquo;
               </Text>
               <Text fontSize="sm" lineHeight="1.8">
                 Aqui o trabalho com o barro está muito presente e a gente aprende muito convivendo com outros artesãos. Foi nesse ambiente que 

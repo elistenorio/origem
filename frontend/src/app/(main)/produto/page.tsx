@@ -1,6 +1,7 @@
 "use client"
 
-import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Badge, Image, Accordion } from "@chakra-ui/react"
+import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Badge, Image, Accordion, Link } from "@chakra-ui/react"
+import NextLink from "next/link"
 import { BiPlus, BiMinus, BiSearch } from "react-icons/bi"
 import { ProductCard } from "@/components/home/ProductCard"
 
@@ -34,8 +35,8 @@ export default function ProdutoDetailPage() {
           </VStack>
           <Box flex="1" borderRadius="2xl" overflow="hidden" position="relative" h={{ base: "400px", md: "500px" }}>
             <Image src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop" alt="Jarro" w="full" h="full" objectFit="cover" />
-            <Box position="absolute" bottom={4} right={4} bg="white" p={2} borderRadius="full" cursor="pointer">
-              <BiSearch color="#432A25" size={20} />
+            <Box position="absolute" bottom={4} right={4} bg="white" p={2} borderRadius="full" cursor="pointer" color="origem.texto">
+              <BiSearch size={20} />
             </Box>
           </Box>
         </Flex>
@@ -67,10 +68,10 @@ export default function ProdutoDetailPage() {
 
           <Box>
             <Text color="origem.texto" fontWeight="bold" fontSize="sm" mb={1}>Quantidade</Text>
-            <HStack bg="origem.busca" w="fit-content" borderRadius="md" px={3} py={1}>
-              <BiMinus cursor="pointer" color="#432A25" />
+            <HStack bg="origem.busca" w="fit-content" borderRadius="md" px={3} py={1} color="origem.texto">
+              <BiMinus cursor="pointer" />
               <Text w="40px" textAlign="center" fontWeight="bold">1</Text>
-              <BiPlus cursor="pointer" color="#432A25" />
+              <BiPlus cursor="pointer" />
             </HStack>
           </Box>
 
@@ -133,9 +134,10 @@ export default function ProdutoDetailPage() {
               ainda jovem, aprendendo os processos técnicos com familiares e vizinhos de bairro. 
               Ao longo dos anos, desenvolveu um jeito único de moldar e finalizar as peças.
             </Text>
-            <Text as="a" href="#" color="origem.laranja" fontSize="sm" textDecoration="underline">
-              Conheça mais sobre Mestre Joãozinho →
-            </Text>
+            <Link asChild color="origem.laranja" fontSize="sm" textDecoration="underline">
+              {/* TODO: linkar para /artesaos/[id] quando os dados vierem da API */}
+              <NextLink href="#">Conheça mais sobre Mestre Joãozinho →</NextLink>
+            </Link>
           </Box>
 
           <Box>
