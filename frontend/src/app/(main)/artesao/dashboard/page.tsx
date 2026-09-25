@@ -5,6 +5,8 @@ import { Greeting } from "@/components/artesao/Greeting"
 import { StatCard } from "@/components/artesao/StatCard"
 import { SectionCard } from "@/components/artesao/SectionCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
+import { EducationalDialog } from "@/components/artesao/EducationalDialog"
+import NextLink from "next/link"
 
 export default function ArtesaoDashboardPage() {
   return (
@@ -53,7 +55,8 @@ export default function ArtesaoDashboardPage() {
             }
           />
 
-          <Flex alignItems="center" justify="center" pl={2}>
+          <Flex alignItems="center" justify="center" pl={2} gap={3}>
+            <EducationalDialog />
             <IconButton
               aria-label="Buscar"
               bg="origem.passoFundo"
@@ -117,11 +120,14 @@ export default function ArtesaoDashboardPage() {
 
           <SectionCard title="MEU CATÁLOGO">
             <VStack alignItems="stretch" gap={4}>
-              <Button variant="origem" w="full">
-                Editar catálogo
+              <Button asChild variant="origem" w="full">
+                <NextLink href="/artesao/catalogo">Editar catálogo</NextLink>
               </Button>
-              <Button variant="origem" w="full">
-                Adicionar nova peça
+              <Button asChild variant="origem" w="full">
+                <NextLink href="/artesao/catalogo/nova">Adicionar nova peça</NextLink>
+              </Button>
+              <Button asChild variant="claro" w="full">
+                <NextLink href="/artesao/estoque">Ver estoque</NextLink>
               </Button>
             </VStack>
           </SectionCard>
