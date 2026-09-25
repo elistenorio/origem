@@ -3,7 +3,7 @@ import { BiSearch, BiBarChart, BiStar } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
 import { StatCard } from "@/components/artesao/StatCard"
-import { SectionCard } from "@/components/artesao/SectionCard"
+import { SectionCard } from "@/components/common/SectionCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
 
 export default function ArtesaoDashboardPage() {
