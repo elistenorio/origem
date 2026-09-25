@@ -21,8 +21,8 @@ Frontend responsivo consumindo uma Fake API estruturada, com deploy público. O 
 - Ao terminar, explique o que foi feito e por quê: todos os integrantes precisam saber explicar o código na apresentação.
 
 ## Idioma
-- **Português, sem acento**, em tudo que é do domínio: rotas da API (`/produtos`, `/artesaos`, `/pedidos`, `/minha-conta`), tipos e seus campos (`Produto`, `titulo`, `preco`, `artesaoId`), parâmetros de filtro e seus valores (`busca`, `categoria`, `ordenar=menor_preco`), services e suas funções (`produtos.service.ts`, `listar`), mocks (`produtos.mock.ts`), constantes (`constants/categorias.ts`) e hooks de domínio (`useProdutos`).
-- **Inglês** no que é técnico: formato das respostas (`Paginated`, `ApiError`, `{ error: { code, message } }`), códigos de erro (`NOT_FOUND`, `VALIDATION`), paginação (`page`, `pageSize`), `http.ts`, stores (`cartStore.ts`), utils (`normalizeText.ts`), nomes de componentes (`ProductCard`) e hooks genéricos (`useAuth`).
+- **Português, sem acento**, em tudo que é do domínio: rotas da API (`/produtos`, `/artesaos`, `/pedidos`, `/minha-conta`), tipos e seus campos (`Produto`, `titulo`, `preco`, `artesaoId`), parâmetros de filtro e seus valores (`busca`, `categoria`, `ordenar=menor_preco`), services e suas funções (`produtos.service.ts`, `listar`), listas do `mocks/db.json` (`produtos`, `pedidos`), constantes (`constants/categorias.ts`) e hooks de domínio (`useProdutos`).
+- **Inglês** no que é técnico: formato das respostas (`Paginated`, `ApiError`, `{ error: { code, message } }`), códigos de erro (`NOT_FOUND`, `VALIDATION`), paginação (`page`, `pageSize`, `pagination.ts`), `services/api.ts`, stores (`cartStore.ts`), utils (`normalizeText.ts`), nomes de componentes (`ProductCard`) e hooks genéricos (`useApi`).
 - Textos da interface, comentários e documentação em português.
 - Mensagens de commit em inglês, no formato Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:` (ex.: `feat: add products fake api`).
 
