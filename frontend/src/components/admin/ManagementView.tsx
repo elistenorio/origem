@@ -69,7 +69,7 @@ export function ManagementView() {
     { titulo: "Preço", render: (p) => formatCurrency(p.preco) },
     { titulo: "Estoque", render: (p) => p.estoque },
     { titulo: "Status", render: (p) => <StatusBadge status={p.status} /> },
-    { titulo: "Ações", alinhar: "end", render: (p) => <IconButton asChild aria-label={`Visualizar ${p.titulo}`} variant="ghost" size="sm"><NextLink href={"/produto"}><BiShow /></NextLink></IconButton> },
+    { titulo: "Ações", alinhar: "end", render: (p) => <IconButton asChild aria-label={`Visualizar ${p.titulo}`} variant="ghost" size="sm"><NextLink href={`/produto/${p.id}`}><BiShow /></NextLink></IconButton> },
   ]
   const colunasPedido: Coluna<Pedido>[] = [
     { titulo: "Pedido", render: (p) => <Text fontWeight="bold">{p.codigo}</Text> },

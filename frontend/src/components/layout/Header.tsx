@@ -6,10 +6,16 @@ import NextLink from "next/link"
 import { Box, Button, chakra, Flex, Heading, HStack, Link } from "@chakra-ui/react"
 import { BiUser, BiBasket } from "react-icons/bi"
 import { SearchField } from "@/components/common/SearchField"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useCartStore } from "@/store/cartStore"
 
 export function Header() {
   const router = useRouter()
   const [busca, setBusca] = useState("")
+  const montado = useHasMounted()
+  const itensNoCarrinho = useCartStore((state) => state.totalItems())
+  // O servidor não enxerga o carrinho salvo no navegador: a contagem só aparece depois de montar.
+  const contagem = montado && itensNoCarrinho > 0 ? ` (${itensNoCarrinho})` : ""
 
   function handleBuscar(e: React.FormEvent) {
     e.preventDefault()
@@ -44,7 +50,7 @@ export function Header() {
           </Button>
           <Button asChild variant="origem" px={5}>
             <NextLink href="/carrinho">
-              <BiBasket /> Meu carrinho
+              <BiBasket /> Meu carrinho{contagem}
             </NextLink>
           </Button>
         </HStack>

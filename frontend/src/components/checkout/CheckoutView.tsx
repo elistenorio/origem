@@ -10,9 +10,13 @@ import { SectionCard } from "@/components/common/SectionCard"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
+import { LoadingState } from "@/components/feedback/LoadingState"
 import { OrderSummary } from "@/components/carrinho/OrderSummary"
-import { opcoesFrete } from "@/dados-exemplo/consultas"
-import { carrinhoExemplo } from "@/dados-exemplo/pedidos"
+import { ShippingCalculator } from "@/components/carrinho/ShippingCalculator"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { ApiError } from "@/services/api"
+import { pedidosService } from "@/services/pedidos.service"
+import { useCartStore } from "@/store/cartStore"
 import { validateCheckout } from "@/utils/validateCheckout"
 import { ESTADOS } from "@/constants/regioes"
 import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
@@ -27,20 +31,22 @@ const INICIAL: DadosCheckout = {
   pagamento: "cartao", parcelas: "1", numeroCartao: "", nomeCartao: "", validade: "", cvv: "",
 }
 
-// Por enquanto a tela usa o carrinho e o frete de exemplo (sem API).
-const FRETE_EXEMPLO = opcoesFrete("50030-170")[0]
-
-// Checkout (Tela 07): identificação, endereço, pagamento e resumo.
+// Checkout (Tela 07): identificação, endereço, pagamento e resumo. Envia o pedido com POST /pedidos.
 export function CheckoutView() {
-  const [itens, setItens] = useState(carrinhoExemplo)
-  const frete = FRETE_EXEMPLO
+  const montado = useHasMounted()
+  const itens = useCartStore((state) => state.items)
+  const frete = useCartStore((state) => state.frete)
+  const setFrete = useCartStore((state) => state.setFrete)
+  const clearCart = useCartStore((state) => state.clearCart)
+  const quantidade = useCartStore((state) => state.totalItems())
+  const subtotal = useCartStore((state) => state.totalPrice())
   const [dados, setDados] = useState<DadosCheckout>(INICIAL)
   const [erros, setErros] = useState<ErrosCheckout>({})
+  const [erroEnvio, setErroEnvio] = useState<string>()
+  const [enviando, setEnviando] = useState(false)
   const [pedidoCriado, setPedidoCriado] = useState<PedidoRealizado | null>(null)
   const [convidarLogin, setConvidarLogin] = useState(true)
 
-  const subtotal = itens.reduce((soma, i) => soma + i.produto.preco * i.quantidade, 0)
-  const quantidade = itens.reduce((soma, i) => soma + i.quantidade, 0)
   const alterar = <K extends keyof DadosCheckout>(campo: K, valor: DadosCheckout[K]) => setDados((d) => ({ ...d, [campo]: valor }))
   // props prontas para um campo de texto (valor, onChange e erro)
   const campo = (nome: Exclude<keyof DadosCheckout, "pagamento">) => ({
@@ -49,14 +55,39 @@ export function CheckoutView() {
     error: erros[nome],
   })
 
-  function handleFinalizar(e: React.FormEvent<HTMLFormElement>) {
+  async function handleFinalizar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const encontrados = validateCheckout(dados)
     setErros(encontrados)
-    if (Object.keys(encontrados).length > 0) return
-    // Simula o pedido criado para mostrar o pop-up de confirmação
-    setPedidoCriado({ nome: dados.nome, codigo: "#10496", total: subtotal + frete.valor })
-    setItens([])
+    setErroEnvio(frete ? undefined : "Calcule o frete e escolha uma opção de entrega.")
+    if (Object.keys(encontrados).length > 0 || !frete) return
+
+    const { nome, cpf, email, telefone, cep, rua, numero, complemento, bairro, cidade, estado, pagamento, parcelas } = dados
+    setEnviando(true)
+    try {
+      const pedido = await pedidosService.criar({
+        itens: itens.map((item) => ({ produtoId: item.produto.id, quantidade: item.quantidade })),
+        comprador: { nome, cpf, email, telefone },
+        endereco: { cep, rua, numero, complemento, bairro, cidade, estado },
+        frete,
+        pagamento,
+        parcelas: Number(parcelas),
+      })
+      setPedidoCriado({ nome: pedido.comprador.nome, codigo: pedido.codigo, total: pedido.total })
+      clearCart()
+    } catch (erro) {
+      setErroEnvio(erro instanceof ApiError ? erro.message : "Não foi possível finalizar a compra.")
+    } finally {
+      setEnviando(false)
+    }
+  }
+
+  if (!montado) {
+    return (
+      <PageContainer>
+        <LoadingState />
+      </PageContainer>
+    )
   }
 
   if (itens.length === 0 && !pedidoCriado) {
@@ -103,8 +134,13 @@ export function CheckoutView() {
           </Stack>
 
           <Stack w={{ base: "full", lg: "420px" }} gap="6" flexShrink={0}>
+            {!pedidoCriado && (
+              <SectionCard title="Frete">
+                <ShippingCalculator frete={frete} onEscolher={setFrete} />
+              </SectionCard>
+            )}
             <SectionCard title="Forma de pagamento">
-              <PaymentFields dados={dados} erros={erros} total={subtotal + frete.valor} onChange={alterar} />
+              <PaymentFields dados={dados} erros={erros} total={subtotal + (frete?.valor ?? 0)} onChange={alterar} />
             </SectionCard>
             <OrderSummary quantidade={quantidade} subtotal={subtotal} frete={frete}>
               {Object.keys(erros).length > 0 && (
@@ -113,7 +149,13 @@ export function CheckoutView() {
                   <Alert.Title>Revise os campos destacados.</Alert.Title>
                 </Alert.Root>
               )}
-              <Button type="submit" variant="origem" w="full" disabled={!!pedidoCriado}>
+              {erroEnvio && (
+                <Alert.Root status="error">
+                  <Alert.Indicator />
+                  <Alert.Title>{erroEnvio}</Alert.Title>
+                </Alert.Root>
+              )}
+              <Button type="submit" variant="origem" w="full" disabled={!!pedidoCriado} loading={enviando}>
                 <BiCheck /> Finalizar compra
               </Button>
             </OrderSummary>

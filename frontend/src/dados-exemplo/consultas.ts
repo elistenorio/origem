@@ -1,15 +1,13 @@
 import type { Paginated } from "@/types/api"
 import { LIMITE_BAIXO_ESTOQUE } from "@/constants/pedidos"
-import { TECNICAS } from "@/constants/tecnicas"
 import { normalizeText } from "@/utils/normalizeText"
 import { atividadesExemplo, curadoriaExemplo, notificacoesAdminExemplo } from "./admin"
 import { artesaosExemplo } from "./artesaos"
-import { EMAIL_COMPRADOR_DEMO, pedidosExemplo } from "./pedidos"
+import { pedidosExemplo } from "./pedidos"
 import { produtosExemplo } from "./produtos"
 import type { Acompanhamento, PainelAdmin, TipoCuradoria } from "@/types/admin"
-import type { FiltrosArtesao, ResumoPainelArtesao } from "@/types/artesao"
+import type { ResumoPainelArtesao } from "@/types/artesao"
 import type { FiltrosProduto, Produto, StatusProduto } from "@/types/produto"
-import type { OpcaoFrete } from "@/types/frete"
 
 // Filtros e contas feitos direto nos dados de exemplo, só para as telas terem o que mostrar.
 // Ao integrar com a Fake API, cada função aqui vira uma chamada a um service.
@@ -53,23 +51,6 @@ export function filtrarProdutos(filtros: FiltrosProduto & { status?: StatusProdu
 
 export const buscarProduto = (id: string) => produtosExemplo.find((p) => p.id === id)
 
-export function filtrarArtesaos(filtros: FiltrosArtesao) {
-  const busca = normalizeText(filtros.busca ?? "")
-  const tecnica = TECNICAS.find((t) => t.value === filtros.tecnica)?.label
-
-  const artesaos = artesaosExemplo.filter((a) => {
-    if (a.status !== "publicado") return false
-    if (busca && !normalizeText(`${a.nome} ${a.cidade} ${a.oficio}`).includes(busca)) return false
-    if (filtros.regiao && a.regiao !== filtros.regiao) return false
-    if (filtros.categoria && !a.categorias.includes(filtros.categoria)) return false
-    if (tecnica && !a.tecnicas.some((t) => normalizeText(t) === normalizeText(tecnica))) return false
-    return true
-  })
-  return paginar(artesaos, filtros.page, filtros.pageSize ?? 8)
-}
-
-export const meusPedidos = () => pedidosExemplo.filter((p) => p.comprador.email === EMAIL_COMPRADOR_DEMO)
-
 export const meusProdutos = () => produtosExemplo.filter((p) => p.artesaoId === ARTESAO_LOGADO_ID)
 
 // Números do catálogo e do estoque calculados a partir das peças do artesão.
@@ -94,16 +75,6 @@ export function resumoPainelArtesao(minhas: Produto[] = meusProdutos()): ResumoP
       esgotadas: ativas.filter((p) => p.estoque === 0).length,
     },
   }
-}
-
-// Simulação de frete: CEPs de Pernambuco (50 a 56) pagam menos.
-export function opcoesFrete(cep: string): OpcaoFrete[] {
-  const prefixo = Number(cep.replace(/\D/g, "").slice(0, 2))
-  const local = prefixo >= 50 && prefixo <= 56
-  return [
-    { modalidade: "pac", nome: "PAC", valor: local ? 18.9 : 32.4, prazo: local ? "6 a 8 dias úteis" : "8 a 12 dias úteis" },
-    { modalidade: "sedex", nome: "SEDEX", valor: local ? 27.5 : 49.9, prazo: local ? "2 a 4 dias úteis" : "4 a 6 dias úteis" },
-  ]
 }
 
 export const painelAdmin: PainelAdmin = {

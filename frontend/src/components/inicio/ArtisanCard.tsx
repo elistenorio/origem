@@ -1,37 +1,41 @@
 import NextLink from "next/link"
-import { Badge, Box, Button, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
-import type { Artisan } from "@/types/artisan"
+import { Badge, Button, Card, Heading, HStack, Image, Text } from "@chakra-ui/react"
+import type { Artesao } from "@/types/artesao"
 
-// Card de listagem (catálogo de artesãos). O perfil completo é a página /artesaos/[id].
-export function ArtisanCard({ artisan }: { artisan: Artisan }) {
-  const { id, name, city, region, bio, avatarUrl, techniques } = artisan
+type ArtisanCardProps = {
+  artesao: Pick<Artesao, "id" | "nome" | "cidade" | "estado" | "bio" | "fotoUrl" | "tecnicas">
+}
+
+// Card de listagem (vitrine e lista de artesãos). O perfil completo é a página /artesaos/[id].
+export function ArtisanCard({ artesao }: ArtisanCardProps) {
+  const { id, nome, cidade, estado, bio, fotoUrl, tecnicas } = artesao
 
   return (
-    <Box borderWidth="1px" borderColor="origem.laranja" borderRadius="2xl" overflow="hidden">
-      <Image src={avatarUrl} alt={name} w="full" h="220px" objectFit="cover" />
+    <Card.Root variant="vitrine" h="full">
+      <Image src={fotoUrl} alt={nome} w="full" h="220px" objectFit="cover" />
 
-      <Stack gap="2" p="4">
+      <Card.Body gap="2">
         <Heading as="h3" variant="titulo" size="xl">
-          {name}
+          {nome}
         </Heading>
-        <Text fontWeight="bold" textTransform="uppercase" fontSize="xs" color="origem.textoSuave">
-          {city}, {region}
+        <Text textStyle="rotulo">
+          {cidade}, {estado}
         </Text>
 
         <HStack gap="2" wrap="wrap">
-          {techniques.slice(0, 2).map((technique) => (
-            <Badge key={technique}>{technique}</Badge>
+          {tecnicas.slice(0, 2).map((tecnica) => (
+            <Badge key={tecnica}>{tecnica}</Badge>
           ))}
         </HStack>
 
-        <Text fontSize="sm" color="origem.texto" lineClamp={3}>
+        <Text lineClamp={3} flex="1">
           {bio}
         </Text>
 
         <Button asChild variant="origem" mt="2">
           <NextLink href={`/artesaos/${id}`}>Conheça o artesão →</NextLink>
         </Button>
-      </Stack>
-    </Box>
+      </Card.Body>
+    </Card.Root>
   )
 }

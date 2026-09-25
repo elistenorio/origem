@@ -6,27 +6,32 @@ import { Button, Stack } from "@chakra-ui/react"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
 import { DataState } from "@/components/feedback/DataState"
-import { meusPedidos } from "@/dados-exemplo/consultas"
+import { useApi } from "@/hooks/useApi"
+import { minhaContaService } from "@/services/minhaConta.service"
 import type { Pedido } from "@/types/pedido"
 import { OrderCard } from "./OrderCard"
 import { CancelOrderDialog } from "./CancelOrderDialog"
 import { ReviewOrderDialog } from "./ReviewOrderDialog"
 
 // Meus pedidos (Tela 08) com os pop-ups de cancelamento (08.1) e avaliação (09 e 09.1).
-// Por enquanto os pedidos são de exemplo e as ações só mudam o estado local.
+// Os pedidos vêm de GET /minha-conta/pedidos e a avaliação é enviada em POST /avaliacoes.
+// O cancelamento ainda é só visual (a rota PATCH /pedidos/{id} está planejada em docs/api.md).
 export function OrdersView() {
-  const [pedidos, setPedidos] = useState<Pedido[]>(meusPedidos)
+  const { data, loading, error, recarregar } = useApi(() => minhaContaService.pedidos(), [])
+  const [mudancas, setMudancas] = useState<Record<string, Partial<Pedido>>>({})
   const [cancelando, setCancelando] = useState<Pedido | null>(null)
   const [avaliando, setAvaliando] = useState<Pedido | null>(null)
 
-  const atualizar = (id: string, mudancas: Partial<Pedido>) =>
-    setPedidos((atual) => atual.map((p) => (p.id === id ? { ...p, ...mudancas } : p)))
+  const pedidos = (data ?? []).map((p) => ({ ...p, ...mudancas[p.id] }))
+  const atualizar = (id: string, novas: Partial<Pedido>) => setMudancas((atual) => ({ ...atual, [id]: { ...atual[id], ...novas } }))
 
   return (
     <PageContainer>
-      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Meus pedidos" }]} titulo="Meus pedidos" subtitulo={`${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}`} />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Meus pedidos" }]} titulo="Meus pedidos" subtitulo={data ? `${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}` : undefined} />
       <DataState
-        loading={false}
+        loading={loading}
+        error={error}
+        onRetry={recarregar}
         vazio={pedidos.length === 0}
         mensagemVazio="Você ainda não fez nenhum pedido"
         acaoVazio={<Button asChild variant="origem"><NextLink href="/catalogo">Ir para o catálogo</NextLink></Button>}

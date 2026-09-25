@@ -1,12 +1,15 @@
+"use client"
+
 import NextLink from "next/link"
 import { Flex, Heading, Link, SimpleGrid, Stack } from "@chakra-ui/react"
-import { paraArtisan } from "@/dados-exemplo/adaptadores"
-import { filtrarArtesaos } from "@/dados-exemplo/consultas"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { artesaosService } from "@/services/artesaos.service"
 import { ArtisanCard } from "./ArtisanCard"
 
-// "Conheça quem faz": alguns artesãos na vitrine (dados de exemplo).
+// "Conheça quem faz": alguns artesãos na vitrine.
 export function FeaturedArtisans() {
-  const { items } = filtrarArtesaos({ pageSize: 4 })
+  const { data, loading, error, recarregar } = useApi(() => artesaosService.listar({ pageSize: 4 }), [])
 
   return (
     <Stack gap="6">
@@ -16,9 +19,11 @@ export function FeaturedArtisans() {
           <NextLink href="/artesaos">Ver todos os artesãos →</NextLink>
         </Link>
       </Flex>
-      <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="6">
-        {items.map((artesao) => <ArtisanCard key={artesao.id} artisan={paraArtisan(artesao)} />)}
-      </SimpleGrid>
+      <DataState loading={loading} error={error} onRetry={recarregar} vazio={!data?.items.length} mensagemVazio="Nenhum artesão publicado ainda">
+        <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="6">
+          {data?.items.map((artesao) => <ArtisanCard key={artesao.id} artesao={artesao} />)}
+        </SimpleGrid>
+      </DataState>
     </Stack>
   )
 }
