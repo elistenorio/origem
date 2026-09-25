@@ -1,9 +1,10 @@
 "use client"
 
-import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Badge, Image, Accordion, Link } from "@chakra-ui/react"
+import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Badge, Image, Link } from "@chakra-ui/react"
 import NextLink from "next/link"
 import { BiPlus, BiMinus, BiSearch } from "react-icons/bi"
 import { ProductCard } from "@/components/home/ProductCard"
+import { FaqAccordion } from "@/components/common/FaqAccordion"
 
 // Mock product data to reuse ProductCard
 const RELATED_PRODUCTS = Array(8).fill(null).map((_, i) => ({
@@ -177,18 +178,12 @@ export default function ProdutoDetailPage() {
 
           <Box>
             <Text fontWeight="bold" fontSize="sm" mb={4}>TROCAS E DEVOLUÇÕES</Text>
-            <Accordion.Root collapsible>
-              {["Política de troca e devolução", "Política de entrega", "Política de pagamento", "Dúvidas sobre sua compra?"].map((item, index) => (
-                <Accordion.Item key={index} value={item} mb={2} border="none">
-                  <Accordion.ItemTrigger bg="origem.passoFundo" p={4} borderRadius="md" _hover={{ bg: "origem.busca" }}>
-                    <Text fontSize="sm" fontWeight="medium" color="origem.texto">{item}</Text>
-                  </Accordion.ItemTrigger>
-                  <Accordion.ItemContent p={4} bg="origem.fundo">
-                    <Text fontSize="sm" color="origem.textoSuave">Detalhes sobre {item.toLowerCase()}...</Text>
-                  </Accordion.ItemContent>
-                </Accordion.Item>
-              ))}
-            </Accordion.Root>
+            <FaqAccordion
+              items={["Política de troca e devolução", "Política de entrega", "Política de pagamento", "Dúvidas sobre sua compra?"].map((item) => ({
+                question: item,
+                answer: `Detalhes sobre ${item.toLowerCase()}...`,
+              }))}
+            />
           </Box>
         </VStack>
       </Flex>

@@ -1,6 +1,7 @@
-import { Box, Flex, HStack, Input, Button, Heading, IconButton, Link } from "@chakra-ui/react"
-import { BiMenu, BiSearch, BiUser, BiBasket } from "react-icons/bi"
+import { Box, Flex, HStack, Button, Heading, IconButton, Link } from "@chakra-ui/react"
+import { BiMenu, BiUser, BiBasket } from "react-icons/bi"
 import NextLink from "next/link"
+import { SearchField } from "@/components/common/SearchField"
 
 export function Header() {
   return (
@@ -22,25 +23,12 @@ export function Header() {
 
         {/* Center: Search */}
         <Box flex="1" maxW="600px">
-          <HStack bg="origem.busca" borderRadius="md" px={4} py={2} w="full">
-            <Box color="origem.textoSuave">
-              <BiSearch />
-            </Box>
-            <Input variant="unstyled" placeholder="O que você está procurando... (ex: vaso, prato, cerâmica)" />
-          </HStack>
+          <SearchField placeholder="O que você está procurando... (ex: vaso, prato, cerâmica)" />
         </Box>
 
         {/* Right: Actions */}
         <HStack gap={4}>
-          <Button
-            bg="transparent"
-            borderWidth="1px"
-            borderColor="origem.laranja"
-            color="origem.laranja"
-            borderRadius="md"
-            px={6}
-            _hover={{ bg: "origem.laranja", color: "white" }}
-          >
+          <Button variant="outline" px={6}>
             <BiUser /> Acesso / Minha Conta
           </Button>
           <Button variant="origem" px={6}>

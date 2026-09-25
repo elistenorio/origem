@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, Textarea, IconButton } from "@chakra-ui/react"
+import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, IconButton } from "@chakra-ui/react"
 import { BiPencil } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
+import { TextareaField } from "@/components/common/TextareaField"
 import { TechniquesField } from "@/components/register/TechniquesField"
 
 export default function ArtesaoPerfilPage() {
@@ -88,22 +89,10 @@ export default function ArtesaoPerfilPage() {
               SOBRE VOCÊ
             </Heading>
             <VStack align="stretch" gap={6}>
-              <Box>
-                <Text fontWeight="bold" fontSize="sm" color="origem.texto" mb={2}>SUA HISTÓRIA</Text>
-                <Textarea minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              </Box>
-              <Box>
-                <Text fontWeight="bold" fontSize="sm" color="origem.texto" mb={2}>SEU TRABALHO</Text>
-                <Textarea minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              </Box>
-              <Box>
-                <Text fontWeight="bold" fontSize="sm" color="origem.texto" mb={2}>DE ONDE VEM O SEU TRABALHO?</Text>
-                <Textarea minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              </Box>
-              <Box>
-                <Text fontWeight="bold" fontSize="sm" color="origem.texto" mb={2}>O QUE VOCÊ GOSTA DE FAZER?</Text>
-                <Textarea minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
-              </Box>
+              <TextareaField label="Sua história" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
+              <TextareaField label="Seu trabalho" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
+              <TextareaField label="De onde vem o seu trabalho?" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
+              <TextareaField label="O que você gosta de fazer?" minH="120px" defaultValue="Texto atual de passos para que ela possa ler e alterar" resize="vertical" />
             </VStack>
           </Box>
 

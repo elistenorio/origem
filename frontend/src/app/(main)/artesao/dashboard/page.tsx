@@ -1,9 +1,10 @@
 import { Box, Flex, Heading, HStack, Text, VStack, IconButton, Button, SimpleGrid } from "@chakra-ui/react"
-import { BiSearch, BiBarChart, BiBell, BiStar } from "react-icons/bi"
+import { BiSearch, BiBarChart, BiStar } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
 import { StatCard } from "@/components/artesao/StatCard"
 import { SectionCard } from "@/components/artesao/SectionCard"
+import { NotificationItem } from "@/components/artesao/NotificationItem"
 
 export default function ArtesaoDashboardPage() {
   return (
@@ -83,35 +84,18 @@ export default function ArtesaoDashboardPage() {
         <SimpleGrid columns={{ base: 1, lg: 3 }} gap={6}>
           <SectionCard title="NOTIFICAÇÕES">
             <VStack alignItems="stretch" gap={4}>
-              <Box>
-                <HStack color="origem.texto" mb={1}>
-                  <BiBell />
-                  <Text fontWeight="bold" fontSize="sm">Novo pedido recebido</Text>
-                </HStack>
-                <Text fontSize="sm" color="origem.textoSuave" ml={6}>
-                  O Jarro Tradicional foi comprado<br />R$ 167,90
-                </Text>
-              </Box>
-              
-              <Box>
-                <HStack color="origem.texto" mb={1}>
-                  <BiBell />
-                  <Text fontWeight="bold" fontSize="sm">Sua peça recebeu uma avaliação</Text>
-                </HStack>
-                <Text fontSize="sm" color="origem.textoSuave" ml={6}>
-                  Um cliente avaliou o Jarro<br />Tradicional em 5 estrelas
-                </Text>
-              </Box>
-
-              <Box>
-                <HStack color="origem.texto" mb={1}>
-                  <BiBell />
-                  <Text fontWeight="bold" fontSize="sm">Seu perfil foi aprovado</Text>
-                </HStack>
-                <Text fontSize="sm" color="origem.textoSuave" ml={6}>
-                  Seu perfil esta disponível para<br />os visitantes do Origem
-                </Text>
-              </Box>
+              <NotificationItem
+                title="Novo pedido recebido"
+                description={<>O Jarro Tradicional foi comprado<br />R$ 167,90</>}
+              />
+              <NotificationItem
+                title="Sua peça recebeu uma avaliação"
+                description={<>Um cliente avaliou o Jarro<br />Tradicional em 5 estrelas</>}
+              />
+              <NotificationItem
+                title="Seu perfil foi aprovado"
+                description={<>Seu perfil esta disponível para<br />os visitantes do Origem</>}
+              />
             </VStack>
           </SectionCard>
 

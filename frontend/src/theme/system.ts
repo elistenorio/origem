@@ -18,6 +18,12 @@ const config = defineConfig({
           categoria: { value: "#DDB79B" },
           passoFundo: { value: "#DBD6CE" },
           passoInativo: { value: "#D8BCA9" },
+          // Cores de status (selos de pedido/estoque). Primeira leva, tons combinando
+          // com a paleta terrosa do projeto — ajustar se o design tiver valores exatos.
+          sucesso: { value: "#6B8F5A" },
+          aviso: { value: "#D6A249" },
+          perigo: { value: "#B25443" },
+          info: { value: "#5C7A99" },
         },
       },
       fonts: {
