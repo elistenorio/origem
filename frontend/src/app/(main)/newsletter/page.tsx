@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react"
 import { Box, Button, Flex, Grid, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
 import { BiCheckCircle, BiEnvelope } from "react-icons/bi"
+import { PageContainer } from "@/components/layout/PageContainer"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
 import { SectionCard } from "@/components/common/SectionCard"
 import { FormField } from "@/components/common/FormField"
@@ -24,7 +25,7 @@ export default function NewsletterPage() {
   }
 
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <PageContainer>
       <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Nossa Newsletter" }]} />
 
       <Grid templateColumns={{ base: "1fr", lg: "1.4fr 1fr" }} gap={10} mt={6}>
@@ -124,6 +125,6 @@ export default function NewsletterPage() {
           )}
         </Stack>
       </Grid>
-    </Box>
+    </PageContainer>
   )
 }

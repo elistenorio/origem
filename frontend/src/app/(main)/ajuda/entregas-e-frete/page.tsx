@@ -1,6 +1,7 @@
 import { Box, Grid, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiErrorAlt } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { InfoBox } from "@/components/ajuda/InfoBox"
 import { RegionCard } from "@/components/ajuda/RegionCard"
 import { FreightCalculator } from "@/components/common/FreightCalculator"
@@ -14,23 +15,12 @@ const REGIOES = [
 
 export default function EntregasEFretePage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Ajuda" },
-          { label: "Entregas e frete" },
-        ]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Ajuda" }, { label: "Entregas e frete" }]}
+        titulo="Entregas e frete"
+        subtitulo="As peças são enviadas pelos próprios artesãos, com embalagem reforçada e rastreamento."
       />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          Entregas e frete
-        </Heading>
-        <Text color="origem.texto">
-          As peças são enviadas pelos próprios artesãos, com embalagem reforçada e rastreamento.
-        </Text>
-      </Box>
 
       <Grid templateColumns={{ base: "1fr", lg: "1.6fr 1fr" }} gap={10}>
         <Stack gap={8}>
@@ -82,6 +72,6 @@ export default function EntregasEFretePage() {
           <FreightCalculator />
         </Box>
       </Grid>
-    </Box>
+    </PageContainer>
   )
 }

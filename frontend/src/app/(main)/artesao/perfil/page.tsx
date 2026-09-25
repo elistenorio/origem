@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Input, Separator, IconButton } from "@chakra-ui/react"
-import { BiPencil } from "react-icons/bi"
+import { BiPencil, BiTrash } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
 import { FormField } from "@/components/common/FormField"
@@ -167,9 +167,7 @@ export default function ArtesaoPerfilPage() {
               <Text as="span" fontWeight="bold"> Essa ação não poderá ser desfeita.</Text> Antes de continuar,
               certifique-se de que não possui pedidos ou outras atividades pendentes.
             </Text>
-            <Button bg="origem.marrom" color="origem.fundo" borderRadius="lg" px={6} py={6} _hover={{ opacity: 0.9 }}>
-              Excluir a minha conta
-            </Button>
+            <Button variant="perigo"><BiTrash /> Excluir a minha conta</Button>
           </Box>
 
         </VStack>

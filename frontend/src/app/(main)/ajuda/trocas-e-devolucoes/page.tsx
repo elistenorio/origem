@@ -1,6 +1,7 @@
 import { Box, Grid, Heading, SimpleGrid, Text } from "@chakra-ui/react"
 import { BiCar, BiCreditCard, BiErrorAlt, BiImage, BiPackage } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { InfoBox } from "@/components/ajuda/InfoBox"
 import { TimeframeCard } from "@/components/ajuda/TimeframeCard"
 import { ChecklistCard } from "@/components/ajuda/ChecklistCard"
@@ -67,23 +68,12 @@ const PASSOS = [
 
 export default function TrocasEDevolucoesPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Ajuda" },
-          { label: "Trocas e devoluções" },
-        ]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Ajuda" }, { label: "Trocas e devoluções" }]}
+        titulo="Trocas e devoluções"
+        subtitulo="Queremos que você ame sua peça. Se algo não sair como esperado, veja como resolver."
       />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          Trocas e devoluções
-        </Heading>
-        <Text color="origem.texto">
-          Queremos que você ame sua peça. Se algo não sair como esperado, veja como resolver.
-        </Text>
-      </Box>
 
       <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
         {PRAZOS.map((prazo) => (
@@ -127,6 +117,6 @@ export default function TrocasEDevolucoesPage() {
         Não descarte a embalagem. Tire fotos da peça, da caixa e da etiqueta e nos avise em até 48
         horas pelo pedido. Você escolhe entre uma nova peça (quando houver) ou o reembolso integral.
       </InfoBox>
-    </Box>
+    </PageContainer>
   )
 }

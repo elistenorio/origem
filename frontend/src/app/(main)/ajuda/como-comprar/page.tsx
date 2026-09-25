@@ -1,7 +1,8 @@
 import NextLink from "next/link"
-import { Box, Button, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react"
+import { Box, Button, SimpleGrid, Stack } from "@chakra-ui/react"
 import { BiCart, BiCreditCard, BiInfoCircle, BiMapPin, BiPackage, BiSearch, BiUser } from "react-icons/bi"
-import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
+import { PageContainer } from "@/components/layout/PageContainer"
+import { PageHeader } from "@/components/layout/PageHeader"
 import { StepCard } from "@/components/ajuda/StepCard"
 import { InfoBox } from "@/components/ajuda/InfoBox"
 
@@ -46,23 +47,12 @@ const PASSOS = [
 
 export default function ComoComprarPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
-      <PageBreadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Ajuda" },
-          { label: "Como comprar" },
-        ]}
+    <PageContainer>
+      <PageHeader
+        trilha={[{ label: "Home", href: "/" }, { label: "Ajuda" }, { label: "Como comprar" }]}
+        titulo="Como comprar"
+        subtitulo="Comprar no Origem é simples. Veja o passo a passo, do catálogo até a sua casa."
       />
-
-      <Box mt={6} mb={8}>
-        <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "5xl" }} mb={2}>
-          Como comprar
-        </Heading>
-        <Text color="origem.texto">
-          Comprar no Origem é simples. Veja o passo a passo, do catálogo até a sua casa.
-        </Text>
-      </Box>
 
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6} mb={8}>
         {PASSOS.map((passo) => (
@@ -87,6 +77,6 @@ export default function ComoComprarPage() {
           </NextLink>
         </Button>
       </Stack>
-    </Box>
+    </PageContainer>
   )
 }
