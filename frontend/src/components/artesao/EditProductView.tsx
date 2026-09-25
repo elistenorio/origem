@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import NextLink from "next/link"
-import { Box, Button, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react"
+import { Button, Card, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react"
 import { BiShow, BiTrash } from "react-icons/bi"
 import { SectionCard } from "@/components/common/SectionCard"
 import { StatusBadge } from "@/components/common/StatusBadge"
@@ -13,7 +13,7 @@ import { buscarProduto } from "@/dados-exemplo/consultas"
 import { produtoParaFormulario } from "@/utils/productForm"
 import { formatDate } from "@/utils/formatDate"
 import { ArtisanShell } from "./ArtisanShell"
-import { ArtisanPageHeader } from "./ArtisanPageHeader"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { ProductForm } from "./ProductForm"
 
 // Editar peça existente no catálogo (Tela 06.1 - edição). Por enquanto com a peça de exemplo (sem API).
@@ -31,11 +31,11 @@ export function EditProductView({ id }: { id: string }) {
         <EmptyMessage titulo="Peça não encontrada" />
       ) : (
           <>
-            <ArtisanPageHeader titulo="Editar peça" descricao="Mudanças em fotos, nome, descrição ou preço passam por uma nova análise rápida da curadoria.">
+            <PanelPageHeader titulo="Editar peça" descricao="Mudanças em fotos, nome, descrição ou preço passam por uma nova análise rápida da curadoria.">
               <Button asChild variant="claro">
                 <NextLink href={"/produto"}><BiShow /> Visualizar peça</NextLink>
               </Button>
-            </ArtisanPageHeader>
+            </PanelPageHeader>
             <ProductForm
               key={produto.id}
               inicial={produtoParaFormulario(produto)}
@@ -51,14 +51,18 @@ export function EditProductView({ id }: { id: string }) {
                   </SectionCard>
                   <SectionCard title="Vendas e estoque">
                     <SimpleGrid columns={2} gap="3">
-                      <Box bg="origem.fundo" borderRadius="lg" p="3">
-                        <Text textStyle="numero">{produto.estoque}</Text>
-                        <Text textStyle="apoio">Em estoque</Text>
-                      </Box>
-                      <Box bg="origem.fundo" borderRadius="lg" p="3">
-                        <Text textStyle="numero">{produto.pecaUnica ? "Única" : "Várias"}</Text>
-                        <Text textStyle="apoio">Tipo de peça</Text>
-                      </Box>
+                      <Card.Root variant="item">
+                        <Card.Body>
+                          <Text textStyle="numero">{produto.estoque}</Text>
+                          <Text textStyle="apoio">Em estoque</Text>
+                        </Card.Body>
+                      </Card.Root>
+                      <Card.Root variant="item">
+                        <Card.Body>
+                          <Text textStyle="numero">{produto.pecaUnica ? "Única" : "Várias"}</Text>
+                          <Text textStyle="apoio">Tipo de peça</Text>
+                        </Card.Body>
+                      </Card.Root>
                     </SimpleGrid>
                   </SectionCard>
                   <Button variant="perigo" onClick={() => setConfirmarExclusao(true)}><BiTrash /> Excluir peça</Button>

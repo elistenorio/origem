@@ -4,7 +4,7 @@ import { useState } from "react"
 import NextLink from "next/link"
 import { Button, Link, Stack, Text } from "@chakra-ui/react"
 import { FormField } from "@/components/common/FormField"
-import { PasswordHints } from "@/components/register/PasswordHints"
+import { PasswordHints } from "@/components/cadastro/PasswordHints"
 import type { CadastroCompradorInput } from "@/dados-exemplo/tipos"
 
 const vazio: CadastroCompradorInput = { nome: "", email: "", senha: "" }

@@ -1,6 +1,6 @@
-import { AuthBackground } from "@/components/auth/AuthBackground"
-import { AuthCard } from "@/components/auth/AuthCard"
-import { BuyerRegisterForm } from "@/components/auth/BuyerRegisterForm"
+import { AuthBackground } from "@/components/autenticacao/AuthBackground"
+import { AuthCard } from "@/components/autenticacao/AuthCard"
+import { BuyerRegisterForm } from "@/components/autenticacao/BuyerRegisterForm"
 
 export default function CadastroCompradorPage() {
   return (

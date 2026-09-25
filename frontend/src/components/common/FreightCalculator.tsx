@@ -6,6 +6,7 @@ import { BiMapPin, BiPackage } from "react-icons/bi"
 import type { IconType } from "react-icons"
 import { FormField } from "@/components/common/FormField"
 import { SectionCard } from "@/components/common/SectionCard"
+import { formatCurrency } from "@/utils/formatCurrency"
 
 type OpcaoFrete = {
   id: string
@@ -35,10 +36,7 @@ function buscarOpcoesFrete(cep: string): ResultadoFrete {
   }
 }
 
-function formatarPreco(preco: OpcaoFrete["preco"]) {
-  if (preco === "gratis") return "Grátis"
-  return `R$ ${preco.toFixed(2).replace(".", ",")}`
-}
+const formatarPreco = (preco: OpcaoFrete["preco"]) => (preco === "gratis" ? "Grátis" : formatCurrency(preco))
 
 export function FreightCalculator() {
   const [cep, setCep] = useState("")

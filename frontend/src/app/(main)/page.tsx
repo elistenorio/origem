@@ -1,9 +1,9 @@
 import { Stack } from "@chakra-ui/react"
 import { PageContainer } from "@/components/layout/PageContainer"
-import { HomeBanner } from "@/components/home/HomeBanner"
-import { CategoryChips } from "@/components/home/CategoryChips"
-import { FeaturedProducts } from "@/components/home/FeaturedProducts"
-import { FeaturedArtisans } from "@/components/home/FeaturedArtisans"
+import { HomeBanner } from "@/components/inicio/HomeBanner"
+import { CategoryChips } from "@/components/inicio/CategoryChips"
+import { FeaturedProducts } from "@/components/inicio/FeaturedProducts"
+import { FeaturedArtisans } from "@/components/inicio/FeaturedArtisans"
 
 export default function HomePage() {
   return (

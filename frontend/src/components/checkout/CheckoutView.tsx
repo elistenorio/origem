@@ -71,7 +71,7 @@ export function CheckoutView() {
 
   return (
     <PageContainer>
-      <PageHeader caminho="Home / Carrinho / Pagamento" titulo="Finalizar compra" />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Carrinho", href: "/carrinho" }, { label: "Pagamento" }]} titulo="Finalizar compra" />
       <CheckoutSteps atual={pedidoCriado ? 2 : 1} />
 
       <form onSubmit={handleFinalizar} noValidate>

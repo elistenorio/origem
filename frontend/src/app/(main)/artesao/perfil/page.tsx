@@ -8,7 +8,7 @@ import { Greeting } from "@/components/artesao/Greeting"
 import { FormField } from "@/components/common/FormField"
 import { SelectField } from "@/components/common/SelectField"
 import { TextareaField } from "@/components/common/TextareaField"
-import { TechniquesField } from "@/components/register/TechniquesField"
+import { TechniquesField } from "@/components/cadastro/TechniquesField"
 import { artesaosExemplo } from "@/dados-exemplo/artesaos"
 import { CATEGORIAS } from "@/constants/categorias"
 

@@ -27,7 +27,7 @@ export function CartView() {
 
   return (
     <PageContainer>
-      <PageHeader caminho="Home / Carrinho" titulo="Seu carrinho" subtitulo={quantidade > 0 ? `${quantidade} ${quantidade === 1 ? "peça" : "peças"}` : undefined} />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Carrinho" }]} titulo="Seu carrinho" subtitulo={quantidade > 0 ? `${quantidade} ${quantidade === 1 ? "peça" : "peças"}` : undefined} />
       {itens.length === 0 ? (
         <EmptyMessage titulo="Seu carrinho está vazio" descricao="Que tal conhecer as peças feitas à mão pelos nossos artesãos?">
           <Button asChild variant="origem">

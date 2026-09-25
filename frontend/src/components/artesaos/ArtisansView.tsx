@@ -3,7 +3,7 @@
 import { Box, Flex, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
-import { ArtisanCard } from "@/components/home/ArtisanCard"
+import { ArtisanCard } from "@/components/inicio/ArtisanCard"
 import { SearchField } from "@/components/common/SearchField"
 import { SelectField } from "@/components/common/SelectField"
 import { PaginationBar } from "@/components/common/PaginationBar"
@@ -25,7 +25,7 @@ export function ArtisansView() {
 
   return (
     <PageContainer>
-      <PageHeader caminho="Home / Artesãos" titulo="Artesãos" subtitulo="Conheça quem faz: mestres e mestras de Pernambuco que mantêm vivas as técnicas do nosso artesanato." />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Artesãos" }]} titulo="Artesãos" subtitulo="Conheça quem faz: mestres e mestras de Pernambuco que mantêm vivas as técnicas do nosso artesanato." />
       <Stack gap="6">
         <Flex gap="3" direction={{ base: "column", md: "row" }} align={{ base: "stretch", md: "flex-end" }}>
           <Box flex="1">

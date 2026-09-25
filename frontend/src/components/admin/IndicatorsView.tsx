@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { SimpleGrid, Stack, Tabs } from "@chakra-ui/react"
 import { SectionCard } from "@/components/common/SectionCard"
-import { StatCard } from "@/components/artesao/StatCard"
-import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
+import { StatCard } from "@/components/common/StatCard"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { indicadoresExemplo } from "@/dados-exemplo/admin"
 import { formatCompact, formatCurrency, formatCurrencyCompact } from "@/utils/formatCurrency"
 import type { PeriodoIndicadores } from "@/dados-exemplo/tipos"
@@ -21,7 +21,7 @@ export function IndicatorsView() {
 
   return (
     <AdminShell ativo="indicadores">
-      <ArtisanPageHeader titulo="Indicadores" descricao="Acompanhe o desempenho do Origem por período e por categoria." />
+      <PanelPageHeader titulo="Indicadores" descricao="Acompanhe o desempenho do Origem por período e por categoria." />
       <Tabs.Root value={periodo} onValueChange={(e) => setPeriodo(e.value as PeriodoIndicadores)} mb="6">
         <Tabs.List>
           <Tabs.Trigger value="7d">7 dias</Tabs.Trigger>

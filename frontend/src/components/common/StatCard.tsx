@@ -1,5 +1,5 @@
 import { Heading, Text } from "@chakra-ui/react"
-import { Tile } from "@/components/common/Tile"
+import { Tile } from "./Tile"
 
 interface StatCardProps {
   title: string
@@ -7,15 +7,10 @@ interface StatCardProps {
   value: React.ReactNode
 }
 
+// Card de número em destaque (painéis do artesão e do admin).
 export function StatCard({ title, subtitle, value }: StatCardProps) {
   return (
-    <Tile
-      display="flex"
-      flexDirection="column"
-      gap={2}
-      flex="1"
-      minW="200px"
-    >
+    <Tile display="flex" flexDirection="column" gap={2} flex="1" minW="200px">
       <Heading variant="secao" fontSize="sm">
         {title}
       </Heading>

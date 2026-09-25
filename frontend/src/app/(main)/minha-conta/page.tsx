@@ -1,7 +1,7 @@
 import NextLink from "next/link"
 import { Box, Button, Flex, Grid, Heading, HStack, Image, Link, Separator, Stack, Text } from "@chakra-ui/react"
 import { BiCreditCard, BiFile, BiLockAlt, BiMapPin, BiPencil, BiPlus } from "react-icons/bi"
-import { AccountSidebar } from "@/components/account/AccountSidebar"
+import { AccountSidebar } from "@/components/conta/AccountSidebar"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
 import { FormField } from "@/components/common/FormField"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"

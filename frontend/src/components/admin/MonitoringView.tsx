@@ -1,10 +1,11 @@
 import NextLink from "next/link"
-import { Alert, Box, Card, Flex, HStack, Image, Link, SimpleGrid, Stack, Table, Text } from "@chakra-ui/react"
+import { Alert, Card, Flex, HStack, Link, SimpleGrid, Stack, Table, Text } from "@chakra-ui/react"
 import { SectionCard } from "@/components/common/SectionCard"
+import { AvatarItem } from "@/components/common/AvatarItem"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { DataState } from "@/components/feedback/DataState"
-import { StatCard } from "@/components/artesao/StatCard"
-import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
+import { StatCard } from "@/components/common/StatCard"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { acompanhamento, paginar } from "@/dados-exemplo/consultas"
 import { pedidosExemplo } from "@/dados-exemplo/pedidos"
 import { formatCurrency } from "@/utils/formatCurrency"
@@ -18,7 +19,7 @@ export function MonitoringView() {
 
   return (
     <AdminShell ativo="acompanhamento">
-      <ArtisanPageHeader titulo="Acompanhamento" descricao="Acompanhe pedidos, novos artesãos e produtos pendentes." />
+      <PanelPageHeader titulo="Acompanhamento" descricao="Acompanhe pedidos, novos artesãos e produtos pendentes." />
       <Stack gap="8">
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="4">
           <StatCard title="EM PROCESSAMENTO" subtitle="Pagos, aguardando envio" value={data.contagem.processando} />
@@ -70,7 +71,7 @@ export function MonitoringView() {
             <SectionCard title="Artesãos recém-cadastrados">
               {data.artesaosRecentes.map((a) => (
                 <HStack key={a.id} justify="space-between" gap="3">
-                  <HStack gap="3"><Image src={a.fotoUrl} alt="" boxSize="10" borderRadius="full" objectFit="cover" /><Box><Text fontWeight="bold" fontSize="sm">{a.nome}</Text><Text textStyle="apoio">{a.cidade}/{a.estado}</Text></Box></HStack>
+                  <AvatarItem src={a.fotoUrl} titulo={a.nome} subtitulo={`${a.cidade}/${a.estado}`} formato="redondo" />
                   <Link asChild variant="origem" fontSize="sm"><NextLink href={`/artesaos/${a.id}`}>Ver artesão</NextLink></Link>
                 </HStack>
               ))}
@@ -79,7 +80,7 @@ export function MonitoringView() {
               {data.produtosPendentes.length === 0 && <Text textStyle="apoio">Nenhuma peça aguardando análise.</Text>}
               {data.produtosPendentes.map((p) => (
                 <HStack key={p.id} justify="space-between" gap="3">
-                  <HStack gap="3"><Image src={p.imagemUrl} alt="" boxSize="10" borderRadius="md" objectFit="cover" /><Box><Text fontWeight="bold" fontSize="sm">{p.titulo}</Text><Text textStyle="apoio">{p.artesaoNome}</Text></Box></HStack>
+                  <AvatarItem src={p.imagemUrl} titulo={p.titulo} subtitulo={p.artesaoNome} />
                   <StatusBadge status={p.status} />
                 </HStack>
               ))}

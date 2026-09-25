@@ -1,6 +1,6 @@
-import { AuthBackground } from "@/components/auth/AuthBackground"
-import { AuthCard } from "@/components/auth/AuthCard"
-import { LoginForm } from "@/components/auth/LoginForm"
+import { AuthBackground } from "@/components/autenticacao/AuthBackground"
+import { AuthCard } from "@/components/autenticacao/AuthCard"
+import { LoginForm } from "@/components/autenticacao/LoginForm"
 
 export default function LoginPage() {
   return (

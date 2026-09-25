@@ -2,7 +2,7 @@ import { Box, Flex, Heading, HStack, Text, VStack, IconButton, Button, SimpleGri
 import { BiSearch, BiBarChart, BiStar } from "react-icons/bi"
 import { DashboardSidebar } from "@/components/artesao/DashboardSidebar"
 import { Greeting } from "@/components/artesao/Greeting"
-import { StatCard } from "@/components/artesao/StatCard"
+import { StatCard } from "@/components/common/StatCard"
 import { SectionCard } from "@/components/common/SectionCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
 import { EducationalDialog } from "@/components/artesao/EducationalDialog"

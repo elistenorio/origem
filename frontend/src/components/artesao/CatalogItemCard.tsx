@@ -1,6 +1,7 @@
 import { Box, Button, HStack, IconButton, Image, Stack, Text } from "@chakra-ui/react"
 import { BiPencil, BiHide, BiShow } from "react-icons/bi"
 import { StatusBadge, type StatusKey } from "@/components/common/StatusBadge"
+import { Price } from "@/components/common/Price"
 import { Tile } from "@/components/common/Tile"
 
 type CatalogItemCardProps = {
@@ -32,10 +33,6 @@ export function CatalogItemCard({
   onView,
   onToggleVisibility,
 }: CatalogItemCardProps) {
-  const [inteiro, centavos] = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2 })
-    .format(price)
-    .split(",")
-
   return (
     <Tile p={4}>
       <HStack align="flex-start" gap="4">
@@ -63,9 +60,7 @@ export function CatalogItemCard({
         </Stack>
 
         <Stack gap="3" alignSelf="center" align="flex-end">
-          <Text fontWeight="bold" color="origem.texto">
-            R$ {inteiro},<Text as="span" fontSize="sm">{centavos}</Text>
-          </Text>
+          <Price valor={price} fontSize="md" fontWeight="bold" color="origem.texto" />
           <HStack gap="2">
             <Button variant="outline" size="sm" onClick={onEdit}>
               <BiPencil /> Editar

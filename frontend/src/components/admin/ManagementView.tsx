@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import NextLink from "next/link"
-import { Badge, HStack, IconButton, Image, Stack, Table, Tabs, Text } from "@chakra-ui/react"
+import { Badge, HStack, IconButton, Stack, Table, Tabs, Text } from "@chakra-ui/react"
 import { BiShow, BiBlock, BiCheckCircle } from "react-icons/bi"
 import { Tile } from "@/components/common/Tile"
+import { AvatarItem } from "@/components/common/AvatarItem"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
-import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { artesaosExemplo } from "@/dados-exemplo/artesaos"
 import { pedidosExemplo } from "@/dados-exemplo/pedidos"
 import { produtosExemplo } from "@/dados-exemplo/produtos"
@@ -36,7 +37,7 @@ export function ManagementView() {
 
   const colunasArtesao: Coluna<Artesao>[] = [
     { titulo: "Artesão", render: (a) => (
-      <HStack gap="3"><Image src={a.fotoUrl} alt="" boxSize="10" borderRadius="full" objectFit="cover" /><Stack gap="0"><Text fontWeight="bold">{a.nome}</Text><Text textStyle="apoio">{a.email}</Text></Stack></HStack>
+      <AvatarItem src={a.fotoUrl} titulo={a.nome} subtitulo={a.email} formato="redondo" />
     ) },
     { titulo: "Localidade", render: (a) => `${a.cidade}/${a.estado}` },
     { titulo: "Técnica", render: (a) => a.tecnicas[0] },
@@ -60,7 +61,7 @@ export function ManagementView() {
     { titulo: "Status", render: (u) => <Badge variant={u.status === "ativo" ? "sucesso" : "perigo"}>{u.status}</Badge> },
   ]
   const colunasProduto: Coluna<Produto>[] = [
-    { titulo: "Peça", render: (p) => <HStack gap="3"><Image src={p.imagemUrl} alt="" boxSize="10" borderRadius="md" objectFit="cover" /><Text fontWeight="bold">{p.titulo}</Text></HStack> },
+    { titulo: "Peça", render: (p) => <AvatarItem src={p.imagemUrl} titulo={p.titulo} /> },
     { titulo: "Artesão", render: (p) => p.artesaoNome },
     { titulo: "Preço", render: (p) => formatCurrency(p.preco) },
     { titulo: "Estoque", render: (p) => p.estoque },
@@ -77,7 +78,7 @@ export function ManagementView() {
 
   return (
     <AdminShell ativo="gestao">
-      <ArtisanPageHeader titulo="Gestão da plataforma" descricao="Gerencie artesãos, clientes, produtos, pedidos, categorias e conteúdos do Origem." />
+      <PanelPageHeader titulo="Gestão da plataforma" descricao="Gerencie artesãos, clientes, produtos, pedidos, categorias e conteúdos do Origem." />
       <Tabs.Root defaultValue="artesaos" lazyMount>
         <Tabs.List flexWrap="wrap" mb="6">
           <Tabs.Trigger value="artesaos">Artesãos</Tabs.Trigger>

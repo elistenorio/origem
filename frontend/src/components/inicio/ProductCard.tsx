@@ -1,15 +1,9 @@
 import { Badge, Box, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
+import { Price } from "@/components/common/Price"
 import type { Product } from "@/types/product"
 
 export function ProductCard({ product }: { product: Product }) {
   const { title, tags, artisan, city, dimensions, price, imageUrl } = product
-
-  // "1.250,90" -> ["1.250", "90"], para deixar os centavos menores como no design
-  const [inteiro, centavos] = new Intl.NumberFormat("pt-BR", {
-    minimumFractionDigits: 2,
-  })
-    .format(price)
-    .split(",")
 
   return (
     <Box
@@ -38,10 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
           {dimensions}
         </Text>
 
-        <Text textAlign="right" fontSize="lg" mt="2">
-          R$ {inteiro},
-          <Text as="span" fontSize="sm">{centavos}</Text>
-        </Text>
+        <Price valor={price} textAlign="right" fontSize="lg" mt="2" />
       </Stack>
     </Box>
   )

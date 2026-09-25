@@ -3,7 +3,7 @@
 import { Box, Flex, Grid, Heading, HStack, Text, VStack, Button, Separator, Badge, Image, Link } from "@chakra-ui/react"
 import NextLink from "next/link"
 import { BiPlus, BiMinus, BiSearch } from "react-icons/bi"
-import { ProductCard } from "@/components/home/ProductCard"
+import { ProductCard } from "@/components/inicio/ProductCard"
 import { FaqAccordion } from "@/components/common/FaqAccordion"
 import { FreightCalculator } from "@/components/common/FreightCalculator"
 

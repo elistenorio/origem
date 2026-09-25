@@ -1,5 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react"
-import { StatCard } from "./StatCard"
+import { StatCard } from "@/components/common/StatCard"
 import type { ResumoPainelArtesao } from "@/dados-exemplo/tipos"
 
 type CatalogSummaryProps = { tipo: "catalogo" | "estoque"; resumo: ResumoPainelArtesao }

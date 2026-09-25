@@ -2,6 +2,7 @@ import { Box, Grid, Heading, HStack, Separator, SimpleGrid, Stack, Text } from "
 import { BiCreditCard, BiFile, BiTransferAlt } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
 import { SectionCard } from "@/components/common/SectionCard"
+import { formatCurrency } from "@/utils/formatCurrency"
 import { PaymentMethodCard } from "@/components/ajuda/PaymentMethodCard"
 
 const METODOS = [
@@ -46,9 +47,6 @@ const PRAZOS_CONFIRMACAO = [
   { forma: "Boleto", prazo: "até 3 dias úteis" },
 ]
 
-function formatarReal(valor: number) {
-  return `R$ ${valor.toFixed(2).replace(".", ",")}`
-}
 
 export default function FormasDePagamentoPage() {
   return (
@@ -79,7 +77,7 @@ export default function FormasDePagamentoPage() {
       <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={10}>
         <SectionCard title="Parcelamento no cartão">
           <Text fontSize="sm" color="origem.textoSuave" mt={-2}>
-            Exemplo para uma compra de {formatarReal(VALOR_EXEMPLO)}
+            Exemplo para uma compra de {formatCurrency(VALOR_EXEMPLO)}
           </Text>
           <Stack gap={0}>
             {PARCELAS.map((parcela, index) => (
@@ -93,7 +91,7 @@ export default function FormasDePagamentoPage() {
               >
                 <HStack gap={4}>
                   <Text fontWeight="bold" color="origem.texto">{parcela}x</Text>
-                  <Text color="origem.texto">{formatarReal(VALOR_EXEMPLO / parcela)}</Text>
+                  <Text color="origem.texto">{formatCurrency(VALOR_EXEMPLO / parcela)}</Text>
                 </HStack>
                 <Text fontSize="sm" color="origem.textoSuave">sem juros</Text>
               </HStack>

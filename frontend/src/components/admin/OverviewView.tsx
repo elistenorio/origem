@@ -1,8 +1,9 @@
-import { Alert, Card, HStack, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
+import { Alert, Box, Card, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { SectionCard } from "@/components/common/SectionCard"
+import { AvatarItem } from "@/components/common/AvatarItem"
 import { DataState } from "@/components/feedback/DataState"
-import { StatCard } from "@/components/artesao/StatCard"
-import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
+import { StatCard } from "@/components/common/StatCard"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { indicadoresExemplo } from "@/dados-exemplo/admin"
 import { acompanhamento, filtrarProdutos } from "@/dados-exemplo/consultas"
 import { formatCompact, formatCurrency, formatCurrencyCompact } from "@/utils/formatCurrency"
@@ -19,7 +20,7 @@ export function OverviewView() {
 
   return (
     <AdminShell ativo="visao-geral">
-      <ArtisanPageHeader titulo="Visão geral" descricao="Um retrato rápido da plataforma nos últimos 30 dias." />
+      <PanelPageHeader titulo="Visão geral" descricao="Um retrato rápido da plataforma nos últimos 30 dias." />
       <Stack gap="8">
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 5 }} gap="4">
           <StatCard title="FATURAMENTO" subtitle="no período" value={formatCurrencyCompact(d.faturamento)} />
@@ -41,8 +42,7 @@ export function OverviewView() {
                 {maisRecentes.map((p, i) => (
                   <HStack key={p.id} gap="3">
                     <Text textStyle="numero" fontSize="2xl" w="6">{i + 1}</Text>
-                    <Image src={p.imagemUrl} alt="" boxSize="12" borderRadius="md" objectFit="cover" />
-                    <Stack gap="0" flex="1"><Text fontWeight="bold" fontSize="sm">{p.titulo}</Text><Text textStyle="apoio">{p.artesaoNome}</Text></Stack>
+                    <Box flex="1" minW="0"><AvatarItem src={p.imagemUrl} titulo={p.titulo} subtitulo={p.artesaoNome} tamanho="12" /></Box>
                     <Text fontWeight="bold" fontSize="sm">{formatCurrency(p.preco)}</Text>
                   </HStack>
                 ))}

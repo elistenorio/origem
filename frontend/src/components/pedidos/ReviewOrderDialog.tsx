@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button, Flex, Stack, Text } from "@chakra-ui/react"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { StarRating } from "@/components/common/StarRating"
+import { Tile } from "@/components/common/Tile"
 import { TextareaField } from "@/components/common/TextareaField"
 import { FileField } from "@/components/common/FileField"
 import type { NotasAvaliacao } from "@/dados-exemplo/tipos"
@@ -70,7 +71,7 @@ export function ReviewOrderDialog({ pedido, onClose, onAvaliado }: ReviewOrderDi
             <StarRating value={nota} onChange={setNota} size="lg" />
           </Stack>
           <TextareaField label="Conte sobre sua experiência" placeholder="O que você achou da peça, do atendimento e da entrega?" value={comentario} onChange={(e) => setComentario(e.target.value)} />
-          <Stack gap="2" bg="origem.passoFundo" borderRadius="lg" p="4">
+          <Tile display="flex" flexDirection="column" gap="2" p="4">
             <Text textStyle="rotulo">Avalie também (opcional)</Text>
             {CRITERIOS.map(({ chave, rotulo }) => (
               <Flex key={chave} justify="space-between" align="center">
@@ -78,7 +79,7 @@ export function ReviewOrderDialog({ pedido, onClose, onAvaliado }: ReviewOrderDi
                 <StarRating value={notas[chave] ?? 0} onChange={(v) => setNotas((n) => ({ ...n, [chave]: v }))} size="sm" />
               </Flex>
             ))}
-          </Stack>
+          </Tile>
           <Stack gap="2">
             <Text textStyle="rotulo">Adicione fotos (opcional)</Text>
             <FileField label="Fotos da avaliação" value={fotos} onChange={setFotos} multiple />
