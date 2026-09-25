@@ -29,10 +29,10 @@ export function StockItemRow({
   onView,
 }: StockItemRowProps) {
   return (
-    <HStack gap="4" py="3" borderBottomWidth="1px" borderColor="origem.passoFundo">
+    <HStack gap="4" py="3" borderBottomWidth="1px" borderColor="origem.passoFundo" wrap={{ base: "wrap", md: "nowrap" }}>
       <Image src={imageUrl} alt={title} boxSize="48px" borderRadius="md" objectFit="cover" flexShrink={0} />
 
-      <Box flex="1" minW="0">
+      <Box flex="1" minW={{ base: "160px", md: "0" }}>
         <Text fontWeight="bold" fontSize="sm" color="origem.texto" truncate>{title}</Text>
         <Text fontSize="xs" color="origem.textoSuave">Cód. {code}</Text>
       </Box>
@@ -52,7 +52,7 @@ export function StockItemRow({
         Editar qtd.
       </Button>
 
-      <IconButton aria-label="Remover da lista" variant="ghost" size="sm" onClick={onRemove}>
+      <IconButton aria-label="Marcar como indisponível" variant="ghost" size="sm" onClick={onRemove}>
         <BiX />
       </IconButton>
       <IconButton aria-label="Visualizar peça" variant="ghost" size="sm" onClick={onView}>

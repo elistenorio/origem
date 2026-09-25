@@ -1,15 +1,14 @@
 import { defineSlotRecipe } from "@chakra-ui/react"
 import { cardAnatomy } from "@chakra-ui/react/anatomy"
 
-// Sistema de cards do site: paineis com título (SectionCard), tiles simples
-// (StatCard, cards da ajuda) e variantes para telas futuras de vitrine/destaque.
+// Painéis e cards das telas (resumo, formulários, listas).
 export const cardOrigem = defineSlotRecipe({
   slots: cardAnatomy.keys(),
   variants: {
     variant: {
-      // painel bege padrão das telas (Tile/SectionCard já usam essa variante)
+      // painel bege com borda suave (padrão das telas)
       origem: {
-        root: { bg: "origem.passoFundo", borderRadius: "xl", color: "origem.texto" },
+        root: { bg: "origem.passoFundo", borderWidth: "1px", borderColor: "origem.marrom/50", borderRadius: "2xl", color: "origem.texto" },
         header: { px: "6", pt: "6", pb: "0", gap: "1" },
         title: { fontFamily: "body", fontWeight: "bold", textTransform: "uppercase", fontSize: "md", color: "origem.texto" },
         description: { color: "origem.textoSuave", fontSize: "sm" },
@@ -29,7 +28,7 @@ export const cardOrigem = defineSlotRecipe({
         body: { p: "4", gap: "1" },
         footer: { px: "4", pb: "4", pt: "0" },
       },
-      // opção selecionável / destaque (aviso, item em curadoria)
+      // opção selecionável / destaque (item da fila da curadoria, aviso)
       destaque: {
         root: { bg: "origem.fundo", borderWidth: "2px", borderColor: "origem.laranja", borderRadius: "2xl", color: "origem.texto" },
         body: { px: "5", py: "4", gap: "2" },

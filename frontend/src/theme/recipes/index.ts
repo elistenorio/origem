@@ -8,8 +8,16 @@ import { fieldsetOrigem } from "./fieldset"
 import { nativeSelectOrigem } from "./native-select"
 import { checkboxOrigem } from "./checkbox"
 import { tabsOrigem } from "./tabs"
-import { switchOrigem } from "./switch"
 import { cardOrigem } from "./card"
+import { dialogOrigem } from "./dialog"
+import { radioCardOrigem } from "./radio-card"
+import { tableOrigem } from "./table"
+import { stepsOrigem } from "./steps"
+import { ratingGroupOrigem } from "./rating-group"
+import { emptyStateOrigem } from "./empty-state"
+import { linkRecipe } from "./link"
+import { radioGroupOrigem } from "./radio-group"
+import { switchOrigem } from "./switch"
 
 export const recipes = {
   input: inputRecipe,
@@ -17,6 +25,7 @@ export const recipes = {
   button: buttonRecipe,
   badge: badgeRecipe,
   heading: headingRecipe,
+  link: linkRecipe,
   banner: bannerRecipe,
 }
 
@@ -26,6 +35,13 @@ export const slotRecipes = {
   nativeSelect: nativeSelectOrigem, // atenção: "nativeSelect" com S maiúsculo
   checkbox: checkboxOrigem,
   tabs: tabsOrigem,
-  switch: switchOrigem,
   card: cardOrigem,
+  dialog: dialogOrigem,
+  radioCard: radioCardOrigem,
+  table: tableOrigem,
+  steps: stepsOrigem,
+  ratingGroup: ratingGroupOrigem,
+  emptyState: emptyStateOrigem,
+  radioGroup: radioGroupOrigem,
+  switch: switchOrigem,
 }

@@ -31,6 +31,14 @@ const config = defineConfig({
         body: { value: "var(--font-corpo), sans-serif" },
       },
     },
+    // Estilos de texto repetidos nas telas (use com <Text textStyle="rotulo">)
+    textStyles: {
+      rotulo: { value: { fontWeight: "bold", textTransform: "uppercase", fontSize: "sm", color: "origem.texto" } },
+      apoio: { value: { fontSize: "sm", color: "origem.textoSuave" } },
+      destaqueLaranja: { value: { fontWeight: "bold", color: "origem.laranja" } },
+      preco: { value: { fontSize: "2xl", color: "origem.marrom" } },
+      numero: { value: { fontFamily: "heading", fontSize: "4xl", lineHeight: "1", color: "origem.laranja" } },
+    },
     recipes,
     slotRecipes,
   },

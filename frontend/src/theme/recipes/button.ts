@@ -33,6 +33,24 @@ export const buttonRecipe = defineRecipe({
         px: "6",
         _hover: { bg: "origem.laranja", color: "white" },
       },
+      // botão neutro (Voltar, Visualizar, ações secundárias)
+      claro: {
+        bg: "origem.passoFundo",
+        color: "origem.texto",
+        borderRadius: "lg",
+        minH: "50px",
+        px: "6",
+        _hover: { bg: "origem.busca" },
+      },
+      // botão marrom (Cancelar pedido, Solicitar ajustes)
+      secundario: {
+        bg: "origem.textoSuave",
+        color: "white",
+        borderRadius: "lg",
+        minH: "50px",
+        px: "6",
+        _hover: { opacity: 0.9 },
+      },
       perigo: {
         bg: "origem.perigo",
         color: "white",
