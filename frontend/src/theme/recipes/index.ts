@@ -16,6 +16,7 @@ import { ratingGroupOrigem } from "./rating-group"
 import { emptyStateOrigem } from "./empty-state"
 import { linkRecipe } from "./link"
 import { radioGroupOrigem } from "./radio-group"
+import { switchOrigem } from "./switch"
 
 export const recipes = {
   input: inputRecipe,
@@ -40,4 +41,5 @@ export const slotRecipes = {
   ratingGroup: ratingGroupOrigem,
   emptyState: emptyStateOrigem,
   radioGroup: radioGroupOrigem,
+  switch: switchOrigem,
 }

@@ -1,9 +1,35 @@
-import { Box, Grid, Text, VStack } from "@chakra-ui/react"
+import NextLink from "next/link"
+import { Box, Grid, Link, Text, VStack } from "@chakra-ui/react"
+
+const LINKS_NAVEGACAO = [
+  { label: "Home", href: "/" },
+  { label: "Catálogo", href: "/catalogo" },
+  { label: "Artesãos", href: "/artesaos" },
+  { label: "Sobre nós", href: "/sobre" },
+  { label: "Faça parte do Origem", href: "/cadastro" },
+  { label: "Nossa Newsletter", href: "/newsletter" },
+]
+
+const LINKS_AJUDA = [
+  { label: "Perguntas frequentes", href: "/ajuda/perguntas-frequentes" },
+  { label: "Como comprar", href: "/ajuda/como-comprar" },
+  { label: "Entregas e frete", href: "/ajuda/entregas-e-frete" },
+  { label: "Trocas e devoluções", href: "/ajuda/trocas-e-devolucoes" },
+  { label: "Formas de pagamento", href: "/ajuda/formas-de-pagamento" },
+]
+
+const LINKS_INSTITUCIONAL = [
+  { label: "Termos de uso", href: "/institucional/termos-de-uso" },
+  { label: "Política de privacidade", href: "/institucional/politica-de-privacidade" },
+  { label: "Política de cookies", href: "/institucional/politica-de-cookies" },
+  // Mesma tela da política, só que já rolando até o painel de toggles.
+  { label: "Preferências de cookies", href: "/institucional/politica-de-cookies#gerenciamento-de-preferencias" },
+]
 
 export function Footer() {
   return (
     <Box bg="origem.marrom" color="origem.fundo" py={12} px={{ base: 6, md: 10 }} mt={16}>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(6, 1fr)" }} gap={8}>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(7, 1fr)" }} gap={8}>
         {/* Col 1 */}
         <VStack alignItems="flex-start" gridColumn={{ lg: "span 2" }}>
           <Box w="full" maxW="280px" mb={-4}>
@@ -36,44 +62,63 @@ export function Footer() {
         </VStack>
 
         {/* Col 2 */}
-        <VStack alignItems="flex-start" gap={2}>
-          <Text fontWeight="bold" fontSize="sm" mb={2}>ENTRE EM CONTATO</Text>
-          <Text fontSize="sm">WhatsApp</Text>
-          <Text fontSize="sm">Email</Text>
-          <Text fontSize="sm">Horário de Atendimento</Text>
+        <VStack alignItems="flex-start" gap={3}>
+          <Text fontWeight="bold" fontSize="sm" mb={-1}>ENTRE EM CONTATO</Text>
+          <Box>
+            <Text fontSize="sm">WhatsApp</Text>
+            <Text fontSize="sm">(81) 90000-0000</Text>
+          </Box>
+          <Box>
+            <Text fontSize="sm">Telefone</Text>
+            <Text fontSize="sm">(81) 0000-0000</Text>
+          </Box>
+          <Box>
+            <Text fontSize="sm">Email</Text>
+            <Text fontSize="sm">contato@origem.com</Text>
+          </Box>
+          <Box>
+            <Text fontSize="sm">Horário de Atendimento</Text>
+            <Text fontSize="sm">Segunda a Sábado</Text>
+            <Text fontSize="sm">09h00 às 19h30</Text>
+          </Box>
         </VStack>
 
         {/* Col 3 */}
         <VStack alignItems="flex-start" gap={2}>
-          <Text fontWeight="bold" fontSize="sm" mb={2}>INSTITUCIONAL</Text>
-          <Text fontSize="sm">A Origem</Text>
-          <Text fontSize="sm">Catálogo</Text>
-          <Text fontSize="sm">Artesãos</Text>
-          <Text fontSize="sm">Propósito de Origem</Text>
-          <Text fontSize="sm">Nossa História</Text>
+          <Text fontWeight="bold" fontSize="sm" mb={2}>NAVEGAÇÃO</Text>
+          {LINKS_NAVEGACAO.map((link) => (
+            <Link asChild key={link.href} fontSize="sm" _hover={{ textDecoration: "underline" }}>
+              <NextLink href={link.href}>{link.label}</NextLink>
+            </Link>
+          ))}
         </VStack>
 
         {/* Col 4 */}
         <VStack alignItems="flex-start" gap={2}>
           <Text fontWeight="bold" fontSize="sm" mb={2}>AJUDA</Text>
-          <Text fontSize="sm">Pagamento e Envio</Text>
-          <Text fontSize="sm">Trocas e Devoluções</Text>
-          <Text fontSize="sm">Políticas do Site</Text>
-          <Text fontSize="sm">Dúvidas Frequentes</Text>
+          {LINKS_AJUDA.map((link) => (
+            <Link asChild key={link.href} fontSize="sm" _hover={{ textDecoration: "underline" }}>
+              <NextLink href={link.href}>{link.label}</NextLink>
+            </Link>
+          ))}
         </VStack>
 
         {/* Col 5 */}
         <VStack alignItems="flex-start" gap={2}>
-          <Text fontWeight="bold" fontSize="sm" mb={2}>REDES SOCIAIS</Text>
-          <Text fontSize="sm">Facebook</Text>
-          <Text fontSize="sm">Instagram</Text>
+          <Text fontWeight="bold" fontSize="sm" mb={2}>INSTITUCIONAL</Text>
+          {LINKS_INSTITUCIONAL.map((link) => (
+            <Link asChild key={link.href} fontSize="sm" _hover={{ textDecoration: "underline" }}>
+              <NextLink href={link.href}>{link.label}</NextLink>
+            </Link>
+          ))}
         </VStack>
 
         {/* Col 6 */}
         <VStack alignItems="flex-start" gap={2}>
-          <Text fontWeight="bold" fontSize="sm" mb={2}>A LOJA ORIGEM</Text>
-          <Text fontSize="sm">Rua Fictícia, 123</Text>
-          <Text fontSize="sm">São Paulo - SP</Text>
+          <Text fontWeight="bold" fontSize="sm" mb={2}>SIGA O ORIGEM</Text>
+          <Text fontSize="sm">Instagram</Text>
+          <Text fontSize="sm">Facebook</Text>
+          <Text fontSize="sm">Pinterest</Text>
         </VStack>
       </Grid>
     </Box>

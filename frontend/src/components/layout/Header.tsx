@@ -38,8 +38,8 @@ export function Header() {
 
         <HStack gap={3}>
           <Button asChild variant="outline" px={5}>
-            <NextLink href="/login">
-              <BiUser /> Entrar / Criar conta
+            <NextLink href="/minha-conta">
+              <BiUser /> Acesso / Minha Conta
             </NextLink>
           </Button>
           <Button asChild variant="origem" px={5}>
