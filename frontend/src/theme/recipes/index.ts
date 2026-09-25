@@ -2,12 +2,14 @@ import { inputRecipe, textareaRecipe } from "./campos"
 import { buttonRecipe } from "./button"
 import { badgeRecipe } from "./badge"
 import { headingRecipe } from "./heading"
+import { bannerRecipe } from "./banner"
 import { fieldOrigem } from "./field"
 import { fieldsetOrigem } from "./fieldset"
 import { nativeSelectOrigem } from "./native-select"
 import { checkboxOrigem } from "./checkbox"
 import { tabsOrigem } from "./tabs"
 import { switchOrigem } from "./switch"
+import { cardOrigem } from "./card"
 
 export const recipes = {
   input: inputRecipe,
@@ -15,6 +17,7 @@ export const recipes = {
   button: buttonRecipe,
   badge: badgeRecipe,
   heading: headingRecipe,
+  banner: bannerRecipe,
 }
 
 export const slotRecipes = {
@@ -24,4 +27,5 @@ export const slotRecipes = {
   checkbox: checkboxOrigem,
   tabs: tabsOrigem,
   switch: switchOrigem,
+  card: cardOrigem,
 }

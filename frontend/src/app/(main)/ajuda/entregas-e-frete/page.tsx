@@ -3,7 +3,7 @@ import { BiErrorAlt } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
 import { InfoBox } from "@/components/ajuda/InfoBox"
 import { RegionCard } from "@/components/ajuda/RegionCard"
-import { FreightCalculator } from "@/components/ajuda/FreightCalculator"
+import { FreightCalculator } from "@/components/common/FreightCalculator"
 
 const REGIOES = [
   { title: "Pernambuco", range: "2 a 5 dias", caption: "úteis, em média" },

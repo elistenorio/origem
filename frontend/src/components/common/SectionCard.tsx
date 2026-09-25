@@ -1,4 +1,5 @@
-import { Box, Heading, HStack, type BoxProps } from "@chakra-ui/react"
+import { Heading, HStack, type BoxProps } from "@chakra-ui/react"
+import { Tile } from "@/components/common/Tile"
 
 interface SectionCardProps extends BoxProps {
   title: string
@@ -7,15 +8,7 @@ interface SectionCardProps extends BoxProps {
 
 export function SectionCard({ title, action, children, ...rest }: SectionCardProps) {
   return (
-    <Box
-      bg="origem.passoFundo"
-      borderRadius="xl"
-      p={6}
-      display="flex"
-      flexDirection="column"
-      gap={4}
-      {...rest}
-    >
+    <Tile display="flex" flexDirection="column" gap={4} {...rest}>
       <HStack justify="space-between" align="center">
         <Heading variant="secao" fontSize="md">
           {title}
@@ -23,6 +16,6 @@ export function SectionCard({ title, action, children, ...rest }: SectionCardPro
         {action}
       </HStack>
       {children}
-    </Box>
+    </Tile>
   )
 }
