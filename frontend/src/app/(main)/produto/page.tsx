@@ -5,7 +5,7 @@ import NextLink from "next/link"
 import { BiPlus, BiMinus, BiSearch } from "react-icons/bi"
 import { ProductCard } from "@/components/home/ProductCard"
 import { FaqAccordion } from "@/components/common/FaqAccordion"
-import { FreightCalculator } from "@/components/ajuda/FreightCalculator"
+import { FreightCalculator } from "@/components/common/FreightCalculator"
 
 // Mock product data to reuse ProductCard
 const RELATED_PRODUCTS = Array(8).fill(null).map((_, i) => ({
