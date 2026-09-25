@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Box, Button, HStack, Stack, Switch, Text } from "@chakra-ui/react"
 import { BiCheck } from "react-icons/bi"
-import { SectionCard } from "@/components/common/SectionCard"
+import { Panel } from "@/components/common/Panel"
 import { useCookiePreferencesStore, type CookiePreferences } from "@/store/cookiePreferencesStore"
 
 const ITENS: { key: keyof CookiePreferences; label: string; description: string }[] = [
@@ -34,7 +34,7 @@ export function CookiePreferencesPanel() {
   }
 
   return (
-    <SectionCard title="Suas preferências de cookies">
+    <Panel title="Suas preferências de cookies">
       <Stack gap={5}>
         <HStack justify="space-between" opacity={0.7}>
           <Box>
@@ -78,6 +78,6 @@ export function CookiePreferencesPanel() {
           <BiCheck /> Salvar preferências
         </Button>
       </HStack>
-    </SectionCard>
+    </Panel>
   )
 }

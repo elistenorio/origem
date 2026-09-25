@@ -16,7 +16,7 @@ import { ORDENACOES } from "@/constants/pedidos"
 import { formatDate } from "@/utils/formatDate"
 import type { Produto, StatusProduto } from "@/dados-exemplo/tipos"
 import { ArtisanShell } from "./ArtisanShell"
-import { ArtisanPageHeader } from "./ArtisanPageHeader"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { CatalogSummary } from "./CatalogSummary"
 import { CatalogItemCard } from "./CatalogItemCard"
 
@@ -53,11 +53,11 @@ export function ArtisanCatalogView() {
 
   return (
     <ArtisanShell ativo="catalogo">
-      <ArtisanPageHeader titulo="Meu catálogo" descricao="Aqui você pode adicionar, editar e acompanhar as peças que estão disponíveis no Origem.">
+      <PanelPageHeader titulo="Meu catálogo" descricao="Aqui você pode adicionar, editar e acompanhar as peças que estão disponíveis no Origem.">
         <Button asChild variant="origem">
           <NextLink href="/artesao/catalogo/nova"><BiPlus /> Adicionar peça</NextLink>
         </Button>
-      </ArtisanPageHeader>
+      </PanelPageHeader>
       <Stack gap="8">
         <CatalogSummary tipo="catalogo" resumo={resumoPainelArtesao(pecas)} />
         <Flex gap="3" direction={{ base: "column", md: "row" }} align={{ base: "stretch", md: "flex-end" }}>

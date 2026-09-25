@@ -1,8 +1,8 @@
 import NextLink from "next/link"
-import { Box, Button, Flex, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react"
+import { Box, Button, Card, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiSliderAlt, BiBadgeCheck, BiPulse, BiBarChartAlt2 } from "react-icons/bi"
 import { Panel } from "@/components/common/Panel"
-import { StatCard } from "@/components/artesao/StatCard"
+import { StatCard } from "@/components/common/StatCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
 import { painelAdmin } from "@/dados-exemplo/consultas"
 import { formatCurrencyCompact } from "@/utils/formatCurrency"
@@ -39,12 +39,14 @@ export function AdminHomeView() {
           <Panel title="Pendências">
             <Stack gap="3">
               {data.pendencias.map((p) => (
-                <Flex key={p.id} asChild bg="origem.fundo" borderRadius="lg" px="4" py="3" justify="space-between" align="center" _hover={{ opacity: 0.85 }}>
+                <Card.Root key={p.id} asChild variant="item" _hover={{ opacity: 0.85 }}>
                   <NextLink href={p.href}>
-                    <Text fontSize="sm">{p.titulo}</Text>
-                    <Text textStyle="numero" fontSize="3xl">{p.quantidade}</Text>
+                    <Card.Body flexDirection="row" justifyContent="space-between" alignItems="center">
+                      <Text fontSize="sm">{p.titulo}</Text>
+                      <Text textStyle="numero" fontSize="3xl">{p.quantidade}</Text>
+                    </Card.Body>
                   </NextLink>
-                </Flex>
+                </Card.Root>
               ))}
             </Stack>
           </Panel>

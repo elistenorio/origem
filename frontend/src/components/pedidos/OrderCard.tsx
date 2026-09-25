@@ -1,8 +1,9 @@
 import { Box, Button, Card, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiStar, BiX, BiPackage } from "react-icons/bi"
 import { StatusBadge } from "@/components/common/StatusBadge"
+import { Timeline } from "@/components/common/Timeline"
 import { formatCurrency } from "@/utils/formatCurrency"
-import { formatDate, formatDateTime } from "@/utils/formatDate"
+import { formatDate } from "@/utils/formatDate"
 import type { Pedido } from "@/dados-exemplo/tipos"
 
 type OrderCardProps = {
@@ -43,12 +44,7 @@ export function OrderCard({ pedido, onCancelar, onAvaliar }: OrderCardProps) {
                 <Text>{pedido.codigoRastreio ?? "Disponível após o envio"}</Text>
               </Box>
               {pedido.previsaoEntrega && <Box><Text textStyle="rotulo">Previsão de entrega</Text><Text>{formatDate(pedido.previsaoEntrega)}</Text></Box>}
-              {pedido.eventos.slice(-2).map((ev) => (
-                <Box key={ev.titulo} borderLeftWidth="2px" borderColor="origem.laranja" ps="3">
-                  <Text fontWeight="bold" fontSize="sm">{ev.titulo}</Text>
-                  <Text textStyle="apoio">{formatDateTime(ev.data)}</Text>
-                </Box>
-              ))}
+              <Timeline eventos={pedido.eventos.slice(-2)} />
             </Stack>
             <Box>
               <Text textStyle="rotulo">Endereço de entrega</Text>

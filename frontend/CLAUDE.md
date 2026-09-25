@@ -20,7 +20,7 @@ Peso na nota: 50% telas, responsividade, navegação e carrinho · 35% Fake API 
 app/                  rotas; URLs em português (/login, /cadastro, /produtos, /carrinho...)
   (auth)/ (main)/     grupos de rotas com layouts próprios
   api/                Fake API (Route Handlers), lê os dados de mocks/
-components/<assunto>/ componentes por domínio (auth, register, layout, home...)
+components/<assunto>/ componentes por domínio, pastas em português (autenticacao, cadastro, inicio, carrinho...)
 components/common/    campos de formulário reutilizáveis
 components/feedback/  estados de carregamento, erro e vazio
 components/ui/        snippets gerados pelo Chakra (provider, toaster...)

@@ -6,7 +6,7 @@ import { Box, Button, Grid, Heading, Link, Stack, Text, Wrap } from "@chakra-ui/
 import { BiEnvelope } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
 import { SearchField } from "@/components/common/SearchField"
-import { SectionCard } from "@/components/common/SectionCard"
+import { Panel } from "@/components/common/Panel"
 import { FaqAccordion, type FaqItem } from "@/components/common/FaqAccordion"
 
 type CategoriaId =
@@ -164,7 +164,7 @@ export default function PerguntasFrequentesPage() {
         </Stack>
 
         <Stack gap={6}>
-          <SectionCard title="Não encontrou sua resposta?">
+          <Panel title="Não encontrou sua resposta?">
             <Text fontSize="sm" color="origem.texto" mt={-2}>
               Fale com a gente de segunda a sábado, das 9h às 19h30.
             </Text>
@@ -174,9 +174,9 @@ export default function PerguntasFrequentesPage() {
             <Link href="mailto:contato@origem.com" color="origem.laranja" fontSize="sm">
               <BiEnvelope /> contato@origem.com
             </Link>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard title="Páginas relacionadas">
+          <Panel title="Páginas relacionadas">
             <Stack gap={2}>
               {PAGINAS_RELACIONADAS.map((pagina) => (
                 <Link key={pagina.href} asChild color="origem.laranja" fontSize="sm" fontWeight="medium">
@@ -184,7 +184,7 @@ export default function PerguntasFrequentesPage() {
                 </Link>
               ))}
             </Stack>
-          </SectionCard>
+          </Panel>
         </Stack>
       </Grid>
     </Box>

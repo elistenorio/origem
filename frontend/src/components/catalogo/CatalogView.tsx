@@ -5,8 +5,8 @@ import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react"
 import { BiFilterAlt } from "react-icons/bi"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
-import { CategoryChips } from "@/components/home/CategoryChips"
-import { ProductGrid } from "@/components/home/ProductGrid"
+import { CategoryChips } from "@/components/inicio/CategoryChips"
+import { ProductGrid } from "@/components/inicio/ProductGrid"
 import { SelectField } from "@/components/common/SelectField"
 import { PaginationBar } from "@/components/common/PaginationBar"
 import { DataState } from "@/components/feedback/DataState"
@@ -36,7 +36,7 @@ export function CatalogView() {
 
   return (
     <PageContainer>
-      <PageHeader caminho="Home / Catálogo" titulo="Catálogo" subtitulo="Peças feitas à mão por artesãos de Pernambuco. Cada compra valoriza quem faz." />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Catálogo" }]} titulo="Catálogo" subtitulo="Peças feitas à mão por artesãos de Pernambuco. Cada compra valoriza quem faz." />
       <Stack gap="6">
         <CategoryChips ativa={valores.categoria} />
 

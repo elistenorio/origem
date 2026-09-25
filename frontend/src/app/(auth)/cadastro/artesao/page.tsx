@@ -1,4 +1,4 @@
-import { ArtisanRegistrationWizard } from "@/components/register/ArtisanRegistrationWizard"
+import { ArtisanRegistrationWizard } from "@/components/cadastro/ArtisanRegistrationWizard"
 
 export default function ArtisanRegisterPage() {
   return <ArtisanRegistrationWizard />

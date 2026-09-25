@@ -18,6 +18,7 @@ import { emptyStateOrigem } from "./empty-state"
 import { linkRecipe } from "./link"
 import { radioGroupOrigem } from "./radio-group"
 import { switchOrigem } from "./switch"
+import { sideMenuRecipe } from "./side-menu"
 
 export const recipes = {
   input: inputRecipe,
@@ -44,4 +45,5 @@ export const slotRecipes = {
   emptyState: emptyStateOrigem,
   radioGroup: radioGroupOrigem,
   switch: switchOrigem,
+  sideMenu: sideMenuRecipe,
 }

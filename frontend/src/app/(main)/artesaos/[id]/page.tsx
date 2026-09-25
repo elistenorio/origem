@@ -1,7 +1,7 @@
 "use client"
 
 import { Box, Flex, Grid, Heading, Text, VStack, Image } from "@chakra-ui/react"
-import { ProductCard } from "@/components/home/ProductCard"
+import { ProductCard } from "@/components/inicio/ProductCard"
 
 // Mock product data to reuse ProductCard
 const CATALOG_PRODUCTS = Array(12).fill(null).map((_, i) => ({

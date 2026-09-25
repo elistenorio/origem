@@ -5,6 +5,7 @@ import { Box, Button, Card, Flex, Heading, HStack, Image, SimpleGrid, Stack, Tex
 import { BiFile } from "react-icons/bi"
 import { Panel } from "@/components/common/Panel"
 import { StatusBadge } from "@/components/common/StatusBadge"
+import { Timeline } from "@/components/common/Timeline"
 import { TextareaField } from "@/components/common/TextareaField"
 import { formatDateTime } from "@/utils/formatDate"
 import type { DecisaoCuradoria, ItemCuradoria } from "@/dados-exemplo/tipos"
@@ -61,12 +62,7 @@ export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
 
         <Stack gap="2">
           <Text textStyle="rotulo">Histórico de análise</Text>
-          {item.historico.map((h) => (
-            <Box key={h.titulo} borderLeftWidth="2px" borderColor="origem.laranja" ps="3">
-              <Text fontWeight="bold" fontSize="sm">{h.titulo}</Text>
-              <Text textStyle="apoio">{formatDateTime(h.data)}</Text>
-            </Box>
-          ))}
+          <Timeline eventos={item.historico} />
         </Stack>
 
         <TextareaField label="Parecer da curadoria" placeholder="Obrigatório para solicitar ajustes ou recusar." value={parecer} onChange={(e) => setParecer(e.target.value)} />

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, chakra, Flex, HStack, Image, Stack, Tabs } from "@chakra-ui/react"
 import { DataState } from "@/components/feedback/DataState"
 import { filaCuradoria } from "@/dados-exemplo/consultas"
-import { ArtisanPageHeader } from "@/components/artesao/ArtisanPageHeader"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { formatDate } from "@/utils/formatDate"
 import type { TipoCuradoria } from "@/dados-exemplo/tipos"
 import { AdminShell } from "./AdminShell"
@@ -49,7 +49,7 @@ function Fila({ tipo }: { tipo: TipoCuradoria }) {
 export function CurationView() {
   return (
     <AdminShell ativo="curadoria">
-      <ArtisanPageHeader titulo="Curadoria" descricao="Analise artesãos e peças antes de aparecerem no Origem." />
+      <PanelPageHeader titulo="Curadoria" descricao="Analise artesãos e peças antes de aparecerem no Origem." />
       <Tabs.Root defaultValue="artesaos" lazyMount unmountOnExit>
         <Tabs.List mb="6">
           <Tabs.Trigger value="artesaos">Artesãos</Tabs.Trigger>

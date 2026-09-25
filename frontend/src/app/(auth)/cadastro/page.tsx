@@ -1,7 +1,7 @@
 import { Stack } from "@chakra-ui/react"
-import { AuthBackground } from "@/components/auth/AuthBackground"
-import { AuthCard } from "@/components/auth/AuthCard"
-import { RoleOption } from "@/components/auth/RoleOption"
+import { AuthBackground } from "@/components/autenticacao/AuthBackground"
+import { AuthCard } from "@/components/autenticacao/AuthCard"
+import { RoleOption } from "@/components/autenticacao/RoleOption"
 
 export default function PreRegisterPage() {
   return (

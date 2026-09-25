@@ -24,7 +24,7 @@ export function OrdersView() {
 
   return (
     <PageContainer>
-      <PageHeader caminho="Home / Meus pedidos" titulo="Meus pedidos" subtitulo={`${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}`} />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Meus pedidos" }]} titulo="Meus pedidos" subtitulo={`${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}`} />
       <DataState
         loading={false}
         vazio={pedidos.length === 0}

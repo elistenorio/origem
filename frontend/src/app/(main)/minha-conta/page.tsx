@@ -1,11 +1,11 @@
 import NextLink from "next/link"
 import { Box, Button, Flex, Grid, Heading, HStack, Image, Link, Separator, Stack, Text } from "@chakra-ui/react"
 import { BiCreditCard, BiFile, BiLockAlt, BiMapPin, BiPencil, BiPlus } from "react-icons/bi"
-import { AccountSidebar } from "@/components/account/AccountSidebar"
+import { AccountSidebar } from "@/components/conta/AccountSidebar"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
 import { FormField } from "@/components/common/FormField"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
-import { SectionCard } from "@/components/common/SectionCard"
+import { Panel } from "@/components/common/Panel"
 import { StatusBadge, type StatusKey } from "@/components/common/StatusBadge"
 
 // Estático por enquanto — entra pela Fake API (GET /api/usuario) numa leva futura.
@@ -70,9 +70,9 @@ export default function MinhaContaPage() {
         <AccountSidebar activeItem="dados-pessoais" />
 
         <Stack flex="1" gap={6} align="stretch" minW={0}>
-          <SectionCard
+          <Panel
             title="Dados pessoais"
-            action={
+            actions={
               <Button variant="ghost" size="sm" color="origem.laranja">
                 <BiPencil /> Editar dados
               </Button>
@@ -92,11 +92,11 @@ export default function MinhaContaPage() {
                 <BiLockAlt /> Alterar senha
               </Button>
             </HStack>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard
+          <Panel
             title="Endereço de entrega"
-            action={
+            actions={
               <Button variant="ghost" size="sm" color="origem.laranja">
                 <BiPlus /> Adicionar endereço
               </Button>
@@ -114,11 +114,11 @@ export default function MinhaContaPage() {
               </HStack>
               <Link color="origem.laranja" fontSize="sm" fontWeight="medium">Editar</Link>
             </HStack>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard
+          <Panel
             title="Pedidos recentes"
-            action={
+            actions={
               <Link asChild color="origem.laranja" fontSize="sm" fontWeight="medium">
                 <NextLink href="/minha-conta/pedidos">Ver todos →</NextLink>
               </Link>
@@ -142,11 +142,11 @@ export default function MinhaContaPage() {
                 </HStack>
               ))}
             </Stack>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard
+          <Panel
             title="Dados de pagamento"
-            action={
+            actions={
               <Button variant="ghost" size="sm" color="origem.laranja">
                 <BiPlus /> Adicionar cartão
               </Button>
@@ -163,19 +163,19 @@ export default function MinhaContaPage() {
                 </HStack>
               ))}
             </Grid>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard title="Preferências">
+          <Panel title="Preferências">
             <Stack gap={3}>
               <AppCheckbox defaultChecked>Receber a Newsletter do Origem</AppCheckbox>
               <AppCheckbox defaultChecked>Avisar quando um artesão que eu sigo publicar uma peça nova</AppCheckbox>
               <AppCheckbox>Receber atualizações do pedido por WhatsApp</AppCheckbox>
             </Stack>
-          </SectionCard>
+          </Panel>
 
-          <SectionCard
+          <Panel
             title="Privacidade"
-            action={
+            actions={
               <Button variant="ghost" size="sm" color="origem.laranja">
                 <BiFile /> Baixar meus dados
               </Button>
@@ -203,7 +203,7 @@ export default function MinhaContaPage() {
                 <Link color="origem.perigo" fontWeight="medium">Sair</Link>
               </HStack>
             </Box>
-          </SectionCard>
+          </Panel>
         </Stack>
       </Flex>
     </Box>

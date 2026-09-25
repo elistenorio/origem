@@ -6,14 +6,14 @@ type PanelProps = Omit<CardRootProps, "title"> & {
   actions?: React.ReactNode      // à direita do título (link "Ver todos", botão...)
 }
 
-// Painel bege com título. Estilo vem da recipe "card" (variante origem).
+// Painel bege com título. Estilo vem da recipe "card" (variante origem), a mesma do Tile.
 export function Panel({ title, description, actions, children, ...rest }: PanelProps) {
   return (
     <Card.Root variant="origem" {...rest}>
       {(title || actions) && (
         <Card.Header>
           <Flex justify="space-between" align="center" gap="3" wrap="wrap">
-            {title && <Card.Title>{title}</Card.Title>}
+            {title && <Card.Title as="h2">{title}</Card.Title>}
             {actions}
           </Flex>
           {description && <Card.Description>{description}</Card.Description>}

@@ -17,7 +17,7 @@ import { LIMITE_BAIXO_ESTOQUE } from "@/constants/pedidos"
 import type { StatusKey } from "@/components/common/StatusBadge"
 import type { Produto } from "@/dados-exemplo/tipos"
 import { ArtisanShell } from "./ArtisanShell"
-import { ArtisanPageHeader } from "./ArtisanPageHeader"
+import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { CatalogSummary } from "./CatalogSummary"
 import { StockItemRow } from "./StockItemRow"
 import { EditStockDialog } from "./EditStockDialog"
@@ -63,9 +63,9 @@ export function StockView() {
 
   return (
     <ArtisanShell ativo="estoque">
-      <ArtisanPageHeader titulo="Estoque" descricao="Acompanhe a quantidade disponível das suas peças e atualize sempre que produzir ou vender fora do Origem.">
+      <PanelPageHeader titulo="Estoque" descricao="Acompanhe a quantidade disponível das suas peças e atualize sempre que produzir ou vender fora do Origem.">
         <Button asChild variant="origem"><NextLink href="/artesao/catalogo/nova"><BiPlus /> Adicionar peça</NextLink></Button>
-      </ArtisanPageHeader>
+      </PanelPageHeader>
       <Stack gap="8">
         <CatalogSummary tipo="estoque" resumo={resumo} />
         {alertas > 0 && (

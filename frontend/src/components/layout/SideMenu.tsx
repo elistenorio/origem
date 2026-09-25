@@ -1,27 +1,25 @@
-import NextLink from "next/link"
-import { VStack, Flex, Link } from "@chakra-ui/react"
-import type { IconType } from "react-icons"
+"use client"
 
-export type SideMenuItem = { id: string; label: string; icon: IconType; href: string }
+import NextLink from "next/link"
+import { chakra, Link, useSlotRecipe } from "@chakra-ui/react"
+
+// icon vai como elemento (<BiHome />): funções não podem ir de Server para Client Component
+export type SideMenuItem = { id: string; label: string; icon: React.ReactNode; href: string }
 
 type SideMenuProps = { items: readonly SideMenuItem[]; ativo: string; rotulo: string }
 
-// Menu lateral de ícones (painel do artesão e do admin).
+// Menu lateral de ícones (painel do artesão e do admin). Estilo na recipe "sideMenu".
 export function SideMenu({ items, ativo, rotulo }: SideMenuProps) {
+  const styles = useSlotRecipe({ key: "sideMenu" })({ variant: "icones" })
   return (
-    <VStack as="nav" aria-label={rotulo} bg="origem.passoFundo" w={{ base: "64px", md: "80px" }} minH="calc(100vh - 64px)" py={8} gap={6} alignItems="center" flexShrink={0}>
-      {items.map((item) => {
-        const isActive = ativo === item.id
-        return (
-          <Link asChild key={item.id} aria-label={item.label} title={item.label} aria-current={isActive ? "page" : undefined}>
-            <NextLink href={item.href}>
-              <Flex w="48px" h="48px" bg={isActive ? "origem.laranja" : "origem.fundo"} color={isActive ? "white" : "origem.marrom"} borderRadius="full" alignItems="center" justifyContent="center" _hover={{ opacity: 0.8 }}>
-                <item.icon size={24} />
-              </Flex>
-            </NextLink>
-          </Link>
-        )
-      })}
-    </VStack>
+    <chakra.nav aria-label={rotulo} css={styles.root}>
+      {items.map((item) => (
+        <Link asChild key={item.id} css={styles.item} aria-label={item.label} title={item.label} aria-current={ativo === item.id ? "page" : undefined}>
+          <NextLink href={item.href}>
+            {item.icon}
+          </NextLink>
+        </Link>
+      ))}
+    </chakra.nav>
   )
 }
