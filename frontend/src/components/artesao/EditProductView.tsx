@@ -9,17 +9,21 @@ import { SectionCard } from "@/components/common/SectionCard"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
-import { buscarProduto } from "@/dados-exemplo/consultas"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { minhaContaService } from "@/services/minhaConta.service"
 import { produtoParaFormulario } from "@/utils/productForm"
 import { formatDate } from "@/utils/formatDate"
 import { ArtisanShell } from "./ArtisanShell"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { ProductForm } from "./ProductForm"
 
-// Editar peça existente no catálogo (Tela 06.1 - edição). Por enquanto com a peça de exemplo (sem API).
+// Editar peça existente no catálogo (Tela 06.1 - edição). A peça vem de GET /minha-conta/produtos.
+// Salvar e excluir ainda não gravam na API (criar/editar peça fica para depois).
 export function EditProductView({ id }: { id: string }) {
   const router = useRouter()
-  const produto = buscarProduto(id)
+  const { data: pecas, loading, error, recarregar } = useApi(() => minhaContaService.produtos(), [])
+  const produto = pecas?.find((p) => p.id === id)
   const [confirmarExclusao, setConfirmarExclusao] = useState(false)
 
   return (
@@ -27,6 +31,7 @@ export function EditProductView({ id }: { id: string }) {
       <Link asChild variant="suave" mb="3">
         <NextLink href="/artesao/catalogo">← Voltar para Meu catálogo</NextLink>
       </Link>
+      <DataState loading={loading} error={error} onRetry={recarregar}>
       {!produto ? (
         <EmptyMessage titulo="Peça não encontrada" />
       ) : (
@@ -84,6 +89,7 @@ export function EditProductView({ id }: { id: string }) {
             />
           </>
       )}
+      </DataState>
     </ArtisanShell>
   )
 }

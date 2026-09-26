@@ -261,6 +261,8 @@ Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de
 
 "Meus pedidos": lista de `Pedido` da compradora logada (pelo e-mail), do mais recente para o mais antigo. Sem paginação. Pedidos criados em `POST /pedidos` com o mesmo e-mail aparecem aqui enquanto o servidor não reiniciar.
 
+Na tela, a lista também mostra os pedidos finalizados **neste navegador** (`store/ordersStore.ts`, salvo no localStorage). Assim o pedido recém-criado aparece mesmo no deploy, onde a próxima requisição pode cair noutra instância do servidor, e com qualquer e-mail. Na Avaliação 2 o backend salva o pedido de verdade e esse store sai.
+
 ### `POST /avaliacoes`
 
 Avaliação de um pedido entregue ("Avaliar o pedido" em Meus pedidos).
@@ -276,20 +278,88 @@ Erros:
 - `404 NOT_FOUND`: o pedido não existe.
 - `409 CONFLICT`: o pedido não foi entregue ou já foi avaliado.
 
+### `PATCH /pedidos/{id}`
+
+Atualiza o pedido ("Cancelar o pedido" em Meus pedidos). Na Avaliação 1 a única mudança permitida é cancelar, e só antes do envio (`processando` ou `emSeparacao`). Exemplo: `PATCH /api/pedidos/10495`
+
+```json
+{ "status": "cancelado", "motivo": "Comprei por engano", "observacao": "opcional" }
+```
+
+Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelamento` preenchido e um evento "Pedido cancelado" no fim de `eventos`.
+
+Erros:
+- `400 VALIDATION`: `status` diferente de `cancelado` ou sem `motivo`.
+- `404 NOT_FOUND`: o pedido não existe.
+- `409 CONFLICT`: o pedido já foi enviado, entregue ou cancelado.
+
+### `GET /minha-conta/produtos`
+
+"Meu catálogo" e "Estoque" do artesão logado (na Avaliação 1, o de demonstração: Mestre Joãozinho, `a1`). Lista de `Produto` com **todas** as peças dele, em qualquer `status` (publicada, em análise, rascunho, indisponível), das mais recentes para as mais antigas. Sem paginação e sem filtros: busca, filtros e ordem são feitos na tela.
+
+### `GET /minha-conta/resumo`
+
+Números do topo de "Meu catálogo" e "Estoque" do artesão logado.
+
+```json
+{
+  "catalogo": { "publicadas": 3, "emAnalise": 0, "vendidas": 3, "indisponiveis": 1 },
+  "estoque": { "disponiveis": 2, "baixoEstoque": 1, "esgotadas": 1 }
+}
+```
+
+- `vendidas`: soma das quantidades das peças do artesão em pedidos que não foram cancelados.
+- `estoque`: conta só as peças publicadas ou indisponíveis; `baixoEstoque` é 1 unidade (`LIMITE_BAIXO_ESTOQUE`).
+
+### `PATCH /minha-conta/produtos/{id}`
+
+O artesão logado atualiza o estoque de uma peça dele e/ou a esconde (`indisponivel`) e mostra de novo (`publicado`) na vitrine. Os dois campos são opcionais, mas pelo menos um é obrigatório. Exemplo: `PATCH /api/minha-conta/produtos/p10`
+
+```json
+{ "estoque": 5 }
+```
+
+```json
+{ "status": "indisponivel" }
+```
+
+Resposta `200` com o `Produto` atualizado.
+
+Erros:
+- `400 VALIDATION`: nenhum campo enviado, estoque negativo ou não inteiro, ou status diferente de `publicado`/`indisponivel`.
+- `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
+- `409 CONFLICT`: tentar esconder ou mostrar uma peça que ainda não foi publicada (rascunho ou em análise).
+
+### `GET /admin/painel`
+
+Tela inicial do administrador: resumo da plataforma, pendências, notificações e atividades recentes.
+
+```json
+{
+  "resumo": { "pedidosHoje": 18, "vendasMes": 24380, "artesaosAtivos": 4, "produtosPublicados": 11, "clientes": 5 },
+  "pendencias": [
+    { "id": "pd1", "titulo": "Artesãos aguardando curadoria", "quantidade": 3, "href": "/admin/curadoria" },
+    { "id": "pd2", "titulo": "Peças aguardando aprovação", "quantidade": 1, "href": "/admin/curadoria" },
+    { "id": "pd3", "titulo": "Pedidos em processamento", "quantidade": 1, "href": "/admin/acompanhamento" }
+  ],
+  "notificacoes": [{ "id": "n1", "titulo": "Novo artesão cadastrado", "descricao": "Zezinha do Barro, Caruaru, enviou documentos para análise." }],
+  "atividades": [{ "id": "at1", "autor": "Maria Clara", "descricao": "aprovou a peça “Natureza Onírica”", "data": "2026-09-25T13:55:00Z" }]
+}
+```
+
+- `pedidosHoje`, `vendasMes` e `clientes` são números fixos do `db.json` (`resumoPlataforma`); `artesaosAtivos`, `produtosPublicados` e as `pendencias` são contados a partir dos dados.
+- Sem login na Avaliação 1; na Avaliação 2 a rota fica protegida para o perfil `admin`.
+
 ## Rotas planejadas
 
 Ainda não existem no código. Os dados de que elas precisam já estão no `db.json`.
 
 | Fase | Rota | Tela |
 |---|---|---|
-| Artesão | `GET /minha-conta/produtos` | catálogo e estoque do artesão (todas as peças, em qualquer status) |
-| Artesão | `GET /minha-conta/resumo` | números do painel do artesão |
-| Artesão | `PATCH /minha-conta/produtos/{id}` | editar estoque |
-| Admin | `GET /admin/painel` | início do admin |
 | Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
 | Admin | `GET /admin/acompanhamento` | acompanhamento |
 | Admin | `GET /admin/curadoria?tipo=` | curadoria |
-| Depois | `PATCH /pedidos/{id}`, `POST /usuarios`, criar e editar peça, gestão do admin | cancelar pedido, cadastro, formulário de peça, tabelas de gestão |
+| Depois | `POST /usuarios`, criar e editar peça, gestão do admin | cadastro, formulário de peça, tabelas de gestão |
 
 Na Avaliação 2 entram também login e cadastro reais (JWT), carrinho salvo no backend e as rotas protegidas por perfil.
 

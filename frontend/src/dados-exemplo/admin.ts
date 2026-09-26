@@ -9,13 +9,6 @@ export const atividadesExemplo: Atividade[] = [
   { id: "at5", autor: "Caliel Melo", descricao: "respondeu a solicitação de troca do pedido #10431", data: "2026-09-24T17:00:00Z" },
 ]
 
-export const notificacoesAdminExemplo = [
-  { id: "n1", titulo: "Novo artesão cadastrado", descricao: "Zezinha do Barro, Caruaru, enviou documentos para análise." },
-  { id: "n2", titulo: "Pedido #10402 entregue", descricao: "Renda Renascença entregue em Recife/PE." },
-  { id: "n3", titulo: "Avaliação negativa", descricao: "Cliente avaliou o pedido #10455 com 2 estrelas." },
-  { id: "n4", titulo: "Pagamento recusado", descricao: "Pedido #10490 teve o pagamento recusado pelo cartão." },
-]
-
 const MESES = ["out", "nov", "dez", "jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set"]
 const ATUAL = [12400, 14100, 21800, 11200, 10900, 13500, 14800, 16200, 15100, 17900, 20300, 24400]
 const ANTERIOR = [8100, 9400, 15200, 7800, 7500, 9200, 10100, 10800, 11400, 12000, 13900, 15600]

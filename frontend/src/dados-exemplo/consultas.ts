@@ -1,19 +1,14 @@
 import type { Paginated } from "@/types/api"
-import { LIMITE_BAIXO_ESTOQUE } from "@/constants/pedidos"
 import { normalizeText } from "@/utils/normalizeText"
-import { atividadesExemplo, curadoriaExemplo, notificacoesAdminExemplo } from "./admin"
+import { atividadesExemplo, curadoriaExemplo } from "./admin"
 import { artesaosExemplo } from "./artesaos"
-import { EMAIL_COMPRADOR_DEMO, pedidosExemplo } from "./pedidos"
+import { pedidosExemplo } from "./pedidos"
 import { produtosExemplo } from "./produtos"
-import type { Acompanhamento, PainelAdmin, TipoCuradoria } from "@/types/admin"
-import type { ResumoPainelArtesao } from "@/types/artesao"
-import type { FiltrosProduto, Produto, StatusProduto } from "@/types/produto"
+import type { Acompanhamento, TipoCuradoria } from "@/types/admin"
+import type { FiltrosProduto, StatusProduto } from "@/types/produto"
 
 // Filtros e contas feitos direto nos dados de exemplo, só para as telas terem o que mostrar.
 // Ao integrar com a Fake API, cada função aqui vira uma chamada a um service.
-
-// Sem login ainda: as áreas logadas usam um artesão de demonstração.
-export const ARTESAO_LOGADO_ID = "a1"
 
 export function paginar<T>(itens: T[], page = 1, pageSize = 12): Paginated<T> {
   const atual = Math.max(1, page)
@@ -47,53 +42,6 @@ export function filtrarProdutos(filtros: FiltrosProduto & { status?: StatusProdu
   if (filtros.ordenar === "recentes") filtrados.sort((a, b) => b.criadoEm.localeCompare(a.criadoEm))
 
   return paginar(filtrados, filtros.page, filtros.pageSize)
-}
-
-export const buscarProduto = (id: string) => produtosExemplo.find((p) => p.id === id)
-
-export const meusPedidos = () => pedidosExemplo.filter((p) => p.comprador.email === EMAIL_COMPRADOR_DEMO)
-
-export const meusProdutos = () => produtosExemplo.filter((p) => p.artesaoId === ARTESAO_LOGADO_ID)
-
-// Números do catálogo e do estoque calculados a partir das peças do artesão.
-export function resumoPainelArtesao(minhas: Produto[] = meusProdutos()): ResumoPainelArtesao {
-  const vendidas = pedidosExemplo
-    .filter((pedido) => pedido.status !== "cancelado")
-    .flatMap((pedido) => pedido.itens)
-    .filter((item) => minhas.some((p) => p.id === item.produtoId))
-    .reduce((soma, item) => soma + item.quantidade, 0)
-  const ativas = minhas.filter((p) => p.status === "publicado" || p.status === "indisponivel")
-
-  return {
-    catalogo: {
-      publicadas: minhas.filter((p) => p.status === "publicado").length,
-      emAnalise: minhas.filter((p) => p.status === "emAnalise").length,
-      vendidas,
-      indisponiveis: minhas.filter((p) => p.status === "indisponivel").length,
-    },
-    estoque: {
-      disponiveis: ativas.filter((p) => p.estoque > LIMITE_BAIXO_ESTOQUE).length,
-      baixoEstoque: ativas.filter((p) => p.estoque > 0 && p.estoque <= LIMITE_BAIXO_ESTOQUE).length,
-      esgotadas: ativas.filter((p) => p.estoque === 0).length,
-    },
-  }
-}
-
-export const painelAdmin: PainelAdmin = {
-  resumo: {
-    pedidosHoje: 18,
-    vendasMes: 24380,
-    artesaosAtivos: artesaosExemplo.filter((a) => a.status === "publicado").length,
-    produtosPublicados: produtosExemplo.filter((p) => p.status === "publicado").length,
-    clientes: 5,
-  },
-  pendencias: [
-    { id: "pd1", titulo: "Artesãos aguardando curadoria", quantidade: curadoriaExemplo.filter((c) => c.tipo === "artesaos").length, href: "/admin/curadoria" },
-    { id: "pd2", titulo: "Peças aguardando aprovação", quantidade: curadoriaExemplo.filter((c) => c.tipo === "pecas").length, href: "/admin/curadoria" },
-    { id: "pd3", titulo: "Pedidos em processamento", quantidade: pedidosExemplo.filter((p) => p.status === "processando" || p.status === "emSeparacao").length, href: "/admin/acompanhamento" },
-  ],
-  notificacoes: notificacoesAdminExemplo,
-  atividades: atividadesExemplo,
 }
 
 const contarPedidos = (status: string) => pedidosExemplo.filter((p) => p.status === status).length

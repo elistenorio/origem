@@ -1,3 +1,5 @@
+"use client"
+
 import NextLink from "next/link"
 import { Box, Button, Flex, Grid, Heading, HStack, Image, Link, Separator, Stack, Text } from "@chakra-ui/react"
 import { BiCreditCard, BiFile, BiLockAlt, BiMapPin, BiPencil, BiPlus } from "react-icons/bi"
@@ -6,57 +8,26 @@ import { AppCheckbox } from "@/components/common/AppCheckbox"
 import { FormField } from "@/components/common/FormField"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
 import { SectionCard } from "@/components/common/SectionCard"
-import { StatusBadge, type StatusKey } from "@/components/common/StatusBadge"
+import { StatusBadge } from "@/components/common/StatusBadge"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { minhaContaService } from "@/services/minhaConta.service"
+import { formatCurrency } from "@/utils/formatCurrency"
+import { formatDate } from "@/utils/formatDate"
 
-// Estático por enquanto — entra pela Fake API (GET /api/usuario) numa leva futura.
-const usuario = {
-  nome: "Ana Beatriz Souza",
-  cpf: "***.456.789-**",
-  email: "ana.beatriz@email.com",
-  telefone: "(81) 99876-5432",
-}
-
-const endereco = {
-  rotulo: "Casa · Principal",
-  linha: "Rua do Bom Jesus, 123 – Apto. 402 · Recife Antigo, Recife/PE · CEP 50030-170",
-}
-
-const pedidos: {
-  id: string
-  titulo: string
-  imagemUrl: string
-  data: string
-  status: StatusKey
-  valor: string
-}[] = [
-  {
-    id: "10495",
-    titulo: "Jarro Tradicional",
-    imagemUrl: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=100&auto=format&fit=crop",
-    data: "25/09/2026",
-    status: "processando",
-    valor: "R$ 335,80",
-  },
-  {
-    id: "10402",
-    titulo: "Renda Renascença",
-    imagemUrl: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=100&auto=format&fit=crop",
-    data: "02/09/2026",
-    status: "entregue",
-    valor: "R$ 557,00",
-  },
-]
-
-const formasPagamento = [
-  { titulo: "Cartão de crédito final 4821", detalhe: "Visa · vence em 08/2029 · Principal" },
-  { titulo: "Pix", detalhe: "Pagamento na hora, sem cadastro" },
-]
-
+// Minha conta: dados de GET /minha-conta e os 2 pedidos mais recentes de GET /minha-conta/pedidos.
 export default function MinhaContaPage() {
+  const { data: usuario, loading, error, recarregar } = useApi(() => minhaContaService.buscar(), [])
+  const { data: pedidos } = useApi(() => minhaContaService.pedidos(), [])
+  const endereco = usuario?.endereco
+
   return (
     <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Minha conta" }]} />
 
+      <DataState loading={loading} error={error} onRetry={recarregar}>
+      {usuario && endereco && (
+      <>
       <Box mt={6} mb={8}>
         <Heading as="h1" variant="titulo" fontSize={{ base: "3xl", md: "4xl" }} mb={2}>
           Minha conta
@@ -107,9 +78,11 @@ export default function MinhaContaPage() {
                 <Box color="origem.laranja" mt="2px"><BiMapPin /></Box>
                 <Box>
                   <Text fontWeight="bold" fontSize="sm" color="origem.texto" textTransform="uppercase">
-                    {endereco.rotulo}
+                    Casa · Principal
                   </Text>
-                  <Text fontSize="sm" color="origem.textoSuave">{endereco.linha}</Text>
+                  <Text fontSize="sm" color="origem.textoSuave">
+                    {endereco.rua}, {endereco.numero}{endereco.complemento && ` – ${endereco.complemento}`} · {endereco.bairro}, {endereco.cidade}/{endereco.estado} · CEP {endereco.cep}
+                  </Text>
                 </Box>
               </HStack>
               <Link color="origem.laranja" fontSize="sm" fontWeight="medium">Editar</Link>
@@ -120,24 +93,24 @@ export default function MinhaContaPage() {
             title="Pedidos recentes"
             action={
               <Link asChild color="origem.laranja" fontSize="sm" fontWeight="medium">
-                <NextLink href="/minha-conta/pedidos">Ver todos →</NextLink>
+                <NextLink href="/pedidos">Ver todos →</NextLink>
               </Link>
             }
           >
             <Stack gap={4}>
-              {pedidos.map((pedido) => (
+              {(pedidos ?? []).slice(0, 2).map((pedido) => (
                 <HStack key={pedido.id} justify="space-between" bg="origem.fundo" borderRadius="lg" p={3} gap={4} flexWrap="wrap">
                   <HStack gap={3}>
-                    <Image src={pedido.imagemUrl} alt={pedido.titulo} boxSize="48px" borderRadius="md" objectFit="cover" />
+                    <Image src={pedido.itens[0].imagemUrl} alt={pedido.itens[0].titulo} boxSize="48px" borderRadius="md" objectFit="cover" />
                     <Box>
-                      <Text fontWeight="bold" color="origem.laranja" fontSize="sm">{pedido.titulo}</Text>
-                      <Text fontSize="xs" color="origem.textoSuave">Pedido #{pedido.id} · {pedido.data}</Text>
+                      <Text fontWeight="bold" color="origem.laranja" fontSize="sm">{pedido.itens[0].titulo}</Text>
+                      <Text fontSize="xs" color="origem.textoSuave">Pedido {pedido.codigo} · {formatDate(pedido.criadoEm)}</Text>
                     </Box>
                   </HStack>
-                  <HStack gap={4}>
+                  <HStack gap={4} flexWrap="wrap">
                     <StatusBadge status={pedido.status} />
-                    <Text fontWeight="bold" color="origem.texto" fontSize="sm">{pedido.valor}</Text>
-                    <Button variant="origem" size="sm">Ver pedido</Button>
+                    <Text fontWeight="bold" color="origem.texto" fontSize="sm">{formatCurrency(pedido.total)}</Text>
+                    <Button asChild variant="origem" size="sm"><NextLink href="/pedidos">Ver pedido</NextLink></Button>
                   </HStack>
                 </HStack>
               ))}
@@ -153,7 +126,7 @@ export default function MinhaContaPage() {
             }
           >
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
-              {formasPagamento.map((forma) => (
+              {usuario.formasPagamento.map((forma) => (
                 <HStack key={forma.titulo} bg="origem.fundo" borderRadius="lg" p={4} gap={3}>
                   <Box color="origem.laranja"><BiCreditCard size={20} /></Box>
                   <Box>
@@ -206,6 +179,9 @@ export default function MinhaContaPage() {
           </SectionCard>
         </Stack>
       </Flex>
+      </>
+      )}
+      </DataState>
     </Box>
   )
 }

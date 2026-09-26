@@ -42,6 +42,3 @@ export const pedidosExemplo: Pedido[] = [
     eventos: [], avaliado: false, motivoCancelamento: "Comprei por engano",
   },
 ]
-
-// Pedidos que aparecem em "Meus pedidos" (compradora de demonstração, sem login na Avaliação 1).
-export const EMAIL_COMPRADOR_DEMO = COMPRADOR.email

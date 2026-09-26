@@ -5,6 +5,8 @@ import { Alert, Button, RadioGroup, Stack, Text } from "@chakra-ui/react"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { TextareaField } from "@/components/common/TextareaField"
 import { MOTIVOS_CANCELAMENTO } from "@/constants/pedidos"
+import { ApiError } from "@/services/api"
+import { pedidosService } from "@/services/pedidos.service"
 import { formatCurrency } from "@/utils/formatCurrency"
 import type { Pedido } from "@/types/pedido"
 import { OrderMiniSummary } from "./OrderMiniSummary"
@@ -20,19 +22,33 @@ export function CancelOrderDialog({ pedido, onClose, onCancelado }: CancelOrderD
   const [motivo, setMotivo] = useState("")
   const [observacao, setObservacao] = useState("")
   const [tentouEnviar, setTentouEnviar] = useState(false)
+  const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState<string>()
 
   function fechar() {
     setMotivo("")
     setObservacao("")
     setTentouEnviar(false)
+    setErro(undefined)
     onClose()
   }
 
-  function handleConfirmar() {
+  // PATCH /pedidos/{id} com status "cancelado".
+  async function handleConfirmar() {
     setTentouEnviar(true)
     if (!pedido || !motivo) return
-    onCancelado(pedido.id, MOTIVOS_CANCELAMENTO.find((m) => m.value === motivo)?.label ?? motivo)
-    fechar()
+    const rotulo = MOTIVOS_CANCELAMENTO.find((m) => m.value === motivo)?.label ?? motivo
+    setEnviando(true)
+    setErro(undefined)
+    try {
+      await pedidosService.cancelar(pedido.id, { status: "cancelado", motivo: rotulo, observacao: observacao || undefined })
+      onCancelado(pedido.id, rotulo)
+      fechar()
+    } catch (e) {
+      setErro(e instanceof ApiError ? e.message : "Não foi possível cancelar o pedido.")
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -44,7 +60,7 @@ export function CancelOrderDialog({ pedido, onClose, onCancelado }: CancelOrderD
       rodape={
         <>
           <Button variant="claro" onClick={fechar}>Voltar</Button>
-          <Button variant="perigo" onClick={handleConfirmar}>Confirmar cancelamento</Button>
+          <Button variant="perigo" onClick={handleConfirmar} loading={enviando}>Confirmar cancelamento</Button>
         </>
       }
     >
@@ -71,6 +87,7 @@ export function CancelOrderDialog({ pedido, onClose, onCancelado }: CancelOrderD
               O reembolso de {formatCurrency(pedido.total)} será feito na mesma forma de pagamento em até 10 dias úteis.
             </Alert.Description>
           </Alert.Root>
+          {erro && <Text color="origem.perigo" fontSize="sm" role="alert">{erro}</Text>}
         </Stack>
       )}
     </OrigemDialog>

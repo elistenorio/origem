@@ -66,7 +66,9 @@ export type Pedido = {
   motivoCancelamento?: string
 }
 
+// O que o front ENVIA em PATCH /pedidos/{id}. Na Avaliação 1 a única mudança permitida é cancelar.
 export type CancelarPedidoInput = {
+  status: "cancelado"
   motivo: string
   observacao?: string
 }
