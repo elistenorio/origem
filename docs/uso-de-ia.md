@@ -274,7 +274,7 @@ Registro da equipe:
 
 **Sugestões descartadas ou refeitas**
 
-- (Elis) A primeira Fake API feita com apoio do Claude Code imitava um backend completo (camada de service e repository em `app/api/_lib/`, junção de produto com artesão, busca palavra por palavra, recomendação com pontuação). Funcionava, mas ficou complexa demais para a Avaliação 1 e difícil de explicar na apresentação. Elis percebeu o problema; o código foi descartado e refeito no formato das aulas do professor (`db.json` lido por Route Handlers, services com axios).
+- (Elis) A primeira Fake API feita com apoio do Claude Code imitava um backend completo (camada de service e repository em `app/api/_lib/`, junção de produto com artesão, busca palavra por palavra, recomendação com pontuação). Funcionava, mas ficou complexa demais para a Avaliação 1. Elis percebeu o problema; o código foi descartado e refeito no formato das aulas do professor (`db.json` lido por Route Handlers, services com axios).
 - (Sarah) A primeira versão das telas incluía uma Fake API completa, o que conflitava com o trabalho de outra integrante. A parte de API foi descartada e as telas passaram a usar dados estáticos.
 - (Sarah) A IA criou um componente de painel (Panel) que duplicava o SectionCard já existente. A equipe decidiu manter o SectionCard, e os usos do Panel foram substituídos.
 - (Elis) Na integração da página de detalhe da peça, o Claude começou a criar componentes novos por seção. Elis corrigiu: a integração foi feita só editando os arquivos existentes.
