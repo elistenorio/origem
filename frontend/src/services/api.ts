@@ -20,7 +20,8 @@ export class ApiError extends Error {
  * Avaliação 2: basta definir NEXT_PUBLIC_API_URL com o endereço do backend; os services não mudam.
  */
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "/api",
+  // "||" (e não "??"): se a variável existir mas estiver vazia (como no .env.example), usa "/api" também.
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
   timeout: 5000,
 })
 
