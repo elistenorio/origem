@@ -1,33 +1,48 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useSyncExternalStore } from "react"
 import NextLink from "next/link"
 import { Button, Stack } from "@chakra-ui/react"
 import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
 import { DataState } from "@/components/feedback/DataState"
-import { meusPedidos } from "@/dados-exemplo/consultas"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import { useApi } from "@/hooks/useApi"
+import { minhaContaService } from "@/services/minhaConta.service"
+import { useOrdersStore } from "@/store/ordersStore"
+import type { Pedido } from "@/types/pedido"
 import { OrderCard } from "./OrderCard"
 import { CancelOrderDialog } from "./CancelOrderDialog"
 import { ReviewOrderDialog } from "./ReviewOrderDialog"
 
 // Meus pedidos (Tela 08) com os pop-ups de cancelamento (08.1) e avaliação (09 e 09.1).
-// Por enquanto os pedidos são de exemplo e as ações só mudam o estado local.
+// Lista: GET /minha-conta/pedidos + os pedidos finalizados neste navegador (store/ordersStore.ts).
 export function OrdersView() {
-  const [pedidos, setPedidos] = useState<Pedido[]>(meusPedidos)
+  const { data, loading, error, recarregar } = useApi(() => minhaContaService.pedidos(), [])
+  const feitosAqui = useOrdersStore((state) => state.orders)
+  const [mudancas, setMudancas] = useState<Record<string, Partial<Pedido>>>({})
   const [cancelando, setCancelando] = useState<Pedido | null>(null)
   const [avaliando, setAvaliando] = useState<Pedido | null>(null)
 
-  const atualizar = (id: string, mudancas: Partial<Pedido>) =>
-    setPedidos((atual) => atual.map((p) => (p.id === id ? { ...p, ...mudancas } : p)))
+  // Depois de cancelar ou avaliar, a API já respondeu; aqui a tela só reflete a mudança na hora.
+  const atualizar = (id: string, novas: Partial<Pedido>) =>
+    setMudancas((atual) => ({ ...atual, [id]: { ...atual[id], ...novas } }))
+
+  // Os pedidos feitos neste navegador ficam salvos nele; até a tela abrir no navegador,
+  // mostra "carregando" (evita erro de hidratação).
+  const noNavegador = useSyncExternalStore(() => () => {}, () => true, () => false)
+
+  // Pedidos da API + os feitos aqui que a API não devolveu (ex.: no deploy, outra instância do servidor).
+  const daApi = data ?? []
+  const pedidos = [...feitosAqui.filter((p) => !daApi.some((a) => a.id === p.id)), ...daApi].map((p) => ({ ...p, ...mudancas[p.id] }))
 
   return (
     <PageContainer>
-      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Meus pedidos" }]} titulo="Meus pedidos" subtitulo={`${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}`} />
+      <PageHeader trilha={[{ label: "Home", href: "/" }, { label: "Meus pedidos" }]} titulo="Meus pedidos" subtitulo={data ? `${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"}` : undefined} />
       <DataState
-        loading={false}
-        vazio={pedidos.length === 0}
+        loading={loading || !noNavegador}
+        error={error}
+        onRetry={recarregar}
+        vazio={data ? pedidos.length === 0 : undefined}
         mensagemVazio="Você ainda não fez nenhum pedido"
         acaoVazio={<Button asChild variant="origem"><NextLink href="/catalogo">Ir para o catálogo</NextLink></Button>}
       >

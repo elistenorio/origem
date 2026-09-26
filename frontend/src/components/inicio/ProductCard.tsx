@@ -1,9 +1,10 @@
 import { Badge, Box, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
 import { Price } from "@/components/common/Price"
-import type { Product } from "@/types/product"
+import type { Produto } from "@/types/produto"
 
-export function ProductCard({ product }: { product: Product }) {
-  const { title, tags, artisan, city, dimensions, price, imageUrl } = product
+// Card de peça da vitrine e do catálogo. Recebe o Produto inteiro, mas usa só os campos do card.
+export function ProductCard({ produto }: { produto: Produto }) {
+  const { titulo, tags, artesaoNome, cidade, medidas, preco, imagemUrl } = produto
 
   return (
     <Box
@@ -12,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
       borderRadius="2xl"
       overflow="hidden"
     >
-      <Image src={imageUrl} alt={title} w="full" h="260px" objectFit="cover" />
+      <Image src={imagemUrl} alt={titulo} w="full" h="260px" objectFit="cover" />
 
       <Stack gap="1" p="4">
         <HStack gap="2">
@@ -22,17 +23,17 @@ export function ProductCard({ product }: { product: Product }) {
         </HStack>
 
         <Heading as="h3" size="2xl">
-          {title}
+          {titulo}
         </Heading>
 
         <Text fontWeight="bold" textTransform="uppercase" fontSize="sm">
-          {artisan}, {city}
+          {artesaoNome}, {cidade}
         </Text>
         <Text fontSize="xs">
-          {dimensions}
+          {medidas}
         </Text>
 
-        <Price valor={price} textAlign="right" fontSize="lg" mt="2" />
+        <Price valor={preco} textAlign="right" fontSize="lg" mt="2" />
       </Stack>
     </Box>
   )

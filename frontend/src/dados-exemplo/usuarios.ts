@@ -1,4 +1,4 @@
-import type { Usuario } from "./tipos"
+import type { Usuario } from "@/types/usuario"
 
 export const usuariosExemplo: Usuario[] = [
   { id: "u1", nome: "Ana Beatriz Souza", email: "ana.beatriz@email.com", perfil: "comprador", status: "ativo", cidade: "Recife/PE", criadoEm: "2026-06-12T10:00:00Z" },

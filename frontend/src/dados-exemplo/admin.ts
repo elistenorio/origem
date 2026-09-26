@@ -1,4 +1,4 @@
-import type { Atividade, Indicadores, ItemCuradoria, PeriodoIndicadores } from "./tipos"
+import type { Atividade, Indicadores, ItemCuradoria, PeriodoIndicadores } from "@/types/admin"
 import { FOTO_JARRO, imagem } from "./imagens"
 
 export const atividadesExemplo: Atividade[] = [
@@ -7,13 +7,6 @@ export const atividadesExemplo: Atividade[] = [
   { id: "at3", autor: "Elis Tenório", descricao: "publicou o conteúdo “As Bordadeiras de Passira”", data: "2026-09-25T13:00:00Z" },
   { id: "at4", autor: "Giulia Ferreira", descricao: "criou a categoria “Instrumentos Musicais”", data: "2026-09-25T11:00:00Z" },
   { id: "at5", autor: "Caliel Melo", descricao: "respondeu a solicitação de troca do pedido #10431", data: "2026-09-24T17:00:00Z" },
-]
-
-export const notificacoesAdminExemplo = [
-  { id: "n1", titulo: "Novo artesão cadastrado", descricao: "Zezinha do Barro, Caruaru, enviou documentos para análise." },
-  { id: "n2", titulo: "Pedido #10402 entregue", descricao: "Renda Renascença entregue em Recife/PE." },
-  { id: "n3", titulo: "Avaliação negativa", descricao: "Cliente avaliou o pedido #10455 com 2 estrelas." },
-  { id: "n4", titulo: "Pagamento recusado", descricao: "Pedido #10490 teve o pagamento recusado pelo cartão." },
 ]
 
 const MESES = ["out", "nov", "dez", "jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set"]

@@ -2,7 +2,7 @@
 
 # Frontend — Origem
 
-Stack da disciplina: Next.js 16 (App Router), React 19, TypeScript, Chakra UI v3, Tailwind e Zustand. Nada além disso sem perguntar.
+Stack da disciplina: Next.js 16 (App Router), React 19, TypeScript, Chakra UI v3, Tailwind, Zustand e axios (requisições, como na aula de Integração com APIs). Nada além disso sem perguntar.
 
 ## Comandos (dentro de `frontend/`)
 - `npm run dev` — servidor local
@@ -20,24 +20,27 @@ Peso na nota: 50% telas, responsividade, navegação e carrinho · 35% Fake API 
 app/                  rotas; URLs em português (/login, /cadastro, /produtos, /carrinho...)
   (auth)/ (main)/     grupos de rotas com layouts próprios
   api/                Fake API (Route Handlers), lê os dados de mocks/
+    _lib/             apoio às rotas (respostas, paginação, sessão de demonstração); o "_" tira a pasta das rotas
 components/<assunto>/ componentes por domínio, pastas em português (autenticacao, cadastro, inicio, carrinho...)
 components/common/    campos de formulário reutilizáveis
 components/feedback/  estados de carregamento, erro e vazio
 components/ui/        snippets gerados pelo Chakra (provider, toaster...)
-services/             única camada que faz requisições: http.ts + um <recurso>.service.ts por recurso
+services/             única camada que faz requisições: api.ts (instância do axios) + um <recurso>.service.ts por recurso
 store/                stores Zustand
 hooks/                lógica reutilizável (ex.: buscar dados com loading/erro)
 types/                entidades e formatos de resposta da API
-mocks/                dados sintéticos da Fake API (<recurso>.mock.ts)
+mocks/                dados sintéticos da Fake API: db.json (uma lista por recurso) + db.ts (tipagem)
 utils/ constants/     funções auxiliares e valores fixos (categorias, regiões, técnicas)
 theme/                system e recipes do Chakra
 ```
 Crie as pastas que ainda não existem conforme a necessidade, seguindo essa organização.
 
 ## Fluxo de dados
-Componente → hook → service (`src/services/`) → `http()` → `/api/*` (Fake API em `src/app/api/`, que lê `src/mocks/`).
+Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, em `services/api.ts`) → `/api/*` (Fake API em `src/app/api/`, que lê `src/mocks/db.json`).
 
-- Só `src/services/` faz requisições. Páginas, componentes e stores nunca chamam `fetch` ou `http()` diretamente.
+- Só `src/services/` faz requisições. Páginas, componentes e stores nunca usam `api`, axios ou `fetch` diretamente.
+- Telas buscam dados com `hooks/useApi.ts`, que devolve `data`, `loading`, `error` e `recarregar`.
+- Um tipo por entidade (`Produto`, `Artesao`): listas e detalhe devolvem o mesmo formato; o card usa só os campos de que precisa.
 - Mocks só são importados pelas rotas de `src/app/api/`.
 - Respostas seguem `src/types/api.ts`: listas em `Paginated<T>`, erros em `ApiErrorBody` (`{ error: { code, message } }`), lançados como `ApiError`.
 - Na Avaliação 2 basta definir `NEXT_PUBLIC_API_URL` apontando para o backend; services, hooks e componentes não mudam. Não quebre essa garantia.
@@ -64,7 +67,7 @@ Componente → hook → service (`src/services/`) → `http()` → `/api/*` (Fak
 
 ## Convenções
 - Idioma dos nomes: seção "Idioma" do `CLAUDE.md` da raiz (domínio em português sem acento, técnico em inglês, commits em inglês).
-- Os arquivos antigos em inglês (`types/product.ts`, `types/artisan.ts`, `types/order.ts`, `types/cart.ts`, `services/products.ts`, `services/artisans.ts`, `services/orders.ts`) estão sendo substituídos pelas versões em português. Não use em código novo; eles saem quando as telas migrarem.
+- A pasta `dados-exemplo/` e os tipos antigos em inglês (`types/product.ts`, `types/artisan.ts`) ainda alimentam as telas que não migraram para a Fake API. Não use em código novo; eles saem quando as telas migrarem.
 - Imports com o alias `@/` (= `src/`).
 
 ## Antes de dar uma tela por pronta

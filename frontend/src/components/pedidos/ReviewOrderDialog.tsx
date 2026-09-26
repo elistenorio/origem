@@ -7,8 +7,10 @@ import { StarRating } from "@/components/common/StarRating"
 import { Tile } from "@/components/common/Tile"
 import { TextareaField } from "@/components/common/TextareaField"
 import { FileField } from "@/components/common/FileField"
-import type { NotasAvaliacao } from "@/dados-exemplo/tipos"
-import type { Pedido } from "@/dados-exemplo/tipos"
+import { ApiError } from "@/services/api"
+import { avaliacoesService } from "@/services/avaliacoes.service"
+import type { NotasAvaliacao } from "@/types/avaliacao"
+import type { Pedido } from "@/types/pedido"
 import { OrderMiniSummary } from "./OrderMiniSummary"
 
 type ReviewOrderDialogProps = {
@@ -30,16 +32,28 @@ export function ReviewOrderDialog({ pedido, onClose, onAvaliado }: ReviewOrderDi
   const [notas, setNotas] = useState<NotasAvaliacao>({})
   const [fotos, setFotos] = useState<File[]>([])
   const [enviado, setEnviado] = useState(false)
+  const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState<string>()
 
   function fechar() {
-    setNota(0); setComentario(""); setNotas({}); setFotos([]); setEnviado(false)
+    setNota(0); setComentario(""); setNotas({}); setFotos([]); setEnviado(false); setErro(undefined)
     onClose()
   }
 
-  function handleEnviar() {
+  // POST /avaliacoes. As fotos não são enviadas na Avaliação 1 (upload real entra na Avaliação 2).
+  async function handleEnviar() {
     if (!pedido) return
-    setEnviado(true)
-    onAvaliado(pedido.id)
+    setEnviando(true)
+    setErro(undefined)
+    try {
+      await avaliacoesService.criar({ pedidoId: pedido.id, nota, comentario, notas })
+      setEnviado(true)
+      onAvaliado(pedido.id)
+    } catch (e) {
+      setErro(e instanceof ApiError ? e.message : "Não foi possível enviar a avaliação.")
+    } finally {
+      setEnviando(false)
+    }
   }
 
   if (enviado) {
@@ -61,7 +75,7 @@ export function ReviewOrderDialog({ pedido, onClose, onAvaliado }: ReviewOrderDi
       titulo="Avaliar o pedido"
       descricao="Sua avaliação ajuda outros compradores e valoriza o trabalho do artesão."
       size="lg"
-      rodape={<Button variant="origem" w="full" onClick={handleEnviar} disabled={nota === 0}>Enviar avaliação</Button>}
+      rodape={<Button variant="origem" w="full" onClick={handleEnviar} disabled={nota === 0} loading={enviando}>Enviar avaliação</Button>}
     >
       {pedido && (
         <Stack gap="5">
@@ -84,6 +98,7 @@ export function ReviewOrderDialog({ pedido, onClose, onAvaliado }: ReviewOrderDi
             <Text textStyle="rotulo">Adicione fotos (opcional)</Text>
             <FileField label="Fotos da avaliação" value={fotos} onChange={setFotos} multiple />
           </Stack>
+          {erro && <Text color="origem.perigo" fontSize="sm" role="alert">{erro}</Text>}
         </Stack>
       )}
     </OrigemDialog>

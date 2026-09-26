@@ -1,11 +1,15 @@
+"use client"
+
 import NextLink from "next/link"
 import { Flex, Heading, Link, Stack } from "@chakra-ui/react"
-import { filtrarProdutos } from "@/dados-exemplo/consultas"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { produtosService } from "@/services/produtos.service"
 import { ProductGrid } from "./ProductGrid"
 
-// "Peças em destaque" da vitrine: as mais recentes publicadas (dados de exemplo).
+// "Peças em destaque" da vitrine: as 8 peças publicadas mais recentes.
 export function FeaturedProducts() {
-  const { items } = filtrarProdutos({ status: "publicado", ordenar: "recentes", pageSize: 8 })
+  const { data, loading, error, recarregar } = useApi(() => produtosService.listar({ ordenar: "recentes", pageSize: 8 }), [])
 
   return (
     <Stack gap="6">
@@ -15,7 +19,9 @@ export function FeaturedProducts() {
           <NextLink href="/catalogo">Ver catálogo completo →</NextLink>
         </Link>
       </Flex>
-      <ProductGrid produtos={items} />
+      <DataState loading={loading} error={error} onRetry={recarregar} vazio={data?.items.length === 0} mensagemVazio="Nenhuma peça publicada ainda">
+        {data && <ProductGrid produtos={data.items} />}
+      </DataState>
     </Stack>
   )
 }

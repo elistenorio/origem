@@ -3,7 +3,7 @@ import { Badge, Flex, Heading, HStack, IconButton, Image, Link, Stack, Text } fr
 import { BiTrash } from "react-icons/bi"
 import { Price } from "@/components/common/Price"
 import { QuantityStepper } from "@/components/common/QuantityStepper"
-import type { ItemCarrinho } from "@/dados-exemplo/tipos"
+import type { ItemCarrinho } from "@/types/carrinho"
 
 type CartItemRowProps = {
   item: ItemCarrinho
@@ -23,7 +23,7 @@ export function CartItemRow({ item, onAlterarQuantidade, onRemover }: CartItemRo
         </HStack>
         <Heading as="h3" size="2xl">
           <Link asChild _hover={{ textDecoration: "none", opacity: 0.8 }}>
-            <NextLink href={"/produto"}>{produto.titulo}</NextLink>
+            <NextLink href={`/produtos/${produto.id}`}>{produto.titulo}</NextLink>
           </Link>
         </Heading>
         <Text textStyle="rotulo">{produto.artesaoNome}, {produto.cidade}</Text>

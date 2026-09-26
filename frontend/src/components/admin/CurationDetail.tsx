@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/common/StatusBadge"
 import { Timeline } from "@/components/common/Timeline"
 import { TextareaField } from "@/components/common/TextareaField"
 import { formatDateTime } from "@/utils/formatDate"
-import type { DecisaoCuradoria, ItemCuradoria } from "@/dados-exemplo/tipos"
+import type { DecisaoCuradoria, ItemCuradoria } from "@/types/admin"
 
 type CurationDetailProps = { item: ItemCuradoria; onDecidido: (decisao: DecisaoCuradoria) => void }
 

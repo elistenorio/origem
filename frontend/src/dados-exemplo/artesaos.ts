@@ -1,4 +1,4 @@
-import type { Artesao } from "./tipos"
+import type { Artesao } from "@/types/artesao"
 import { FOTO_MESTRE_JOAOZINHO, imagem } from "./imagens"
 
 export const artesaosExemplo: Artesao[] = [

@@ -1,10 +1,14 @@
+"use client"
+
 import NextLink from "next/link"
 import { Box, Button, Card, Heading, HStack, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiSliderAlt, BiBadgeCheck, BiPulse, BiBarChartAlt2 } from "react-icons/bi"
 import { SectionCard } from "@/components/common/SectionCard"
 import { StatCard } from "@/components/common/StatCard"
 import { NotificationItem } from "@/components/artesao/NotificationItem"
-import { painelAdmin } from "@/dados-exemplo/consultas"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { adminService } from "@/services/admin.service"
 import { formatCurrencyCompact } from "@/utils/formatCurrency"
 import { formatDateTime } from "@/utils/formatDate"
 import { AdminShell } from "./AdminShell"
@@ -16,9 +20,9 @@ const ATALHOS = [
   { rotulo: "Indicadores", href: "/admin/indicadores", icone: <BiBarChartAlt2 /> },
 ]
 
-// Tela inicial do administrador (Tela 04 admin). Por enquanto com dados de exemplo.
+// Tela inicial do administrador (Tela 04 admin). Dados de GET /admin/painel.
 export function AdminHomeView() {
-  const data = painelAdmin
+  const { data, loading, error, recarregar } = useApi(() => adminService.painel(), [])
 
   return (
     <AdminShell ativo="inicio">
@@ -27,6 +31,8 @@ export function AdminHomeView() {
         <Heading as="h1" variant="titulo" fontSize={{ base: "4xl", md: "5xl" }}>Equipe Origem</Heading>
         <Text textStyle="apoio">Aqui está o resumo da plataforma hoje.</Text>
       </Stack>
+      <DataState loading={loading} error={error} onRetry={recarregar}>
+      {data && (
       <Stack gap="8">
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="4">
           <StatCard title="PEDIDOS HOJE" subtitle="Pedidos feitos desde 00h" value={data.resumo.pedidosHoje} />
@@ -77,6 +83,8 @@ export function AdminHomeView() {
           </Stack>
         </SectionCard>
       </Stack>
+      )}
+      </DataState>
     </AdminShell>
   )
 }

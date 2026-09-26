@@ -5,7 +5,7 @@ import NextLink from "next/link"
 import { Button, Link, Stack, Text } from "@chakra-ui/react"
 import { FormField } from "@/components/common/FormField"
 import { PasswordHints } from "@/components/cadastro/PasswordHints"
-import type { CadastroCompradorInput } from "@/dados-exemplo/tipos"
+import type { CadastroCompradorInput } from "@/types/usuario"
 
 const vazio: CadastroCompradorInput = { nome: "", email: "", senha: "" }
 

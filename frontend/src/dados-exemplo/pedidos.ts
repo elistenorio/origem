@@ -1,5 +1,4 @@
-import type { ItemCarrinho, Pedido } from "./tipos"
-import { produtosExemplo } from "./produtos"
+import type { Pedido } from "@/types/pedido"
 import { FOTO_JARRO, imagem } from "./imagens"
 
 const ENDERECO = { cep: "50030-170", rua: "Rua do Bom Jesus", numero: "123", complemento: "Apto. 402", bairro: "Recife Antigo", cidade: "Recife", estado: "PE" }
@@ -42,13 +41,4 @@ export const pedidosExemplo: Pedido[] = [
     comprador: { ...COMPRADOR, nome: "Júlia Rocha", email: "julia.rocha@email.com" }, endereco: { ...ENDERECO, cidade: "Natal", estado: "RN" }, pagamento: "boleto", parcelas: 1,
     eventos: [], avaliado: false, motivoCancelamento: "Comprei por engano",
   },
-]
-
-// Pedidos que aparecem em "Meus pedidos" (compradora de demonstração, sem login na Avaliação 1).
-export const EMAIL_COMPRADOR_DEMO = COMPRADOR.email
-
-// Itens do carrinho de exemplo (carrinho e checkout).
-export const carrinhoExemplo: ItemCarrinho[] = [
-  { produto: produtosExemplo[0], quantidade: 2 },
-  { produto: produtosExemplo[9], quantidade: 1 },
 ]

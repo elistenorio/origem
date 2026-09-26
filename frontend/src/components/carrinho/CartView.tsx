@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useSyncExternalStore } from "react"
 import NextLink from "next/link"
 import { Box, Button, Flex, Link, Stack, Text } from "@chakra-ui/react"
 import { BiRightArrowAlt } from "react-icons/bi"
@@ -8,22 +8,26 @@ import { PageContainer } from "@/components/layout/PageContainer"
 import { PageHeader } from "@/components/layout/PageHeader"
 import { SectionCard } from "@/components/common/SectionCard"
 import { EmptyMessage } from "@/components/feedback/EmptyMessage"
-import { carrinhoExemplo } from "@/dados-exemplo/pedidos"
-import type { ItemCarrinho, OpcaoFrete } from "@/dados-exemplo/tipos"
+import { LoadingState } from "@/components/feedback/LoadingState"
+import { useCartStore } from "@/store/cartStore"
 import { CartItemRow } from "./CartItemRow"
 import { ShippingCalculator } from "./ShippingCalculator"
 import { OrderSummary } from "./OrderSummary"
 
-// Carrinho (Tela 06): itens + frete + resumo. Por enquanto com itens de exemplo em estado local.
+// Carrinho (Tela 06): itens + frete + resumo, lidos do cartStore (Zustand, salvo no navegador).
 export function CartView() {
-  const [itens, setItens] = useState<ItemCarrinho[]>(carrinhoExemplo)
-  const [frete, setFrete] = useState<OpcaoFrete | null>(null)
-  const quantidade = itens.reduce((soma, i) => soma + i.quantidade, 0)
-  const subtotal = itens.reduce((soma, i) => soma + i.produto.preco * i.quantidade, 0)
+  const itens = useCartStore((state) => state.items)
+  const frete = useCartStore((state) => state.frete)
+  const setFrete = useCartStore((state) => state.setFrete)
+  const alterarQuantidade = useCartStore((state) => state.updateQuantity)
+  const remover = useCartStore((state) => state.removeItem)
+  const quantidade = useCartStore((state) => state.totalItems())
+  const subtotal = useCartStore((state) => state.totalPrice())
 
-  const alterarQuantidade = (id: string, q: number) =>
-    setItens((atual) => atual.map((i) => (i.produto.id === id ? { ...i, quantidade: Math.min(Math.max(q, 1), Math.max(i.produto.estoque, 1)) } : i)))
-  const remover = (id: string) => setItens((atual) => atual.filter((i) => i.produto.id !== id))
+  // O carrinho fica salvo no navegador; o servidor não o conhece. Até a tela abrir no navegador,
+  // mostra "carregando" (servidor e navegador desenham o mesmo e não há erro de hidratação).
+  const noNavegador = useSyncExternalStore(() => () => {}, () => true, () => false)
+  if (!noNavegador) return <PageContainer><LoadingState /></PageContainer>
 
   return (
     <PageContainer>

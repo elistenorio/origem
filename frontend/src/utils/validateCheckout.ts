@@ -1,4 +1,4 @@
-import type { DadosCheckout, ErrosCheckout } from "@/dados-exemplo/tipos"
+import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
 
 const OBRIGATORIOS: [keyof DadosCheckout, string][] = [
   ["nome", "Informe seu nome completo."],

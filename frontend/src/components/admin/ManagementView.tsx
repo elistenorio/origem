@@ -16,7 +16,10 @@ import { usuariosExemplo } from "@/dados-exemplo/usuarios"
 import { CATEGORIAS } from "@/constants/categorias"
 import { formatCurrency } from "@/utils/formatCurrency"
 import { formatDate } from "@/utils/formatDate"
-import type { Artesao, Pedido, Produto, Usuario } from "@/dados-exemplo/tipos"
+import type { Artesao } from "@/types/artesao"
+import type { Pedido } from "@/types/pedido"
+import type { Produto } from "@/types/produto"
+import type { Usuario } from "@/types/usuario"
 import { AdminShell } from "./AdminShell"
 import { ManagementTable, type Coluna } from "./ManagementTable"
 
@@ -66,7 +69,7 @@ export function ManagementView() {
     { titulo: "Preço", render: (p) => formatCurrency(p.preco) },
     { titulo: "Estoque", render: (p) => p.estoque },
     { titulo: "Status", render: (p) => <StatusBadge status={p.status} /> },
-    { titulo: "Ações", alinhar: "end", render: (p) => <IconButton asChild aria-label={`Visualizar ${p.titulo}`} variant="ghost" size="sm"><NextLink href={"/produto"}><BiShow /></NextLink></IconButton> },
+    { titulo: "Ações", alinhar: "end", render: (p) => <IconButton asChild aria-label={`Visualizar ${p.titulo}`} variant="ghost" size="sm"><NextLink href={`/produtos/${p.id}`}><BiShow /></NextLink></IconButton> },
   ]
   const colunasPedido: Coluna<Pedido>[] = [
     { titulo: "Pedido", render: (p) => <Text fontWeight="bold">{p.codigo}</Text> },
