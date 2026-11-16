@@ -32,6 +32,8 @@ src/
 - Códigos: `VALIDATION` 400, `UNAUTHORIZED` 401, `FORBIDDEN` 403, `NOT_FOUND` 404, `CONFLICT`/`OUT_OF_STOCK` 409, `INTERNAL` 500.
 - **Contrato:** rotas, parâmetros e formatos de resposta e de erro iguais aos de `docs/api.md` e aos tipos de `frontend/src/types/`, para o frontend não mudar. Mudou ou criou rota: atualize o `docs/api.md`.
 - Ids são texto (os do seed mantêm os do `db.json`: `p1`, `a1`, `u1`). Campos derivados (ex.: `artesaoNome` e `cidade` do produto) são montados no repository a partir das relações.
+- Tipos do contrato (`Produto`, `Artesao`, `Paginated`...) ficam em `src/shared/types/`, iguais aos de `frontend/src/types/`. Paginação com `readPagination`/`paginated` de `src/shared/pagination.ts`.
+- Busca sem acento: SQL com `unaccent` via `prisma.$queryRaw` (template com `${...}`, nunca concatenando texto), que devolve só os ids; filtros, ordem e paginação continuam no Prisma. Nunca use `$queryRawUnsafe`.
 - Respostas de usuário nunca incluem `senhaHash` (use o `select` público do repository).
 - Rotas protegidas: `authMiddleware` (cookie `token` → `req.user`) e, se for por perfil, `roleMiddleware(["artesao"])` depois dele. Recurso de outro usuário: filtrar por `req.user.id`; acesso indevido (sem ser admin) → 403.
 - CORS só com `FRONTEND_URL` e `credentials: true`; nunca `"*"`.

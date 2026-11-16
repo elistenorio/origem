@@ -5,7 +5,7 @@
 
 Projeto Integrador 2026.2 (CESAR School), disciplina de Desenvolvimento Web. Branch principal: `main`.
 
-**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL) substituindo a Fake API da Avaliação 1, com autenticação JWT em cookie. Em construção: já existem a estrutura base, o banco (schema e seed) e o login/cadastro.
+**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL) substituindo a Fake API da Avaliação 1, com autenticação JWT em cookie. Em construção: já existem a estrutura base, o banco (schema e seed), o login/cadastro e as rotas da vitrine.
 
 ## Problema de Negócio
 
@@ -136,7 +136,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Sobre, newsletter, páginas de ajuda (como comprar, entregas e frete, formas de pagamento, trocas e devoluções, perguntas frequentes), termos de uso, política de privacidade e política de cookies
 
 ## Rotas da API
-Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`) e autenticação (`/auth/login`, `/auth/logout`, `/auth/me`).
+Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`), autenticação (`/auth/login`, `/auth/logout`, `/auth/me`) e as rotas da vitrine (`/produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`).
 
 ## Deploy
 Em configuração (Vercel). Link publicado: _a definir_.

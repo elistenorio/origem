@@ -9,7 +9,14 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas). As demais rotas deste documento ainda são respondidas só pela Fake API e vão sendo levadas para o backend com o mesmo contrato.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas) e as rotas da vitrine: `GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`, com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). As demais rotas ainda são respondidas só pela Fake API e vão sendo levadas para o backend com o mesmo contrato.
+
+### Diferenças do backend
+
+- Datas vêm com milissegundos (`"2026-09-20T10:00:00.000Z"` em vez de `"2026-09-20T10:00:00Z"`). É o mesmo instante, no mesmo formato ISO 8601.
+- `totalProdutos` do artesão é **contado no banco** (peças publicadas). No `db.json` era um número fixo.
+- `pageSize` tem máximo de 100: um valor maior vira 100.
+- Ordem `relevancia` (padrão): no backend vem da coluna `relevancia`, que o seed preenche na ordem do `db.json`. Peças e artesãos novos entram no fim.
 
 - Toda resposta tem um atraso simulado de **300 ms**, para as telas mostrarem o estado de carregamento.
 - As rotas que gravam (`POST`) alteram os dados **só em memória**: valem até o servidor reiniciar. Na Vercel, cada chamada pode cair numa instância diferente, então a tela usa a própria resposta do `POST` (ex.: a confirmação do pedido).
@@ -70,7 +77,7 @@ Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peç
 
 | Parâmetro | Valores | Observação |
 |---|---|---|
-| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica") |
+| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica"). No backend, usa a extensão `unaccent` do PostgreSQL |
 | `categoria` | id, ex.: `ceramica-barro` | ids de `constants/categorias.ts` (ou de `GET /filtros`) |
 | `tecnica` | id, ex.: `modelagem-manual` | ids de `constants/tecnicas.ts` |
 | `material` | id, ex.: `barro` | ids de `constants/materiais.ts` |
@@ -137,7 +144,7 @@ Opções dos filtros da vitrine, no formato `{ value, label }`.
 }
 ```
 
-Na Avaliação 1 as listas vêm de `frontend/src/constants/`; na Avaliação 2 viram tabelas do banco.
+Na Fake API as listas vêm de `frontend/src/constants/`; no backend vêm das tabelas `Categoria`, `Tecnica`, `Material` e `Regiao`, na mesma ordem (coluna `ordem`).
 
 ### `GET /artesaos`
 
