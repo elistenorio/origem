@@ -1,7 +1,7 @@
 # Revisão de code smells — Giulia Ferreira
 
 Parte analisada: página de detalhe do produto, `frontend/src/app/(main)/produtos/[id]/page.tsx`.
-Base da análise: branch `main`, commit `3ba17fd`.
+Base da análise: branch `main`, commit `3ba17fd`. A refatoração foi aplicada sobre a branch `refactor/sarah-rotulo-duplicado`.
 
 ## 1. Smell principal: Large Component / Long Method
 
@@ -30,7 +30,7 @@ A refatoração é barata (mover JSX, sem mudar regra) e a tela é central para 
 | `page.tsx` com 229 linhas | `page.tsx` com 52 linhas: só buscas e composição |
 | | `components/produto/ProductGallery.tsx` (29 linhas): miniaturas e capa |
 | | `components/produto/ProductPurchasePanel.tsx` (98 linhas): preço, estoque, quantidade, frete e carrinho |
-| | `components/produto/ProductInfoSections.tsx` (93 linhas): ficha técnica, artesão, cuidados, entrega e trocas |
+| | `components/produto/ProductInfoSections.tsx` (91 linhas): ficha técnica, artesão, cuidados, entrega e trocas |
 
 Escolhas feitas:
 - **As buscas ficaram na página.** Os componentes recebem os dados por props tipadas (`Produto`, `Artesao`) e não conhecem os services. Segue o fluxo do projeto: página → hook → service.
@@ -43,13 +43,13 @@ Alternativas descartadas:
 - *Hook `useProdutoDetalhe` para as três buscas:* a página ficou com 52 linhas e as buscas são o papel dela; o hook seria uma camada a mais sem ganho hoje.
 
 ### Validação
-- `npm run lint` e `npm run build` passam depois da refatoração.
-- O projeto não tem framework de testes, então não há teste automatizado. A conferência do comportamento é manual: abrir `/produtos/{id}`, comparar a tela com a da `main`, alterar a quantidade, adicionar ao carrinho e comprar agora.
+- `npm run lint`, `npm run build` e `npm test` passam depois da refatoração.
+- O `npm test` do projeto cobre só funções puras (executor de testes do Node); não há teste de componente. A conferência do comportamento é manual: abrir `/produtos/{id}`, comparar a tela com a da `main`, alterar a quantidade, adicionar ao carrinho e comprar agora.
 
 ### Riscos e limitações
 - Sem testes de componente, uma regressão visual só é percebida olhando a tela.
 - Como o estado agora vive no painel, ele volta ao valor inicial se o painel for desmontado (por exemplo, ao recarregar os dados da peça). No fluxo atual isso só acontece ao trocar de peça, quando zerar a quantidade é o esperado.
-- A função `rotulo` foi movida junto com a ficha técnica para `ProductInfoSections.tsx`. Ela é a mesma duplicação tratada pela Sarah (extração de `rotuloDe`); quando a refatoração dela entrar, a troca passa a ser feita nesse arquivo.
+- A ficha técnica dependia da função `rotulo`, duplicada em cinco arquivos. Essa duplicação foi tratada pela Sarah (`getOptionLabel`, branch `refactor/sarah-rotulo-duplicado`); esta branch parte da dela, e `ProductInfoSections.tsx` já usa `getOptionLabel`. Por isso a refatoração da Sarah precisa entrar na `main` antes desta.
 
 ## 2. Smell associado: textos de política fixos no componente
 
