@@ -83,7 +83,6 @@ type ContaJson = {
 
 type PedidoJson = {
   id: string
-  codigo: string
   status: StatusPedido
   criadoEm: string
   itens: {
@@ -309,7 +308,6 @@ async function main() {
     await prisma.pedido.create({
       data: {
         id: p.id,
-        codigo: p.codigo,
         status: p.status,
         criadoEm: new Date(p.criadoEm),
         subtotal: p.subtotal,
@@ -329,6 +327,11 @@ async function main() {
       },
     })
   }
+
+  // Os pedidos do seed têm número fixo; o próximo pedido criado continua a partir do maior deles.
+  await prisma.$executeRaw`
+    SELECT setval('pedido_numero_seq', (SELECT MAX("id"::bigint) FROM "Pedido" WHERE "id" ~ '^[0-9]+$'))
+  `
 
   console.log(`Seed concluído. Senha de todas as contas: ${SENHA_PADRAO}`)
 }

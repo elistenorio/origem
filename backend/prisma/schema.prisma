@@ -171,8 +171,8 @@ enum FormaPagamento {
 
 // comprador, endereco e frete são uma "foto" do momento da compra, por isso ficam em Json.
 model Pedido {
-  id                 String         @id @default(cuid())
-  codigo             String         @unique // ex.: "#10495"
+  // Número sequencial gerado pelo banco ("10496", "10497"...). O código "#10496" é montado na resposta.
+  id                 String         @id @default(dbgenerated("(nextval('pedido_numero_seq'::regclass))::text"))
   status             StatusPedido   @default(processando)
   criadoEm           DateTime       @default(now())
   subtotal           Float
