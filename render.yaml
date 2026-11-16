@@ -1,0 +1,25 @@
+# Configuração do backend no Render (Blueprint). Passo a passo em docs/deploy.md.
+# Os valores secretos (sync: false) são preenchidos no painel do Render, nunca aqui.
+services:
+  - type: web
+    name: origem-backend
+    runtime: node
+    plan: free
+    region: virginia # a mais próxima do Supabase em São Paulo
+    rootDir: backend
+    # Instala (com as dependências de desenvolvimento, que têm o TypeScript e o Prisma CLI),
+    # compila e aplica as migrations no banco do Supabase.
+    buildCommand: npm run render-build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL # Supabase: Transaction pooler (porta 6543) + ?pgbouncer=true
+        sync: false
+      - key: DIRECT_URL # Supabase: Session pooler (porta 5432)
+        sync: false
+      - key: FRONTEND_URL # endereço exato do front na Vercel, sem "/" no fim
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true # o Render gera um segredo aleatório
