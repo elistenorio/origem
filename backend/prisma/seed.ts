@@ -83,7 +83,6 @@ type ContaJson = {
 
 type PedidoJson = {
   id: string
-  codigo: string
   status: StatusPedido
   criadoEm: string
   itens: {
@@ -114,6 +113,8 @@ type Db = {
   usuarios: UsuarioJson[]
   contas: ContaJson[]
   pedidos: PedidoJson[]
+  atividades: { id: string; autor: string; descricao: string; data: string }[]
+  notificacoesAdmin: { id: string; titulo: string; descricao: string }[]
 }
 
 // ---------- Filtros (copiados de frontend/src/constants) ----------
@@ -184,6 +185,8 @@ async function limparBanco() {
   await prisma.tecnica.deleteMany()
   await prisma.material.deleteMany()
   await prisma.regiao.deleteMany()
+  await prisma.notificacao.deleteMany()
+  await prisma.atividade.deleteMany()
 }
 
 async function main() {
@@ -194,10 +197,12 @@ async function main() {
   await limparBanco()
 
   console.log("Criando filtros...")
-  await prisma.categoria.createMany({ data: CATEGORIAS })
-  await prisma.tecnica.createMany({ data: TECNICAS })
-  await prisma.material.createMany({ data: MATERIAIS })
-  await prisma.regiao.createMany({ data: REGIOES })
+  // "ordem" guarda a posição de cada opção, para GET /filtros devolver na mesma ordem das constantes.
+  const comOrdem = (lista: Opcao[]) => lista.map((opcao, i) => ({ ...opcao, ordem: i + 1 }))
+  await prisma.categoria.createMany({ data: comOrdem(CATEGORIAS) })
+  await prisma.tecnica.createMany({ data: comOrdem(TECNICAS) })
+  await prisma.material.createMany({ data: comOrdem(MATERIAIS) })
+  await prisma.regiao.createMany({ data: comOrdem(REGIOES) })
 
   console.log("Criando compradores...")
   for (const u of db.usuarios) {
@@ -234,10 +239,12 @@ async function main() {
   })
 
   console.log("Criando artesãos (cada um com seu usuário de login)...")
-  for (const a of db.artesaos) {
+  for (const [indice, a] of db.artesaos.entries()) {
     await prisma.artesao.create({
       data: {
         id: a.id,
+        // Mantém a ordem do db.json na listagem (o primeiro tem a maior relevância).
+        relevancia: db.artesaos.length - indice,
         nome: a.nome,
         oficio: a.oficio,
         cidade: a.cidade,
@@ -271,10 +278,12 @@ async function main() {
   }
 
   console.log("Criando produtos...")
-  for (const p of db.produtos) {
+  for (const [indice, p] of db.produtos.entries()) {
     await prisma.produto.create({
       data: {
         id: p.id,
+        // "relevancia" (ordem padrão da vitrine) repete a ordem do db.json, como fazia a Fake API.
+        relevancia: db.produtos.length - indice,
         titulo: p.titulo,
         tags: p.tags,
         medidas: p.medidas,
@@ -303,7 +312,6 @@ async function main() {
     await prisma.pedido.create({
       data: {
         id: p.id,
-        codigo: p.codigo,
         status: p.status,
         criadoEm: new Date(p.criadoEm),
         subtotal: p.subtotal,
@@ -323,6 +331,21 @@ async function main() {
       },
     })
   }
+
+  console.log("Criando notificações e atividades do painel do admin...")
+  await prisma.atividade.createMany({
+    data: db.atividades.map((a) => ({ id: a.id, autor: a.autor, descricao: a.descricao, data: new Date(a.data) })),
+  })
+  // As notificações do db.json não têm data: a primeira da lista fica como a mais recente.
+  const agora = Date.now()
+  await prisma.notificacao.createMany({
+    data: db.notificacoesAdmin.map((n, i) => ({ ...n, criadoEm: new Date(agora - i * 60_000) })),
+  })
+
+  // Os pedidos do seed têm número fixo; o próximo pedido criado continua a partir do maior deles.
+  await prisma.$executeRaw`
+    SELECT setval('pedido_numero_seq', (SELECT MAX("id"::bigint) FROM "Pedido" WHERE "id" ~ '^[0-9]+$'))
+  `
 
   console.log(`Seed concluído. Senha de todas as contas: ${SENHA_PADRAO}`)
 }

@@ -49,24 +49,28 @@ model Usuario {
 model Categoria {
   id       String    @id // ex.: "ceramica-barro"
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Tecnica {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Material {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Regiao {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
   artesaos Artesao[]
 }
@@ -98,6 +102,7 @@ model Artesao {
   tecnicas       String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
   categorias     String[] // ids de Categoria
   status         StatusArtesao @default(emAnalise)
+  relevancia     Int           @default(0) // quanto maior, antes aparece na ordem padrão
   criadoEm       DateTime      @default(now())
 
   regiaoId  String
@@ -119,19 +124,20 @@ enum StatusProduto {
 
 // artesaoNome e cidade da resposta da API vêm do Artesao (não são guardados aqui).
 model Produto {
-  id        String        @id @default(cuid())
-  titulo    String
-  tags      String[]
-  medidas   String
-  preco     Float
-  imagemUrl String
-  imagens   String[]
-  estoque   Int           @default(0)
-  pecaUnica Boolean       @default(false)
-  status    StatusProduto @default(rascunho)
-  descricao String
-  cuidados  String
-  criadoEm  DateTime      @default(now())
+  id         String        @id @default(cuid())
+  titulo     String
+  tags       String[]
+  medidas    String
+  preco      Float
+  imagemUrl  String
+  imagens    String[]
+  estoque    Int           @default(0)
+  pecaUnica  Boolean       @default(false)
+  status     StatusProduto @default(rascunho)
+  relevancia Int           @default(0) // quanto maior, antes aparece em ordenar=relevancia
+  descricao  String
+  cuidados   String
+  criadoEm   DateTime      @default(now())
 
   artesaoId   String
   artesao     Artesao   @relation(fields: [artesaoId], references: [id])
@@ -165,8 +171,8 @@ enum FormaPagamento {
 
 // comprador, endereco e frete são uma "foto" do momento da compra, por isso ficam em Json.
 model Pedido {
-  id                 String         @id @default(cuid())
-  codigo             String         @unique // ex.: "#10495"
+  // Número sequencial gerado pelo banco ("10496", "10497"...). O código "#10496" é montado na resposta.
+  id                 String         @id @default(dbgenerated("(nextval('pedido_numero_seq'::regclass))::text"))
   status             StatusPedido   @default(processando)
   criadoEm           DateTime       @default(now())
   subtotal           Float
@@ -225,4 +231,23 @@ model Avaliacao {
 
   pedidoId String @unique
   pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
+
+// ---------- Painel do administrador ----------
+
+// Avisos da tela inicial do admin (ex.: "Novo artesão cadastrado").
+// Por enquanto vêm do seed; passam a ser criados pelas ações de curadoria e gestão quando elas existirem.
+model Notificacao {
+  id        String   @id @default(cuid())
+  titulo    String
+  descricao String
+  criadoEm  DateTime @default(now())
+}
+
+// Histórico do que a equipe fez na plataforma (ex.: "Maria Clara aprovou a peça ...").
+model Atividade {
+  id        String   @id @default(cuid())
+  autor     String
+  descricao String
+  data      DateTime @default(now())
 }

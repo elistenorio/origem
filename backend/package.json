@@ -12,7 +12,11 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "render-build": "npm ci --include=dev && prisma generate && npm run build && prisma migrate deploy"
+  },
+  "engines": {
+    "node": "22.x"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

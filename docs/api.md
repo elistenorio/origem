@@ -9,7 +9,16 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas). As demais rotas deste documento ainda são respondidas só pela Fake API e vão sendo levadas para o backend com o mesmo contrato.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). e `GET /admin/painel`. Com isso, **todas as rotas da Fake API já existem no backend**.
+
+### Diferenças do backend
+
+- Datas vêm com milissegundos (`"2026-09-20T10:00:00.000Z"` em vez de `"2026-09-20T10:00:00Z"`). É o mesmo instante, no mesmo formato ISO 8601.
+- `totalProdutos` do artesão é **contado no banco** (peças publicadas). No `db.json` era um número fixo.
+- `pageSize` tem máximo de 100: um valor maior vira 100.
+- Ordem `relevancia` (padrão): no backend vem da coluna `relevancia`, que o seed preenche na ordem do `db.json`. Peças e artesãos novos entram no fim.
+- **Login de verdade:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}` são só do perfil `artesao` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login e só o dono do pedido pode usá-las (o admin também pode cancelar); pedido de outra pessoa → `403`.
+- **Pedidos de verdade:** `POST /pedidos` baixa o estoque e o cancelamento devolve as peças. O frete é recalculado pelo CEP (do `frete` enviado, só vale a `modalidade`). O número do pedido vem de uma sequência do banco (`10496`, `10497`...).
 
 - Toda resposta tem um atraso simulado de **300 ms**, para as telas mostrarem o estado de carregamento.
 - As rotas que gravam (`POST`) alteram os dados **só em memória**: valem até o servidor reiniciar. Na Vercel, cada chamada pode cair numa instância diferente, então a tela usa a própria resposta do `POST` (ex.: a confirmação do pedido).
@@ -70,7 +79,7 @@ Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peç
 
 | Parâmetro | Valores | Observação |
 |---|---|---|
-| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica") |
+| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica"). No backend, usa a extensão `unaccent` do PostgreSQL |
 | `categoria` | id, ex.: `ceramica-barro` | ids de `constants/categorias.ts` (ou de `GET /filtros`) |
 | `tecnica` | id, ex.: `modelagem-manual` | ids de `constants/tecnicas.ts` |
 | `material` | id, ex.: `barro` | ids de `constants/materiais.ts` |
@@ -137,7 +146,7 @@ Opções dos filtros da vitrine, no formato `{ value, label }`.
 }
 ```
 
-Na Avaliação 1 as listas vêm de `frontend/src/constants/`; na Avaliação 2 viram tabelas do banco.
+Na Fake API as listas vêm de `frontend/src/constants/`; no backend vêm das tabelas `Categoria`, `Tecnica`, `Material` e `Regiao`, na mesma ordem (coluna `ordem`).
 
 ### `GET /artesaos`
 
@@ -217,6 +226,14 @@ Finaliza a compra (como visitante). A tela envia os itens do carrinho, os dados 
 
 Resposta `201` com o `Pedido` criado: `status` `processando`, título e preço de cada peça "fotografados" no momento da compra, `subtotal` e `total` calculados pela API.
 
+No backend:
+- Aberta a visitantes. Se houver login (cookie), o pedido fica ligado à conta e aparece em `GET /minha-conta/pedidos`.
+- Preço, título e artesão vêm do banco, nunca do corpo enviado.
+- Do `frete`, só a `modalidade` (`pac` ou `sedex`) é usada: valor e prazo são recalculados pelo CEP do endereço, com a mesma regra de `GET /frete`.
+- Baixa o estoque de cada peça, numa transação. Se duas compras disputarem a última unidade, só uma passa (a outra recebe `409 OUT_OF_STOCK`).
+- A mesma peça em duas linhas de `itens` vira uma linha só, com as quantidades somadas.
+- `parcelas` é opcional (padrão 1), de 1 a 12.
+
 ```json
 {
   "id": "10496",
@@ -237,7 +254,7 @@ Resposta `201` com o `Pedido` criado: `status` `processando`, título e preço d
 ```
 
 Erros:
-- `400 VALIDATION`: sem peças, sem nome ou e-mail do comprador, sem CEP, sem frete ou sem forma de pagamento.
+- `400 VALIDATION`: sem peças, sem nome ou e-mail do comprador, sem CEP, sem frete ou sem forma de pagamento. No backend também: quantidade que não é inteiro de pelo menos 1, e-mail inválido, CEP sem 8 números, modalidade de frete ou forma de pagamento desconhecida, parcelas fora de 1 a 12.
 - `404 NOT_FOUND`: uma das peças não existe ou não está mais publicada.
 - `409 OUT_OF_STOCK`: quantidade maior que o estoque da peça.
 
@@ -245,7 +262,7 @@ Os dados do cartão não são enviados na Avaliação 1.
 
 ### `GET /minha-conta`
 
-Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de `Usuario` mais CPF mascarado, telefone, endereço e formas de pagamento.
+Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de `Usuario` mais CPF mascarado, telefone, endereço e formas de pagamento. No backend vale para qualquer perfil logado (sem login → `401`); campos ainda não preenchidos voltam vazios (`""`, endereço com campos vazios e `formasPagamento: []`).
 
 ```json
 {
@@ -269,6 +286,8 @@ Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de
 
 Na tela, a lista também mostra os pedidos finalizados **neste navegador** (`store/ordersStore.ts`, salvo no localStorage). Assim o pedido recém-criado aparece mesmo no deploy, onde a próxima requisição pode cair noutra instância do servidor, e com qualquer e-mail. Na Avaliação 2 o backend salva o pedido de verdade e esse store sai.
 
+No backend, a lista traz os pedidos **ligados à conta logada** (feitos com login), não os feitos como visitante com o mesmo e-mail. Erro: `401 UNAUTHORIZED` sem login.
+
 ### `POST /avaliacoes`
 
 Avaliação de um pedido entregue ("Avaliar o pedido" em Meus pedidos).
@@ -280,7 +299,9 @@ Avaliação de um pedido entregue ("Avaliar o pedido" em Meus pedidos).
 Resposta `201` com a `Avaliacao` (os mesmos campos, mais `id` e `criadoEm`). O pedido passa a ter `avaliado: true`.
 
 Erros:
-- `400 VALIDATION`: nota fora de 1 a 5.
+- `400 VALIDATION`: nota fora de 1 a 5 (no backend, também as notas de `notas`, quando enviadas).
+- `401 UNAUTHORIZED` (backend): sem login.
+- `403 FORBIDDEN` (backend): o pedido não é de quem está logado.
 - `404 NOT_FOUND`: o pedido não existe.
 - `409 CONFLICT`: o pedido não foi entregue ou já foi avaliado.
 
@@ -296,8 +317,12 @@ Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelame
 
 Erros:
 - `400 VALIDATION`: `status` diferente de `cancelado` ou sem `motivo`.
+- `401 UNAUTHORIZED` (backend): sem login.
+- `403 FORBIDDEN` (backend): o pedido não é de quem está logado (o admin pode cancelar qualquer um).
 - `404 NOT_FOUND`: o pedido não existe.
 - `409 CONFLICT`: o pedido já foi enviado, entregue ou cancelado.
+
+No backend, cancelar devolve as peças do pedido ao estoque.
 
 ### `GET /minha-conta/produtos`
 
@@ -333,6 +358,7 @@ Resposta `200` com o `Produto` atualizado.
 
 Erros:
 - `400 VALIDATION`: nenhum campo enviado, estoque negativo ou não inteiro, ou status diferente de `publicado`/`indisponivel`.
+- `401 UNAUTHORIZED` / `403 FORBIDDEN` (backend): sem login / perfil diferente de `artesao` (vale também para `GET /minha-conta/produtos` e `/minha-conta/resumo`).
 - `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
 - `409 CONFLICT`: tentar esconder ou mostrar uma peça que ainda não foi publicada (rascunho ou em análise).
 
@@ -355,6 +381,12 @@ Tela inicial do administrador: resumo da plataforma, pendências, notificações
 
 - `pedidosHoje`, `vendasMes` e `clientes` são números fixos do `db.json` (`resumoPlataforma`); `artesaosAtivos`, `produtosPublicados` e as `pendencias` são contados a partir dos dados.
 - Sem login na Avaliação 1; na Avaliação 2 a rota fica protegida para o perfil `admin`.
+
+No backend:
+- Exige login (`401`) e perfil `admin` (`403`).
+- **Todos os números do `resumo` são contados no banco**: `pedidosHoje` (pedidos criados desde 0h), `vendasMes` (soma do `total` dos pedidos não cancelados do mês), `clientes` (usuários com perfil `comprador`), `artesaosAtivos` e `produtosPublicados`. "Hoje" e "mês" seguem o horário de Recife.
+- `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`. (Na Fake API, "artesãos aguardando curadoria" contava a lista `curadoria` do `db.json`, que incluía uma artesã já publicada; por isso o número pode ser menor.)
+- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). Ainda não há ação no sistema que crie novas; isso vem com a curadoria e a gestão.
 
 ## Autenticação e cadastro (backend)
 
