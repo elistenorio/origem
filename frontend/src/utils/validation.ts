@@ -3,5 +3,5 @@
 export const SENHA_TAMANHO_MINIMO = 8
 
 export function emailValido(email: string): boolean {
-  return email.includes("@")
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
 }

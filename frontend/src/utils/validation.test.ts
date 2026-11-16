@@ -16,6 +16,15 @@ test("recusa e-mail sem @", () => {
   assert.equal(emailValido(""), false)
 })
 
-test('aceita "a@b", como a regra antiga (includes("@"))', () => {
-  assert.equal(emailValido("a@b"), true)
+test('recusa "a@b", porque o domínio precisa ter ponto (como no backend)', () => {
+  assert.equal(emailValido("a@b"), false)
+  assert.equal(emailValido("a@b."), false)
+})
+
+test("recusa e-mail com espaço no meio", () => {
+  assert.equal(emailValido("a b@c.com"), false)
+})
+
+test("ignora espaços nas pontas (como no backend)", () => {
+  assert.equal(emailValido(" nome@dominio.com "), true)
 })
