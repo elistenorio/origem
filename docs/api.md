@@ -9,7 +9,7 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Falta só `GET /admin/painel`, ainda respondida pela Fake API.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). e `GET /admin/painel`. Com isso, **todas as rotas da Fake API já existem no backend**.
 
 ### Diferenças do backend
 
@@ -381,6 +381,12 @@ Tela inicial do administrador: resumo da plataforma, pendências, notificações
 
 - `pedidosHoje`, `vendasMes` e `clientes` são números fixos do `db.json` (`resumoPlataforma`); `artesaosAtivos`, `produtosPublicados` e as `pendencias` são contados a partir dos dados.
 - Sem login na Avaliação 1; na Avaliação 2 a rota fica protegida para o perfil `admin`.
+
+No backend:
+- Exige login (`401`) e perfil `admin` (`403`).
+- **Todos os números do `resumo` são contados no banco**: `pedidosHoje` (pedidos criados desde 0h), `vendasMes` (soma do `total` dos pedidos não cancelados do mês), `clientes` (usuários com perfil `comprador`), `artesaosAtivos` e `produtosPublicados`. "Hoje" e "mês" seguem o horário de Recife.
+- `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`. (Na Fake API, "artesãos aguardando curadoria" contava a lista `curadoria` do `db.json`, que incluía uma artesã já publicada; por isso o número pode ser menor.)
+- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). Ainda não há ação no sistema que crie novas; isso vem com a curadoria e a gestão.
 
 ## Autenticação e cadastro (backend)
 
