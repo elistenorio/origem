@@ -25,6 +25,18 @@ export type Artesao = {
   criadoEm: Date
 }
 
+// GET /minha-conta/resumo: números do topo de "Meu catálogo" e "Estoque".
+export type ResumoPainelArtesao = {
+  catalogo: { publicadas: number; emAnalise: number; vendidas: number; indisponiveis: number }
+  estoque: { disponiveis: number; baixoEstoque: number; esgotadas: number }
+}
+
+// PATCH /minha-conta/produtos/:id, já validado pelo controller (pelo menos um dos dois).
+export type AtualizarEstoqueInput = {
+  estoque?: number
+  status?: "publicado" | "indisponivel"
+}
+
 // Filtros de GET /artesaos, já convertidos pelo controller.
 export type FiltrosArtesao = {
   busca?: string

@@ -19,3 +19,17 @@ export function authMiddleware(req: Request, _res: Response, next: NextFunction)
     return next(new AppError(401, "UNAUTHORIZED", "Sessão inválida ou expirada. Faça login novamente."))
   }
 }
+
+// Para rotas abertas a visitantes (ex.: POST /pedidos): se houver um token válido, preenche req.user;
+// sem token, ou com token inválido, segue como visitante (nunca responde 401).
+export function optionalAuthMiddleware(req: Request, _res: Response, next: NextFunction) {
+  const token: unknown = req.cookies?.[NOME_COOKIE_TOKEN]
+  if (typeof token === "string" && token) {
+    try {
+      req.user = verificarToken(token)
+    } catch {
+      req.user = undefined
+    }
+  }
+  return next()
+}

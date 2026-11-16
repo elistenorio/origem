@@ -35,6 +35,14 @@ export const usuariosRepository = {
     return prisma.usuario.findUnique({ where: { id }, select: selectUsuarioPublico })
   },
 
+  /** Usuário com os dados de "Minha conta" (cpf, telefone, endereço, formas de pagamento). */
+  buscarContaPorId(id: string) {
+    return prisma.usuario.findUnique({
+      where: { id },
+      select: { ...selectUsuarioPublico, cpf: true, telefone: true, endereco: true, formasPagamento: true },
+    })
+  },
+
   async existeEmail(email: string): Promise<boolean> {
     const total = await prisma.usuario.count({ where: { email } })
     return total > 0

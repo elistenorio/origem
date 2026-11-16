@@ -8,6 +8,16 @@ export function emailValido(valor: unknown): valor is string {
   return typeof valor === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor.trim())
 }
 
+// Objeto JSON comum (não array, não null).
+export function ehObjeto(valor: unknown): valor is Record<string, unknown> {
+  return typeof valor === "object" && valor !== null && !Array.isArray(valor)
+}
+
+// Texto do corpo da requisição; qualquer outra coisa vira "" (com espaços das pontas removidos).
+export function texto(valor: unknown): string {
+  return typeof valor === "string" ? valor.trim() : ""
+}
+
 // Valor de texto da query string (?categoria=...). Ausente, vazio ou repetido (?a=1&a=2) vira undefined.
 export function textoDaQuery(valor: unknown): string | undefined {
   if (typeof valor !== "string") return undefined

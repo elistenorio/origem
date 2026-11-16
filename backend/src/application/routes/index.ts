@@ -1,6 +1,9 @@
 import { Router } from "express"
 import { artesaosRouter } from "./artesaos.routes"
 import { authRouter } from "./auth.routes"
+import { avaliacoesRouter } from "./avaliacoes.routes"
+import { minhaContaRouter } from "./minhaConta.routes"
+import { pedidosRouter } from "./pedidos.routes"
 import { filtrosRouter } from "./filtros.routes"
 import { freteRouter } from "./frete.routes"
 import { produtosRouter } from "./produtos.routes"
@@ -18,3 +21,8 @@ router.use("/produtos", produtosRouter)
 router.use("/filtros", filtrosRouter)
 router.use("/artesaos", artesaosRouter)
 router.use("/frete", freteRouter)
+
+// Pedidos, avaliações e área do usuário logado
+router.use("/pedidos", pedidosRouter)
+router.use("/avaliacoes", avaliacoesRouter)
+router.use("/minha-conta", minhaContaRouter)

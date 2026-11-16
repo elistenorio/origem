@@ -128,4 +128,41 @@ export const produtosRepository = {
     })
     return registros.map(paraProduto)
   },
+
+  /** Peças publicadas com esses ids (usado ao montar um pedido). */
+  async buscarPublicadosPorIds(ids: string[]): Promise<Produto[]> {
+    const registros = await prisma.produto.findMany({ where: { id: { in: ids }, ...SO_PUBLICADOS }, include: incluirArtesao })
+    return registros.map(paraProduto)
+  },
+
+  // ---------- Peças do artesão logado (qualquer status) ----------
+
+  /** Todas as peças do artesão, das mais recentes para as mais antigas. */
+  async listarDoArtesao(artesaoId: string): Promise<Produto[]> {
+    const registros = await prisma.produto.findMany({
+      where: { artesaoId },
+      include: incluirArtesao,
+      orderBy: [{ criadoEm: "desc" }, { relevancia: "desc" }],
+    })
+    return registros.map(paraProduto)
+  },
+
+  async buscarDoArtesao(id: string, artesaoId: string): Promise<Produto | null> {
+    const registro = await prisma.produto.findFirst({ where: { id, artesaoId }, include: incluirArtesao })
+    return registro ? paraProduto(registro) : null
+  },
+
+  async atualizarEstoqueEStatus(id: string, dados: { estoque?: number; status?: "publicado" | "indisponivel" }): Promise<Produto> {
+    const registro = await prisma.produto.update({ where: { id }, data: dados, include: incluirArtesao })
+    return paraProduto(registro)
+  },
+
+  /** Soma das quantidades das peças do artesão em pedidos que não foram cancelados. */
+  async contarVendidasDoArtesao(artesaoId: string): Promise<number> {
+    const resultado = await prisma.itemPedido.aggregate({
+      _sum: { quantidade: true },
+      where: { produto: { artesaoId }, pedido: { status: { not: "cancelado" } } },
+    })
+    return resultado._sum.quantidade ?? 0
+  },
 }

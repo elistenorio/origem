@@ -77,6 +77,12 @@ export const artesaosRepository = {
     return { itens: registros.map(paraArtesao), total }
   },
 
+  /** Id do perfil de artesão ligado ao usuário logado (null se ele não tiver um). */
+  async buscarIdPorUsuario(usuarioId: string): Promise<string | null> {
+    const registro = await prisma.artesao.findUnique({ where: { usuarioId }, select: { id: true } })
+    return registro?.id ?? null
+  },
+
   async buscarPublicadoPorId(id: string): Promise<Artesao | null> {
     const registro = await prisma.artesao.findFirst({ where: { id, ...SO_PUBLICADOS }, include: incluirExtras })
     return registro ? paraArtesao(registro) : null
