@@ -5,7 +5,7 @@
 
 Projeto Integrador 2026.2 (CESAR School), disciplina de Desenvolvimento Web. Branch principal: `main`.
 
-**Fase atual — Avaliação 1:** frontend responsivo com dados de exemplo, preparado para consumir uma Fake API (em integração). O backend fica para a Avaliação 2.
+**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL) substituindo a Fake API da Avaliação 1, com autenticação JWT em cookie. Em construção: já existem a estrutura base, o banco (schema e seed) e o login/cadastro.
 
 ## Problema de Negócio
 
@@ -30,8 +30,11 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - ESLint
 - Tailwind CSS (instalado pela stack da disciplina; os estilos das telas são feitos com Chakra UI)
 
-**Backend (planejado para a Avaliação 2)**
-- Node.js + Express, Prisma e autenticação com JWT
+**Backend (Avaliação 2, em `backend/`)**
+- Node.js + Express + TypeScript
+- [Prisma](https://www.prisma.io) com PostgreSQL (Docker no ambiente local; Supabase em produção)
+- Autenticação com JWT (`jsonwebtoken`) em cookie httpOnly, senhas com `bcryptjs`
+- `cors` e `cookie-parser`
 
 ## Como executar localmente
 
@@ -56,6 +59,42 @@ Outros comandos (dentro de `frontend/`):
 | `npm run lint` | Verifica o código com ESLint |
 | `npm run typegen` | Regenera os tipos do tema do Chakra (rodar depois de mudar `src/theme/`) |
 
+### Backend
+
+Pré-requisitos: Node.js e [Docker](https://www.docker.com) (para o PostgreSQL local).
+
+```bash
+cd origem/backend
+npm install
+cp .env.example .env          # preencha (veja "Variáveis de ambiente")
+docker compose up -d          # PostgreSQL na porta 5434
+npm run prisma:migrate        # cria as tabelas
+npm run prisma:seed           # carrega os dados de exemplo
+npm run dev                   # API em http://localhost:3001/api
+```
+
+Para o frontend usar o backend, defina `NEXT_PUBLIC_API_URL=http://localhost:3001/api` em `frontend/.env.local`.
+
+Contas criadas pelo seed (senha de todas: `Origem@123`, só para desenvolvimento):
+
+| Perfil | E-mail |
+|---|---|
+| Comprador | `ana.beatriz@email.com` (também `pedro.h@`, `luana.souza@`, `julia.rocha@email.com`) |
+| Comprador suspenso | `joao.silva@email.com` (login recusado) |
+| Artesão | `joaozinho@email.com` (um usuário por artesão, com o e-mail do perfil) |
+| Administrador | `admin@origem.com` |
+
+Outros comandos (dentro de `backend/`):
+
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento (reinicia ao salvar) |
+| `npm run build` / `npm run start` | Compila para `dist/` e roda o build |
+| `npm run prisma:migrate` | Cria/aplica migrations no banco local |
+| `npm run prisma:deploy` | Aplica as migrations em produção |
+| `npm run prisma:seed` | Apaga os dados e recarrega o seed |
+| `npm run prisma:studio` | Interface para ver o banco |
+
 ## Variáveis de ambiente
 
 | Variável | Obrigatória | Descrição |
@@ -63,6 +102,17 @@ Outros comandos (dentro de `frontend/`):
 | `NEXT_PUBLIC_API_URL` | Não | Endereço base da API. Se não for definida, o frontend usa `/api` (a Fake API do próprio Next). Na Avaliação 2 aponta para o backend real. |
 
 Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie para `frontend/.env.local`. Nunca coloque credenciais reais no `.env.example`.
+
+**Backend** (modelo em [`backend/.env.example`](backend/.env.example), copiar para `backend/.env`):
+
+| Variável | Obrigatória | Descrição |
+|---|---|---|
+| `DATABASE_URL` | Sim | Conexão do app com o PostgreSQL. No Supabase: pooler, porta 6543, com `?pgbouncer=true` |
+| `DIRECT_URL` | Sim | Conexão direta usada pelas migrations. No Supabase: porta 5432. Local: igual à `DATABASE_URL` |
+| `JWT_SECRET` | Sim | Segredo para assinar os tokens |
+| `FRONTEND_URL` | Sim | Endereço exato do frontend, liberado no CORS (local: `http://localhost:3000`) |
+| `PORT` | Não | Porta da API (padrão 3001) |
+| `NODE_ENV` | Não | `production` no Render: o cookie passa a ir com `secure` e `sameSite=none` |
 
 ## Funcionalidades implementadas
 
@@ -86,7 +136,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Sobre, newsletter, páginas de ajuda (como comprar, entregas e frete, formas de pagamento, trocas e devoluções, perguntas frequentes), termos de uso, política de privacidade e política de cookies
 
 ## Rotas da API
-A Fake API (Route Handlers do Next em `frontend/src/app/api`) está em desenvolvimento. Os endpoints, métodos, parâmetros e exemplos de resposta serão documentados em [`docs/api.md`](docs/api.md) conforme forem integrados.
+Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`) e autenticação (`/auth/login`, `/auth/logout`, `/auth/me`).
 
 ## Deploy
 Em configuração (Vercel). Link publicado: _a definir_.

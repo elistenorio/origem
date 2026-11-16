@@ -1,0 +1,18 @@
+# Banco PostgreSQL para desenvolvimento local (em produção o banco fica no Supabase).
+# Subir: docker compose up -d   |   Parar: docker compose down
+services:
+  db:
+    image: postgres:16
+    container_name: origem_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: origem
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_origem:/var/lib/postgresql/data
+
+volumes:
+  pgdata_origem:
