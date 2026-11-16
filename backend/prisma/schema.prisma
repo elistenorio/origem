@@ -49,24 +49,28 @@ model Usuario {
 model Categoria {
   id       String    @id // ex.: "ceramica-barro"
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Tecnica {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Material {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
 }
 
 model Regiao {
   id       String    @id
   label    String
+  ordem    Int       @default(0) // posição na lista de filtros
   produtos Produto[]
   artesaos Artesao[]
 }
@@ -98,6 +102,7 @@ model Artesao {
   tecnicas       String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
   categorias     String[] // ids de Categoria
   status         StatusArtesao @default(emAnalise)
+  relevancia     Int           @default(0) // quanto maior, antes aparece na ordem padrão
   criadoEm       DateTime      @default(now())
 
   regiaoId  String
@@ -119,19 +124,20 @@ enum StatusProduto {
 
 // artesaoNome e cidade da resposta da API vêm do Artesao (não são guardados aqui).
 model Produto {
-  id        String        @id @default(cuid())
-  titulo    String
-  tags      String[]
-  medidas   String
-  preco     Float
-  imagemUrl String
-  imagens   String[]
-  estoque   Int           @default(0)
-  pecaUnica Boolean       @default(false)
-  status    StatusProduto @default(rascunho)
-  descricao String
-  cuidados  String
-  criadoEm  DateTime      @default(now())
+  id         String        @id @default(cuid())
+  titulo     String
+  tags       String[]
+  medidas    String
+  preco      Float
+  imagemUrl  String
+  imagens    String[]
+  estoque    Int           @default(0)
+  pecaUnica  Boolean       @default(false)
+  status     StatusProduto @default(rascunho)
+  relevancia Int           @default(0) // quanto maior, antes aparece em ordenar=relevancia
+  descricao  String
+  cuidados   String
+  criadoEm   DateTime      @default(now())
 
   artesaoId   String
   artesao     Artesao   @relation(fields: [artesaoId], references: [id])
