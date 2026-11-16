@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express"
 import type { FormaPagamento } from "@prisma/client"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import type { ModalidadeFrete } from "../../shared/types/frete"
 import type { Comprador, CriarPedidoInput, Endereco } from "../../shared/types/pedido"
 import { ehObjeto, emailValido, normalizarEmail, texto } from "../../shared/validacao"
@@ -76,7 +76,7 @@ export const pedidosController = {
   // PATCH /pedidos/:id — por enquanto, só cancelar. Corpo: { status: "cancelado", motivo, observacao? }
   async atualizar(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+      if (!req.user) throw naoAutenticado()
       const b = ehObjeto(req.body) ? req.body : {}
 
       if (b.status !== "cancelado") throw erro("Só é possível cancelar o pedido.")

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { avaliacoesService } from "../../infrastructure/services/avaliacoes.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import type { NotasAvaliacao } from "../../shared/types/pedido"
 import { ehObjeto, texto } from "../../shared/validacao"
 
@@ -11,7 +11,7 @@ export const avaliacoesController = {
   // POST /avaliacoes — corpo: { pedidoId, nota, comentario, notas: { produto?, embalagem?, entrega? } }
   async criar(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+      if (!req.user) throw naoAutenticado()
       const b = ehObjeto(req.body) ? req.body : {}
 
       if (!notaValida(b.nota)) throw new AppError(400, "VALIDATION", "Dê uma nota de 1 a 5 estrelas.")

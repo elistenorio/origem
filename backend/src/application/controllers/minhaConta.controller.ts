@@ -1,13 +1,13 @@
 import type { NextFunction, Request, Response } from "express"
 import { minhaContaService } from "../../infrastructure/services/minhaConta.service"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import type { AtualizarEstoqueInput } from "../../shared/types/artesao"
 import { ehObjeto } from "../../shared/validacao"
 
 // Todas as rotas de /minha-conta passam pelo authMiddleware; isto é só para o TypeScript saber que há usuário.
 function usuarioLogado(req: Request) {
-  if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+  if (!req.user) throw naoAutenticado()
   return req.user
 }
 

@@ -13,3 +13,9 @@ export class AppError extends Error {
     this.code = code
   }
 }
+
+// 401 de quem chega a uma rota protegida sem estar logado. Fica num lugar só para a mensagem ser igual em toda a API.
+// É uma função, e não uma constante, para cada chamada criar um erro novo (com o stack trace de onde foi lançado).
+export function naoAutenticado(): AppError {
+  return new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+}

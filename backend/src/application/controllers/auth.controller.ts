@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { authService } from "../../infrastructure/services/auth.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import { NOME_COOKIE_TOKEN, opcoesCookieLogin, opcoesCookieToken } from "../../shared/cookie"
 import { textoPreenchido } from "../../shared/validacao"
 
@@ -33,7 +33,7 @@ export const authController = {
   async me(req: Request, res: Response, next: NextFunction) {
     try {
       // O authMiddleware garante req.user; a checagem é só para o TypeScript.
-      if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+      if (!req.user) throw naoAutenticado()
 
       const usuario = await authService.usuarioLogado(req.user.id)
       return res.status(200).json(usuario)
