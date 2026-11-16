@@ -1,0 +1,228 @@
+// Banco do Origem. Os nomes seguem os tipos do frontend (frontend/src/types), em português sem acento.
+// Os ids são texto para manter os do db.json da Fake API ("p1", "a1", "u1", "10495"); registros novos usam cuid().
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // Supabase: pooler (porta 6543, ?pgbouncer=true)
+  directUrl = env("DIRECT_URL") // Supabase: conexão direta (porta 5432), usada pelas migrations
+}
+
+// ---------- Usuários ----------
+
+enum PerfilUsuario {
+  comprador
+  artesao
+  admin
+}
+
+enum StatusUsuario {
+  ativo
+  suspenso
+}
+
+model Usuario {
+  id        String        @id @default(cuid())
+  nome      String
+  email     String        @unique
+  senhaHash String
+  perfil    PerfilUsuario @default(comprador)
+  status    StatusUsuario @default(ativo)
+  cidade    String        @default("") // ex.: "Recife/PE"
+  criadoEm  DateTime      @default(now())
+
+  // Dados de "Minha conta" (GET /minha-conta). Opcionais: só existem depois que o usuário preenche.
+  cpf             String? // mascarado, ex.: "***.456.789-**"
+  telefone        String?
+  endereco        Json? // Endereco
+  formasPagamento Json? // { titulo, detalhe }[]
+
+  artesao Artesao?
+  pedidos Pedido[]
+}
+
+// ---------- Filtros da vitrine (antes em frontend/src/constants) ----------
+
+model Categoria {
+  id       String    @id // ex.: "ceramica-barro"
+  label    String
+  produtos Produto[]
+}
+
+model Tecnica {
+  id       String    @id
+  label    String
+  produtos Produto[]
+}
+
+model Material {
+  id       String    @id
+  label    String
+  produtos Produto[]
+}
+
+model Regiao {
+  id       String    @id
+  label    String
+  produtos Produto[]
+  artesaos Artesao[]
+}
+
+// ---------- Artesãos ----------
+
+enum StatusArtesao {
+  publicado
+  emAnalise
+  ajustesSolicitados
+  indisponivel
+}
+
+// Perfil público do artesão. O login é feito pelo Usuario ligado a ele (o e-mail vem de lá).
+model Artesao {
+  id             String        @id @default(cuid())
+  nome           String
+  oficio         String
+  cidade         String
+  estado         String
+  bio            String
+  historia       String
+  citacao        String
+  trabalho       String?
+  origemTrabalho String?
+  citacaoOrigem  String?
+  gostaDeFazer   String?
+  fotoUrl        String
+  tecnicas       String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
+  categorias     String[] // ids de Categoria
+  status         StatusArtesao @default(emAnalise)
+  criadoEm       DateTime      @default(now())
+
+  regiaoId  String
+  regiao    Regiao    @relation(fields: [regiaoId], references: [id])
+  usuarioId String    @unique
+  usuario   Usuario   @relation(fields: [usuarioId], references: [id])
+  produtos  Produto[]
+}
+
+// ---------- Produtos ----------
+
+enum StatusProduto {
+  publicado
+  emAnalise
+  rascunho
+  indisponivel
+  vendida
+}
+
+// artesaoNome e cidade da resposta da API vêm do Artesao (não são guardados aqui).
+model Produto {
+  id        String        @id @default(cuid())
+  titulo    String
+  tags      String[]
+  medidas   String
+  preco     Float
+  imagemUrl String
+  imagens   String[]
+  estoque   Int           @default(0)
+  pecaUnica Boolean       @default(false)
+  status    StatusProduto @default(rascunho)
+  descricao String
+  cuidados  String
+  criadoEm  DateTime      @default(now())
+
+  artesaoId   String
+  artesao     Artesao   @relation(fields: [artesaoId], references: [id])
+  categoriaId String
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  tecnicaId   String
+  tecnica     Tecnica   @relation(fields: [tecnicaId], references: [id])
+  materialId  String
+  material    Material  @relation(fields: [materialId], references: [id])
+  regiaoId    String
+  regiao      Regiao    @relation(fields: [regiaoId], references: [id])
+
+  itensPedido ItemPedido[]
+}
+
+// ---------- Pedidos ----------
+
+enum StatusPedido {
+  processando
+  emSeparacao
+  enviado
+  entregue
+  cancelado
+}
+
+enum FormaPagamento {
+  cartao
+  pix
+  boleto
+}
+
+// comprador, endereco e frete são uma "foto" do momento da compra, por isso ficam em Json.
+model Pedido {
+  id                 String         @id @default(cuid())
+  codigo             String         @unique // ex.: "#10495"
+  status             StatusPedido   @default(processando)
+  criadoEm           DateTime       @default(now())
+  subtotal           Float
+  frete              Json // { modalidade, valor, prazo }
+  total              Float
+  comprador          Json // Comprador
+  endereco           Json // Endereco
+  pagamento          FormaPagamento
+  parcelas           Int            @default(1)
+  codigoRastreio     String?
+  previsaoEntrega    DateTime?
+  avaliado           Boolean        @default(false)
+  motivoCancelamento String?
+
+  // Dono do pedido. Opcional: o pedido pode ter sido feito como visitante.
+  usuarioId String?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+
+  itens     ItemPedido[]
+  eventos   EventoPedido[]
+  avaliacao Avaliacao?
+}
+
+// Título, imagem, artesão e preço "fotografados" na compra: não mudam se a peça mudar depois.
+model ItemPedido {
+  id            Int    @id @default(autoincrement())
+  titulo        String
+  imagemUrl     String
+  artesaoNome   String
+  precoUnitario Float
+  quantidade    Int
+
+  pedidoId  String
+  pedido    Pedido  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  produtoId String
+  produto   Produto @relation(fields: [produtoId], references: [id])
+}
+
+model EventoPedido {
+  id     Int      @id @default(autoincrement())
+  titulo String // ex.: "Pagamento confirmado"
+  data   DateTime @default(now())
+
+  pedidoId String
+  pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
+
+// ---------- Avaliações ----------
+
+model Avaliacao {
+  id         String   @id @default(cuid())
+  nota       Int // 1 a 5
+  comentario String
+  notas      Json // { produto?, embalagem?, entrega? }
+  criadoEm   DateTime @default(now())
+
+  pedidoId String @unique
+  pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
