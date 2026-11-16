@@ -139,7 +139,10 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`), autenticação (`/auth/login`, `/auth/logout`, `/auth/me`) as rotas da vitrine (`/produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) de Minha conta (`/minha-conta` e sub-rotas) e o painel do admin (`GET /admin/painel`): todas as rotas da Fake API já existem no backend.
 
 ## Deploy
-Em configuração (Vercel). Link publicado: _a definir_.
+Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo a passo em [`docs/deploy.md`](docs/deploy.md).
+
+- Site: _a definir_
+- API: _a definir_
 
 ## Evidências
 - Declaração de uso de IA: [`docs/uso-de-ia.md`](docs/uso-de-ia.md)
