@@ -4,7 +4,7 @@ import { pedidosService } from "../../infrastructure/services/pedidos.service"
 import { AppError } from "../../shared/AppError"
 import type { ModalidadeFrete } from "../../shared/types/frete"
 import type { Comprador, CriarPedidoInput, Endereco } from "../../shared/types/pedido"
-import { ehObjeto, emailValido, texto } from "../../shared/validacao"
+import { ehObjeto, emailValido, normalizarEmail, texto } from "../../shared/validacao"
 
 const MODALIDADES: ModalidadeFrete[] = ["pac", "sedex"]
 const PAGAMENTOS: FormaPagamento[] = ["cartao", "pix", "boleto"]
@@ -29,7 +29,7 @@ function lerPedido(body: unknown): CriarPedidoInput {
   })
 
   const c = ehObjeto(b.comprador) ? b.comprador : {}
-  const comprador: Comprador = { nome: texto(c.nome), cpf: texto(c.cpf), email: texto(c.email).toLowerCase(), telefone: texto(c.telefone) }
+  const comprador: Comprador = { nome: texto(c.nome), cpf: texto(c.cpf), email: normalizarEmail(texto(c.email)), telefone: texto(c.telefone) }
   if (!comprador.nome || !comprador.email) throw erro("Informe nome e e-mail do comprador.")
   if (!emailValido(comprador.email)) throw erro("Informe um e-mail válido.")
 

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs"
 import { AppError } from "../../shared/AppError"
+import { normalizarEmail } from "../../shared/validacao"
 import { usuariosRepository, type UsuarioPublico } from "../repositories/usuarios.repository"
 
 export type CadastroCompradorInput = {
@@ -9,11 +10,6 @@ export type CadastroCompradorInput = {
 }
 
 const SALT_ROUNDS = 10
-
-// E-mail é comparado sem diferenciar maiúsculas e sem espaços nas pontas.
-export function normalizarEmail(email: string): string {
-  return email.trim().toLowerCase()
-}
 
 export const usuariosService = {
   // POST /usuarios: cadastro público. Sempre cria um comprador (artesão e admin não se cadastram por aqui).

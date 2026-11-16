@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs"
 import { AppError } from "../../shared/AppError"
 import { gerarToken } from "../../shared/jwt"
+import { normalizarEmail } from "../../shared/validacao"
 import { usuariosRepository, type UsuarioPublico } from "../repositories/usuarios.repository"
-import { normalizarEmail } from "./usuarios.service"
 
 type LoginResultado = {
   token: string
