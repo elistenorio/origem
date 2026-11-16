@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { adminRouter } from "./admin.routes"
 import { artesaosRouter } from "./artesaos.routes"
 import { authRouter } from "./auth.routes"
 import { avaliacoesRouter } from "./avaliacoes.routes"
@@ -26,3 +27,6 @@ router.use("/frete", freteRouter)
 router.use("/pedidos", pedidosRouter)
 router.use("/avaliacoes", avaliacoesRouter)
 router.use("/minha-conta", minhaContaRouter)
+
+// Administrador
+router.use("/admin", adminRouter)
