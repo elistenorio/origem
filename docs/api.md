@@ -6,7 +6,10 @@
 |---|---|---|
 | Quem responde | **Fake API**: Route Handlers do Next.js em `frontend/src/app/api/` | Backend Node.js + Express + Prisma |
 | URL base | `/api` (mesmo endereço do site) | valor de `NEXT_PUBLIC_API_URL` |
-| Dados | `frontend/src/mocks/db.json`, lido em memória | banco de dados |
+| Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
+| Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
+
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas). As demais rotas deste documento ainda são respondidas só pela Fake API e vão sendo levadas para o backend com o mesmo contrato.
 
 - Toda resposta tem um atraso simulado de **300 ms**, para as telas mostrarem o estado de carregamento.
 - As rotas que gravam (`POST`) alteram os dados **só em memória**: valem até o servidor reiniciar. Na Vercel, cada chamada pode cair numa instância diferente, então a tela usa a própria resposta do `POST` (ex.: a confirmação do pedido).
@@ -50,9 +53,12 @@ Usada por `GET /produtos` e `GET /artesaos`.
 | Status | `code` | Quando |
 |---|---|---|
 | 400 | `VALIDATION` | dado enviado inválido (ex.: CEP, nota da avaliação, pedido sem peças) |
+| 401 | `UNAUTHORIZED` | sem login, sessão inválida ou expirada, ou e-mail/senha incorretos (só backend) |
+| 403 | `FORBIDDEN` | logado, mas sem permissão: perfil errado, recurso de outro usuário ou conta suspensa (só backend) |
 | 404 | `NOT_FOUND` | o recurso não existe ou não está publicado |
 | 409 | `OUT_OF_STOCK` | quantidade pedida maior que o estoque |
-| 409 | `CONFLICT` | ação não permitida no estado atual (ex.: avaliar um pedido duas vezes) |
+| 409 | `CONFLICT` | ação não permitida no estado atual (ex.: avaliar um pedido duas vezes, e-mail já cadastrado) |
+| 500 | `INTERNAL` | erro inesperado no servidor (só backend) |
 
 O `services/api.ts` transforma essa resposta em um `ApiError` (com `code`, `message` e `status`), e a tela mostra a `message`. Sem resposta do servidor, o erro vira `NETWORK` (status 0).
 
@@ -350,6 +356,65 @@ Tela inicial do administrador: resumo da plataforma, pendências, notificações
 - `pedidosHoje`, `vendasMes` e `clientes` são números fixos do `db.json` (`resumoPlataforma`); `artesaosAtivos`, `produtosPublicados` e as `pendencias` são contados a partir dos dados.
 - Sem login na Avaliação 1; na Avaliação 2 a rota fica protegida para o perfil `admin`.
 
+## Autenticação e cadastro (backend)
+
+Existem **só no backend** (`backend/`), não na Fake API. O login grava um JWT num **cookie httpOnly** chamado `token`: o JavaScript do site não lê o token, o navegador envia o cookie sozinho em cada requisição. Para isso o `services/api.ts` usa `withCredentials: true`, e o backend libera no CORS só o endereço do frontend (`FRONTEND_URL`) com `credentials: true`.
+
+- O token tem `{ id, perfil }` e vale **1 dia** (o cookie também).
+- Cookie: `httpOnly`, `path=/`. Local: `sameSite=lax`. Produção (front na Vercel e backend no Render, domínios diferentes): `sameSite=none` e `secure`.
+- Rotas protegidas respondem `401 UNAUTHORIZED` sem cookie ou com token inválido/expirado, e `403 FORBIDDEN` quando o perfil não tem acesso.
+
+Todas as respostas de usuário usam o tipo `Usuario` (`frontend/src/types/usuario.ts`), **nunca com a senha**:
+
+```json
+{
+  "id": "u1",
+  "nome": "Ana Beatriz Souza",
+  "email": "ana.beatriz@email.com",
+  "perfil": "comprador",
+  "status": "ativo",
+  "cidade": "Recife/PE",
+  "criadoEm": "2026-06-12T10:00:00.000Z"
+}
+```
+
+### `POST /usuarios`
+
+Cadastro de comprador (tela `/cadastro/comprador`). Sempre cria o perfil `comprador`; artesão e admin não se cadastram por aqui. Corpo (`CadastroCompradorInput`):
+
+```json
+{ "nome": "Ana Beatriz Souza", "email": "ana.beatriz@email.com", "senha": "minhasenha" }
+```
+
+Resposta `201` com o `Usuario` criado. O cadastro **não** faz login: a tela chama `POST /auth/login` em seguida, se quiser entrar direto. O e-mail é salvo em minúsculas e sem espaços nas pontas.
+
+Erros:
+- `400 VALIDATION`: sem nome, e-mail inválido ou senha com menos de 8 caracteres.
+- `409 CONFLICT`: já existe uma conta com o e-mail.
+
+### `POST /auth/login`
+
+```json
+{ "email": "ana.beatriz@email.com", "senha": "minhasenha" }
+```
+
+Resposta `200` com o `Usuario` e o cabeçalho `Set-Cookie: token=...; HttpOnly`.
+
+Erros:
+- `400 VALIDATION`: sem e-mail ou sem senha.
+- `401 UNAUTHORIZED`: e-mail ou senha incorretos (a mesma mensagem nos dois casos, para não revelar quais e-mails têm conta).
+- `403 FORBIDDEN`: conta com `status` `suspenso`.
+
+### `POST /auth/logout`
+
+Sem corpo. Apaga o cookie e responde `204` (sem corpo). Funciona mesmo sem estar logado.
+
+### `GET /auth/me`
+
+Quem está logado, a partir do cookie. Como o token é httpOnly, é assim que o frontend descobre, ao abrir ou recarregar a página, se há sessão. Resposta `200` com o `Usuario`.
+
+Erro: `401 UNAUTHORIZED` sem cookie, com token inválido ou expirado, ou se o usuário não existe mais.
+
 ## Rotas planejadas
 
 Ainda não existem no código. Os dados de que elas precisam já estão no `db.json`.
@@ -359,9 +424,9 @@ Ainda não existem no código. Os dados de que elas precisam já estão no `db.j
 | Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
 | Admin | `GET /admin/acompanhamento` | acompanhamento |
 | Admin | `GET /admin/curadoria?tipo=` | curadoria |
-| Depois | `POST /usuarios`, criar e editar peça, gestão do admin | cadastro, formulário de peça, tabelas de gestão |
+| Depois | criar e editar peça, gestão do admin | formulário de peça, tabelas de gestão |
 
-Na Avaliação 2 entram também login e cadastro reais (JWT), carrinho salvo no backend e as rotas protegidas por perfil.
+Na Avaliação 2 entram também o carrinho salvo no backend e as rotas protegidas por perfil.
 
 ## Como a Fake API será substituída pelo backend
 
