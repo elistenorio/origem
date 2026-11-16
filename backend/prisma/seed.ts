@@ -113,6 +113,8 @@ type Db = {
   usuarios: UsuarioJson[]
   contas: ContaJson[]
   pedidos: PedidoJson[]
+  atividades: { id: string; autor: string; descricao: string; data: string }[]
+  notificacoesAdmin: { id: string; titulo: string; descricao: string }[]
 }
 
 // ---------- Filtros (copiados de frontend/src/constants) ----------
@@ -183,6 +185,8 @@ async function limparBanco() {
   await prisma.tecnica.deleteMany()
   await prisma.material.deleteMany()
   await prisma.regiao.deleteMany()
+  await prisma.notificacao.deleteMany()
+  await prisma.atividade.deleteMany()
 }
 
 async function main() {
@@ -327,6 +331,16 @@ async function main() {
       },
     })
   }
+
+  console.log("Criando notificações e atividades do painel do admin...")
+  await prisma.atividade.createMany({
+    data: db.atividades.map((a) => ({ id: a.id, autor: a.autor, descricao: a.descricao, data: new Date(a.data) })),
+  })
+  // As notificações do db.json não têm data: a primeira da lista fica como a mais recente.
+  const agora = Date.now()
+  await prisma.notificacao.createMany({
+    data: db.notificacoesAdmin.map((n, i) => ({ ...n, criadoEm: new Date(agora - i * 60_000) })),
+  })
 
   // Os pedidos do seed têm número fixo; o próximo pedido criado continua a partir do maior deles.
   await prisma.$executeRaw`

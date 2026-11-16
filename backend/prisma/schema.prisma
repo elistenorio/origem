@@ -232,3 +232,22 @@ model Avaliacao {
   pedidoId String @unique
   pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
 }
+
+// ---------- Painel do administrador ----------
+
+// Avisos da tela inicial do admin (ex.: "Novo artesão cadastrado").
+// Por enquanto vêm do seed; passam a ser criados pelas ações de curadoria e gestão quando elas existirem.
+model Notificacao {
+  id        String   @id @default(cuid())
+  titulo    String
+  descricao String
+  criadoEm  DateTime @default(now())
+}
+
+// Histórico do que a equipe fez na plataforma (ex.: "Maria Clara aprovou a peça ...").
+model Atividade {
+  id        String   @id @default(cuid())
+  autor     String
+  descricao String
+  data      DateTime @default(now())
+}
