@@ -7,11 +7,14 @@ Perfis:
 - **Artesão**: catálogo, estoque, pedidos, perfil, história das peças.
 - **Administrador**: gestão da plataforma, indicadores, curadoria.
 
-## Fase atual: Avaliação 1
-Frontend responsivo consumindo uma Fake API estruturada, com deploy público. O backend (Node + Express + Prisma + JWT) é da Avaliação 2: não crie `backend/` nem adiante funcionalidades da Avaliação 2 sem pedido explícito.
+## Fase atual: Avaliação 2
+Backend real substituindo a Fake API da Avaliação 1: Node + TypeScript + Express + Prisma + PostgreSQL, com autenticação JWT em cookie httpOnly e rotas protegidas por perfil. O backend implementa as mesmas rotas, parâmetros e formatos de `docs/api.md`, para o frontend não mudar (basta definir `NEXT_PUBLIC_API_URL`).
+
+Deploy: banco no Supabase, backend no Render e frontend na Vercel. Previstos para depois: cache com Redis (`GET /produtos` e `GET /produtos/:id`) e Swagger. Processamento assíncrono ainda não foi decidido: não implemente sem pedido explícito.
 
 - `frontend/` — aplicação Next.js. Regras detalhadas em `frontend/CLAUDE.md`.
-- `docs/api.md` — contrato da Fake API. `docs/arquitetura.md` — decisões de arquitetura. `docs/uso-de-ia.md` — declaração de uso de IA.
+- `backend/` — API Express + Prisma. Regras detalhadas em `backend/CLAUDE.md`.
+- `docs/api.md` — contrato da API (Fake API e backend). `docs/arquitetura.md` — decisões de arquitetura. `docs/uso-de-ia.md` — declaração de uso de IA.
 - `README.md` — segue o modelo mínimo do professor.
 
 ## Regras gerais
@@ -27,7 +30,7 @@ Frontend responsivo consumindo uma Fake API estruturada, com deploy público. O 
 - Mensagens de commit em inglês, no formato Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:` (ex.: `feat: add products fake api`).
 
 ## Documentação
-- Criou ou alterou uma rota da Fake API: atualize `docs/api.md` (método, rota, parâmetros, exemplo de resposta, erros e como será trocada pelo backend real).
+- Criou ou alterou uma rota da API (Fake API ou backend): atualize `docs/api.md` (método, rota, parâmetros, exemplo de resposta, erros e como será trocada pelo backend real).
 - Documente só o que existe no código.
 - README: mantenha as seções do modelo do professor e indique `main` como branch principal. `.env.example` nunca com credenciais reais.
 
