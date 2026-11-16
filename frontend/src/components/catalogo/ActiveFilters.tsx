@@ -5,6 +5,7 @@ import { TECNICAS } from "@/constants/tecnicas"
 import { MATERIAIS } from "@/constants/materiais"
 import { REGIOES } from "@/constants/regioes"
 import { formatCurrency } from "@/utils/formatCurrency"
+import { getOptionLabel } from "@/utils/getOptionLabel"
 
 type Filtros = Record<string, string | undefined>
 
@@ -15,7 +16,7 @@ function rotular(chave: string, valor: string) {
   if (chave === "precoMin") return `A partir de ${formatCurrency(Number(valor))}`
   if (chave === "precoMax") return `Até ${formatCurrency(Number(valor))}`
   if (chave === "disponivel") return "Pronta entrega"
-  return listas[chave]?.find((o) => o.value === valor)?.label ?? valor
+  return getOptionLabel(listas[chave] ?? [], valor)
 }
 
 // Chips dos filtros aplicados; o "x" remove só aquele filtro.

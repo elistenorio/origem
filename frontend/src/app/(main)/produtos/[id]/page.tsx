@@ -18,9 +18,7 @@ import { artesaosService } from "@/services/artesaos.service"
 import { produtosService } from "@/services/produtos.service"
 import { useCartStore } from "@/store/cartStore"
 import { formatCurrency } from "@/utils/formatCurrency"
-
-// A peça guarda ids ("modelagem-manual"); a ficha técnica mostra o texto ("Modelagem manual").
-const rotulo = (opcoes: { value: string; label: string }[], valor: string) => opcoes.find((o) => o.value === valor)?.label ?? valor
+import { getOptionLabel } from "@/utils/getOptionLabel"
 
 // Detalhe da peça (/produtos/{id}): dados de GET /produtos/{id}, do artesão e das peças relacionadas.
 export default function ProdutoDetailPage() {
@@ -150,9 +148,9 @@ export default function ProdutoDetailPage() {
                   </Text>
                   <Text fontWeight="bold" fontSize="sm" mb={1}>Ficha Técnica</Text>
                   <Text fontSize="sm" color="origem.texto" lineHeight="1.8">
-                    Categoria: {rotulo(CATEGORIAS, produto.categoria)}<br/>
-                    Material: {rotulo(MATERIAIS, produto.material)}<br/>
-                    Técnica: {rotulo(TECNICAS, produto.tecnica)}<br/>
+                    Categoria: {getOptionLabel(CATEGORIAS, produto.categoria)}<br/>
+                    Material: {getOptionLabel(MATERIAIS, produto.material)}<br/>
+                    Técnica: {getOptionLabel(TECNICAS, produto.tecnica)}<br/>
                     Dimensões: {produto.medidas}<br/>
                     Origem: {produto.cidade}, Pernambuco
                     {produto.pecaUnica && <><br/>Peça única</>}

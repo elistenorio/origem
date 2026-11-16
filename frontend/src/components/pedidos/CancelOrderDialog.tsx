@@ -8,6 +8,7 @@ import { MOTIVOS_CANCELAMENTO } from "@/constants/pedidos"
 import { ApiError } from "@/services/api"
 import { pedidosService } from "@/services/pedidos.service"
 import { formatCurrency } from "@/utils/formatCurrency"
+import { getOptionLabel } from "@/utils/getOptionLabel"
 import type { Pedido } from "@/types/pedido"
 import { OrderMiniSummary } from "./OrderMiniSummary"
 
@@ -37,7 +38,7 @@ export function CancelOrderDialog({ pedido, onClose, onCancelado }: CancelOrderD
   async function handleConfirmar() {
     setTentouEnviar(true)
     if (!pedido || !motivo) return
-    const rotulo = MOTIVOS_CANCELAMENTO.find((m) => m.value === motivo)?.label ?? motivo
+    const rotulo = getOptionLabel(MOTIVOS_CANCELAMENTO, motivo)
     setEnviando(true)
     setErro(undefined)
     try {
