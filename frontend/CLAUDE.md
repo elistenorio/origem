@@ -47,7 +47,8 @@ Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, e
 - Recursos da Fake API: produtos, artesãos, usuários, categorias, técnicas, regiões, pedidos, avaliações e recomendações iniciais.
 
 ## Estado global (Zustand)
-- Estado compartilhado entre telas (carrinho; depois, usuário logado) fica em `src/store/`, um store por assunto — ex.: `store/cartStore.ts` exportando `useCartStore`. Não use Context nem Redux para isso.
+- Estado compartilhado entre telas (carrinho, usuário logado) fica em `src/store/`, um store por assunto — ex.: `store/cartStore.ts` exportando `useCartStore`. Não use Context nem Redux para isso.
+- Login: `store/authStore.ts` guarda o usuário logado (sem `persist`: o token fica num cookie httpOnly do backend, que o JS não lê). Telas usam o hook `useSessao` (entrar, sair, cadastrar); o `SessionLoader` do layout raiz confere a sessão com `GET /auth/me` ao abrir o site. Áreas protegidas usam `<RequireAuth perfis={[...]}>` num `layout.tsx` (ex.: `app/(main)/artesao/layout.tsx`). A proteção de verdade é a do backend (401/403); o `RequireAuth` só evita mostrar a tela.
 - Carrinho: Zustand com `persist` (localStorage), usando os tipos de `src/types/carrinho.ts`. Totais e contagem são calculados a partir dos itens, não guardados no estado. Na Avaliação 2 ele passa a sincronizar com o backend por um service.
 - Stores não fazem requisições; se uma ação precisar da API, ela chama um service.
 - Componentes que usam store são Client Components (`"use client"`). Com `persist`, o servidor renderiza o carrinho vazio: valores como o contador do carrinho só aparecem depois de montar no navegador, para evitar erro de hidratação.

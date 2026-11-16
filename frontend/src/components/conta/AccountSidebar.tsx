@@ -3,6 +3,7 @@
 import NextLink from "next/link"
 import { chakra, Link, useSlotRecipe } from "@chakra-ui/react"
 import { BiCreditCard, BiLockAlt, BiMap, BiLogOut, BiPackage, BiSliderAlt, BiUser } from "react-icons/bi"
+import { LogoutLink } from "@/components/autenticacao/LogoutLink"
 
 type AccountItem =
   | "dados-pessoais"
@@ -39,12 +40,10 @@ export function AccountSidebar({ activeItem = "dados-pessoais" }: AccountSidebar
         </Link>
       ))}
 
-      <Link asChild css={styles.sair}>
-        <NextLink href="/">
-          <BiLogOut size={18} />
-          Sair
-        </NextLink>
-      </Link>
+      <LogoutLink css={styles.sair}>
+        <BiLogOut size={18} />
+        Sair
+      </LogoutLink>
     </chakra.nav>
   )
 }

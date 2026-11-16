@@ -1,5 +1,6 @@
 import localFont from "next/font/local"
 import { Provider } from "@/components/ui/provider"
+import { SessionLoader } from "@/components/autenticacao/SessionLoader"
 
 // Cada fonte vira uma variável CSS (--font-titulo / --font-corpo),
 // que o tema do Chakra lê em src/theme/system.ts
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          <SessionLoader />
+          {children}
+        </Provider>
       </body>
     </html>
   )
