@@ -1,3 +1,4 @@
+import { emailValido } from "@/utils/validation"
 import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
 
 const OBRIGATORIOS: [keyof DadosCheckout, string][] = [
@@ -16,7 +17,7 @@ const OBRIGATORIOS: [keyof DadosCheckout, string][] = [
 export function validateCheckout(dados: DadosCheckout): ErrosCheckout {
   const erros: ErrosCheckout = {}
   for (const [campo, mensagem] of OBRIGATORIOS) if (!String(dados[campo]).trim()) erros[campo] = mensagem
-  if (!dados.email.includes("@")) erros.email = "Informe um e-mail válido."
+  if (!emailValido(dados.email)) erros.email = "Informe um e-mail válido."
   if (dados.cpf && dados.cpf.replace(/\D/g, "").length !== 11) erros.cpf = "O CPF precisa ter 11 números."
   if (dados.pagamento === "cartao") {
     if (dados.numeroCartao.replace(/\D/g, "").length < 13) erros.numeroCartao = "Número do cartão inválido."
