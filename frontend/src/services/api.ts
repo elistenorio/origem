@@ -22,7 +22,8 @@ export class ApiError extends Error {
 export const api = axios.create({
   // "||" (e não "??"): se a variável existir mas estiver vazia (como no .env.example), usa "/api" também.
   baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
-  timeout: 5000,
+  // 60 s: no plano gratuito do Render o backend "dorme" sem uso e leva até 1 minuto para acordar.
+  timeout: 60000,
   // Envia e recebe o cookie httpOnly do login (JWT) mesmo com o backend em outro domínio.
   withCredentials: true,
 })
