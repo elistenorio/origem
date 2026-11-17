@@ -12,14 +12,14 @@ type EditStockDialogProps = {
   onSalvar: (quantidade: number) => void
 }
 
-// Pop-up "Editar quantidade" do estoque.
+// Pop-up "Mudar quantidade" do estoque.
 export function EditStockDialog({ produto, onClose, onSalvar }: EditStockDialogProps) {
   const [quantidade, setQuantidade] = useState(produto.estoque)
   return (
     <OrigemDialog
       open
       onClose={onClose}
-      titulo="Editar quantidade"
+      titulo="Mudar quantidade"
       descricao={produto.titulo}
       size="sm"
       rodape={
@@ -30,6 +30,7 @@ export function EditStockDialog({ produto, onClose, onSalvar }: EditStockDialogP
       }
     >
       <Text textStyle="rotulo">Quantidade disponível</Text>
+      <Text textStyle="apoio">Toque em + quando fizer mais peças e em – quando vender fora do site.</Text>
       <QuantityStepper value={quantidade} onChange={(v) => setQuantidade(Math.max(0, v))} />
     </OrigemDialog>
   )

@@ -8,29 +8,29 @@ export const cardOrigem = defineSlotRecipe({
     variant: {
       // painel bege com borda suave (padrão das telas)
       origem: {
-        root: { bg: "origem.passoFundo", borderWidth: "1px", borderColor: "origem.marrom/50", borderRadius: "2xl", color: "origem.texto" },
+        root: { bg: "origem.passoFundo", borderWidth: "1px", borderColor: "origem.linha", borderRadius: "3xl", color: "origem.texto", boxShadow: "0 8px 24px rgba(46, 30, 25, 0.05)" },
         header: { px: "6", pt: "6", pb: "0", gap: "1" },
-        title: { fontFamily: "body", fontWeight: "bold", textTransform: "uppercase", fontSize: "md", color: "origem.texto" },
+        title: { fontFamily: "heading", fontWeight: "bold", fontSize: "2xl", color: "origem.texto" },
         description: { color: "origem.textoSuave", fontSize: "sm" },
         body: { px: "6", py: "6", gap: "4" },
         footer: { px: "6", pb: "6", pt: "0", gap: "3" },
       },
       // item claro dentro de um painel (notificação, alerta, pedido recente)
       item: {
-        root: { bg: "origem.fundo", borderRadius: "lg", color: "origem.texto" },
+        root: { bg: "origem.busca", borderRadius: "xl", color: "origem.texto" },
         body: { px: "4", py: "3", gap: "1" },
         title: { fontFamily: "body", fontWeight: "bold", fontSize: "sm" },
         description: { color: "origem.textoSuave", fontSize: "sm" },
       },
       // card de vitrine (produto, artesão): fundo claro, borda laranja
       vitrine: {
-        root: { bg: "origem.fundo", borderWidth: "1px", borderColor: "origem.laranja", borderRadius: "2xl", overflow: "hidden", color: "origem.texto", boxShadow: "xs" },
+        root: { bg: "white", borderWidth: "1px", borderColor: "origem.linha", borderRadius: "3xl", overflow: "hidden", color: "origem.texto", boxShadow: "0 8px 24px rgba(46, 30, 25, 0.06)" },
         body: { p: "4", gap: "1" },
         footer: { px: "4", pb: "4", pt: "0" },
       },
       // opção selecionável / destaque (item da fila da curadoria, aviso)
       destaque: {
-        root: { bg: "origem.fundo", borderWidth: "2px", borderColor: "origem.laranja", borderRadius: "2xl", color: "origem.texto" },
+        root: { bg: "origem.busca", borderWidth: "2px", borderColor: "origem.laranja", borderRadius: "2xl", color: "origem.texto" },
         body: { px: "5", py: "4", gap: "2" },
         title: { fontFamily: "body", fontWeight: "bold", fontSize: "sm" },
         description: { color: "origem.textoSuave", fontSize: "sm" },

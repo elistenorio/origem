@@ -171,7 +171,7 @@ export default function MinhaContaPage() {
                 removidos. Essa ação não poderá ser desfeita.
               </Text>
               <HStack gap={4}>
-                <Button bg="origem.marrom" color="origem.fundo" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
+                <Button variant="perigo">
                   Excluir a minha conta
                 </Button>
                 <LogoutLink color="origem.perigo" fontWeight="medium" />

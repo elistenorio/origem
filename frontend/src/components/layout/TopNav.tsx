@@ -12,16 +12,16 @@ const links = [
 
 export function TopNav() {
   return (
-    <Box as="nav" bg="origem.marrom" py="3" px="4">
+    <Box as="nav" bg="white" borderBottomWidth="1px" borderColor="origem.linha" py="3" px="4">
       <HStack justify="center" gap={{ base: 4, md: 10 }} wrap="wrap">
         {links.map((item) => (
           <Link
             asChild
             key={item.href}
-            color="origem.fundo"
-            textTransform="uppercase"
+            color="origem.texto"
             fontWeight="medium"
-            _hover={{ textDecoration: "none", opacity: 0.8 }}
+            py="1"
+            _hover={{ color: "origem.laranja", textDecoration: "underline", textUnderlineOffset: "4px" }}
           >
             <NextLink href={item.href}>{item.label}</NextLink>
           </Link>

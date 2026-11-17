@@ -58,13 +58,13 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
 
         <Stack flex="1" gap="6" w="full">
           <SectionCard title="Sobre a peça">
-            <FormField label="Nome da peça" placeholder="Ex.: Jarro Tradicional" {...texto("titulo")} />
+            <FormField label="Nome da peça" hint="O nome que o comprador vai ver. Curto e simples." placeholder="Ex.: Jarro Tradicional" {...texto("titulo")} />
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-              <SelectField label="Categoria" options={selecione(CATEGORIAS)} value={dados.categoria} onChange={(v) => alterar("categoria", v)} error={erros.categoria} />
-              <SelectField label="Técnica" options={selecione(TECNICAS)} value={dados.tecnica} onChange={(v) => alterar("tecnica", v)} />
+              <SelectField label="Categoria" hint="Escolha o grupo em que a peça se encaixa melhor." options={selecione(CATEGORIAS)} value={dados.categoria} onChange={(v) => alterar("categoria", v)} error={erros.categoria} />
+              <SelectField label="Técnica" hint="Como a peça foi feita. Ex.: modelagem manual, bordado." options={selecione(TECNICAS)} value={dados.tecnica} onChange={(v) => alterar("tecnica", v)} />
             </SimpleGrid>
-            <TextareaField label="Descrição" placeholder="Conte a história da peça, como ela foi feita e o que a torna especial." value={dados.descricao} onChange={(e) => alterar("descricao", e.target.value)} error={erros.descricao} rows={5} />
-            <SelectField label="Material principal" options={selecione(MATERIAIS)} value={dados.material} onChange={(v) => alterar("material", v)} />
+            <TextareaField label="Descrição" hint="Escreva do seu jeito, como se contasse para um cliente na feira." placeholder="Conte a história da peça, como ela foi feita e o que a torna especial." value={dados.descricao} onChange={(e) => alterar("descricao", e.target.value)} error={erros.descricao} rows={5} />
+            <SelectField label="Material principal" hint="Do que a peça é feita, na maior parte." options={selecione(MATERIAIS)} value={dados.material} onChange={(v) => alterar("material", v)} />
           </SectionCard>
 
           <SectionCard title="Medidas e peso" description="Informe as medidas da peça pronta, sem a embalagem.">
@@ -81,8 +81,8 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
               Peça única (apenas 1 unidade)
             </AppCheckbox>
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-              <FormField label="Quantidade disponível" type="number" min={0} disabled={dados.pecaUnica} value={String(dados.estoque)} onChange={(e) => alterar("estoque", Number(e.target.value))} error={erros.estoque} />
-              <FormField label="Preço (R$)" type="number" min={0} step="0.01" value={dados.preco ? String(dados.preco) : ""} onChange={(e) => alterar("preco", Number(e.target.value))} error={erros.preco} />
+              <FormField label="Quantidade disponível" hint="Quantas peças iguais a esta você tem prontas." type="number" min={0} disabled={dados.pecaUnica} value={String(dados.estoque)} onChange={(e) => alterar("estoque", Number(e.target.value))} error={erros.estoque} />
+              <FormField label="Preço (R$)" hint="Só números. Use vírgula ou ponto para os centavos." type="number" min={0} step="0.01" value={dados.preco ? String(dados.preco) : ""} onChange={(e) => alterar("preco", Number(e.target.value))} error={erros.preco} />
             </SimpleGrid>
             <Text textStyle="apoio">
               O Origem retém {TAXA_ORIGEM * 100}% do valor de cada venda. Você recebe {formatCurrency(dados.preco * (1 - TAXA_ORIGEM))} por unidade.
@@ -91,8 +91,8 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
 
           <SectionCard title="Informações de envio" description="Usamos esses dados para calcular o frete e o prazo para o comprador.">
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-              <SelectField label="Prazo para postagem" options={PRAZOS} value={dados.prazoPostagem} onChange={(v) => alterar("prazoPostagem", v)} />
-              <SelectField label="Tipo de embalagem" options={EMBALAGENS} value={dados.embalagem} onChange={(v) => alterar("embalagem", v)} />
+              <SelectField label="Prazo para postagem" hint="Quantos dias você leva para levar a peça aos Correios." options={PRAZOS} value={dados.prazoPostagem} onChange={(v) => alterar("prazoPostagem", v)} />
+              <SelectField label="Tipo de embalagem" hint="Como a peça vai protegida até o comprador." options={EMBALAGENS} value={dados.embalagem} onChange={(v) => alterar("embalagem", v)} />
             </SimpleGrid>
             <TextareaField label="Cuidados no envio (opcional)" placeholder="Ex.: peça frágil, enviar com plástico bolha." value={dados.cuidadosEnvio} onChange={(e) => alterar("cuidadosEnvio", e.target.value)} />
           </SectionCard>

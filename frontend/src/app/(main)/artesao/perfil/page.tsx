@@ -35,7 +35,7 @@ export default function ArtesaoPerfilPage() {
   }
 
   return (
-    <Flex>
+    <Flex direction={{ base: "column", md: "row" }}>
       <DashboardSidebar activeItem="perfil" />
 
       {/* Main Content Area */}
@@ -81,7 +81,7 @@ export default function ArtesaoPerfilPage() {
                 fontWeight="normal"
                 w="300px"
               />
-              <IconButton aria-label="Editar nome" variant="ghost" color="origem.marrom" bg="white" borderRadius="full" size="xs" w="24px" h="24px" _hover={{ bg: "whiteAlpha.80" }}>
+              <IconButton aria-label="Editar nome" variant="ghost" color="origem.laranja" bg="white" borderRadius="full" size="md" _hover={{ bg: "origem.busca" }}>
                 <BiPencil />
               </IconButton>
             </HStack>
@@ -92,13 +92,13 @@ export default function ArtesaoPerfilPage() {
 
           {/* Basic Info Grid */}
           <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-            <FormField label="CIDADE" defaultValue={artesao.cidade} />
-            <FormField label="ESTADO" defaultValue={artesao.estado} />
+            <FormField label="Cidade" defaultValue={artesao.cidade} />
+            <FormField label="Estado" defaultValue={artesao.estado} />
             <Grid gridColumn={{ md: "span 2" }}>
-              <FormField label="EMAIL" defaultValue={artesao.email} />
+              <FormField label="Email" defaultValue={artesao.email} />
             </Grid>
-            <FormField label="TELEFONE" placeholder="(DDD) 00000-0000" />
-            <FormField label="CELULAR" placeholder="(DDD) 00000-0000" />
+            <FormField label="Telefone" hint="Opcional. Só números, com DDD." placeholder="(DDD) 00000-0000" />
+            <FormField label="Celular" hint="De preferência com WhatsApp." placeholder="(DDD) 00000-0000" />
           </Grid>
 
           <Separator borderColor="origem.passoFundo" borderWidth="1px" />
@@ -109,7 +109,7 @@ export default function ArtesaoPerfilPage() {
               SOBRE VOCÊ
             </Heading>
             <VStack align="stretch" gap={6}>
-              <TextareaField label="Sua história" minH="120px" defaultValue={artesao.historia} resize="vertical" />
+              <TextareaField label="Sua história" hint="Como você começou e quem te ensinou." minH="120px" defaultValue={artesao.historia} resize="vertical" />
               <TextareaField label="Seu trabalho" minH="120px"
                 placeholder="Fale sobre o que você faz e como trabalha: quais peças produz, quais materiais e técnicas utiliza e como costuma ser seu processo de criação."
                 resize="vertical" />
@@ -131,13 +131,13 @@ export default function ArtesaoPerfilPage() {
             </Heading>
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6} mb={8}>
               <SelectField
-                label="TEMPO DE ATUAÇÃO"
+                label="Tempo de atuação"
                 value={tempoAtuacao}
                 onChange={setTempoAtuacao}
                 options={TEMPO_ATUACAO}
               />
               <SelectField
-                label="ÁREA DE ATUAÇÃO"
+                label="Área de atuação"
                 value={areaAtuacao}
                 onChange={setAreaAtuacao}
                 options={CATEGORIAS}
@@ -167,7 +167,7 @@ export default function ArtesaoPerfilPage() {
               <Text as="span" fontWeight="bold"> Essa ação não poderá ser desfeita.</Text> Antes de continuar,
               certifique-se de que não possui pedidos ou outras atividades pendentes.
             </Text>
-            <Button bg="origem.marrom" color="origem.fundo" borderRadius="lg" px={6} py={6} _hover={{ opacity: 0.9 }}>
+            <Button variant="perigo">
               Excluir a minha conta
             </Button>
           </Box>

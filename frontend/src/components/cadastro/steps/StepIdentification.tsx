@@ -15,7 +15,7 @@ export function StepIdentification({ data, onChange, onNext }: StepProps) {
     <StepForm onSubmit={onNext} disabled={!data.aceitouTermos || senhasDiferentes}>
       <FormField label="Nome completo" placeholder="Nome Sobrenome"
         value={data.nome} onChange={(e) => onChange("nome", e.target.value)} />
-      <FormField label="Email" type="email" placeholder="email@exemplo.com"
+      <FormField label="Email" hint="Você vai usar este email para entrar no site." type="email" placeholder="email@exemplo.com"
         value={data.email} onChange={(e) => onChange("email", e.target.value)} />
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
@@ -32,7 +32,7 @@ export function StepIdentification({ data, onChange, onNext }: StepProps) {
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
         <FormField label="Telefone" type="tel" placeholder="(DDD) 00000-0000"
           value={data.telefone} onChange={(e) => onChange("telefone", e.target.value)} />
-        <FormField label="Celular" type="tel" placeholder="(DDD) 00000-0000"
+        <FormField label="Celular" hint="De preferência com WhatsApp, para a equipe falar com você." type="tel" placeholder="(DDD) 00000-0000"
           value={data.celular} onChange={(e) => onChange("celular", e.target.value)} />
       </SimpleGrid>
 

@@ -66,7 +66,7 @@ export function CatalogItemCard({
               <BiPencil /> Editar
             </Button>
             <Button variant="outline" size="sm" onClick={onView}>
-              Visualizar
+              Ver como fica
             </Button>
           </HStack>
         </Stack>

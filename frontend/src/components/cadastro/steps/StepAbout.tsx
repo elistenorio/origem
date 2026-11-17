@@ -24,15 +24,15 @@ const AREAS = [
 export function StepAbout({ data, onChange, onNext }: StepProps) {
   return (
     <StepForm onSubmit={onNext}>
-      <FormField label="Nome artístico" placeholder="Nome"
+      <FormField label="Nome artístico" hint="É o nome que aparece na vitrine. Pode ser o seu nome mesmo." placeholder="Nome"
         value={data.nomeArtistico}
         onChange={(e) => onChange("nomeArtistico", e.target.value)} />
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-        <SelectField label="Tempo de atuação" options={TEMPO_ATUACAO}
+        <SelectField label="Tempo de atuação" hint="Há quanto tempo você trabalha com artesanato." options={TEMPO_ATUACAO}
           value={data.tempoAtuacao}
           onChange={(value) => onChange("tempoAtuacao", value)} />
-        <SelectField label="Área de atuação" options={AREAS}
+        <SelectField label="Área de atuação" hint="O tipo de peça que você mais faz." options={AREAS}
           value={data.areaAtuacao}
           onChange={(value) => onChange("areaAtuacao", value)} />
       </SimpleGrid>

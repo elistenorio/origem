@@ -15,7 +15,7 @@ export function NewProductView() {
   return (
     <ArtisanShell ativo="catalogo">
       <Link asChild variant="suave" mb="3">
-        <NextLink href="/artesao/catalogo">← Voltar para Meu catálogo</NextLink>
+        <NextLink href="/artesao/catalogo">← Voltar para Minhas peças</NextLink>
       </Link>
       <PanelPageHeader titulo="Adicionar peça" descricao="Preencha as informações da sua peça. Depois de enviada, ela passa pela curadoria do Origem antes de aparecer na vitrine." />
       <ProductForm
