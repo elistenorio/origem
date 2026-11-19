@@ -1,6 +1,6 @@
 # Backend — Origem
 
-Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`. Nada além disso sem perguntar (Redis e Swagger estão previstos; processamento assíncrono ainda não foi decidido).
+Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`, `swagger-ui-express` (Swagger em `/api/docs`). Nada além disso sem perguntar (Redis está previsto; processamento assíncrono ainda não foi decidido).
 
 Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o projeto usa o formato com `env("DATABASE_URL")` e `env("DIRECT_URL")`.
 
@@ -18,6 +18,7 @@ src/
   server.ts                  app Express: cors, json, cookie-parser, rotas em /api, 404 e errorHandler
   application/routes/        um <recurso>.routes.ts por recurso + index.ts (junta tudo)
   application/controllers/   HTTP: lê req, valida campos (400), chama o service, responde
+  application/docs/          openapi.ts: documentação do Swagger, escrita a partir do docs/api.md
   infrastructure/services/   regras de negócio; lançam AppError
   infrastructure/repositories/ acesso ao banco via Prisma, sem regra de negócio
   infrastructure/prisma/     instância única do PrismaClient
@@ -30,7 +31,7 @@ src/
 - route → controller → service → repository. Controller não usa Prisma; repository não tem regra de negócio.
 - Controllers: `try/catch` com `next(err)`. Erros esperados são `new AppError(status, code, message)`; o `errorHandler` (4 parâmetros) responde `{ error: { code, message } }`. Erro desconhecido vira `500 INTERNAL` sem expor detalhes.
 - Códigos: `VALIDATION` 400, `UNAUTHORIZED` 401, `FORBIDDEN` 403, `NOT_FOUND` 404, `CONFLICT`/`OUT_OF_STOCK` 409, `INTERNAL` 500.
-- **Contrato:** rotas, parâmetros e formatos de resposta e de erro iguais aos de `docs/api.md` e aos tipos de `frontend/src/types/`, para o frontend não mudar. Mudou ou criou rota: atualize o `docs/api.md`.
+- **Contrato:** rotas, parâmetros e formatos de resposta e de erro iguais aos de `docs/api.md` e aos tipos de `frontend/src/types/`, para o frontend não mudar. Mudou ou criou rota: atualize o `docs/api.md` e o `application/docs/openapi.ts` (Swagger).
 - Ids são texto (os do seed mantêm os do `db.json`: `p1`, `a1`, `u1`). Campos derivados (ex.: `artesaoNome` e `cidade` do produto) são montados no repository a partir das relações.
 - Tipos do contrato (`Produto`, `Artesao`, `Paginated`...) ficam em `src/shared/types/`, iguais aos de `frontend/src/types/`. Paginação com `readPagination`/`paginated` de `src/shared/pagination.ts`.
 - Busca sem acento: SQL com `unaccent` via `prisma.$queryRaw` (template com `${...}`, nunca concatenando texto), que devolve só os ids; filtros, ordem e paginação continuam no Prisma. Nunca use `$queryRawUnsafe`.
