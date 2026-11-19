@@ -33,7 +33,29 @@ function paraProduto(p: ProdutoComArtesao): Produto {
     descricao: p.descricao,
     cuidados: p.cuidados,
     criadoEm: p.criadoEm,
+    peso: p.peso ?? undefined,
+    prazoPostagem: p.prazoPostagem ?? undefined,
+    embalagem: p.embalagem ?? undefined,
   }
+}
+
+// Campos que o artesão grava ao criar ou editar uma peça, já montados pelo service.
+export type DadosPeca = {
+  titulo: string
+  tags: string[]
+  medidas: string
+  preco: number
+  estoque: number
+  pecaUnica: boolean
+  status: "rascunho" | "emAnalise"
+  descricao: string
+  cuidados: string
+  peso: string | null
+  prazoPostagem: string
+  embalagem: string
+  categoriaId: string
+  tecnicaId: string
+  materialId: string
 }
 
 // Empates sempre desempatam pela relevância, como a ordem do db.json na Fake API.
@@ -155,6 +177,30 @@ export const produtosRepository = {
   async atualizarEstoqueEStatus(id: string, dados: { estoque?: number; status?: "publicado" | "indisponivel" }): Promise<Produto> {
     const registro = await prisma.produto.update({ where: { id }, data: dados, include: incluirArtesao })
     return paraProduto(registro)
+  },
+
+  /** Nova peça do artesão. A região é a dele; as fotos começam com a imagem padrão. */
+  async criar(dados: DadosPeca & { artesaoId: string; regiaoId: string; imagemUrl: string }): Promise<Produto> {
+    const registro = await prisma.produto.create({
+      data: { ...dados, imagens: [dados.imagemUrl] },
+      include: incluirArtesao,
+    })
+    return paraProduto(registro)
+  },
+
+  /** Edita os dados da peça. Fotos, região e relevância continuam como estavam. */
+  async editar(id: string, dados: DadosPeca): Promise<Produto> {
+    const registro = await prisma.produto.update({ where: { id }, data: dados, include: incluirArtesao })
+    return paraProduto(registro)
+  },
+
+  /** Quantas vezes a peça aparece em pedidos (de qualquer status). */
+  async contarItensPedido(id: string): Promise<number> {
+    return prisma.itemPedido.count({ where: { produtoId: id } })
+  },
+
+  async excluir(id: string): Promise<void> {
+    await prisma.produto.delete({ where: { id } })
   },
 
   /** Soma das quantidades das peças do artesão em pedidos que não foram cancelados. */
