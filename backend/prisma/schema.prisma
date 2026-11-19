@@ -99,6 +99,7 @@ model Artesao {
   citacaoOrigem  String?
   gostaDeFazer   String?
   fotoUrl        String
+  tempoAtuacao   String? // faixa do formulário de perfil: "menos-1", "1-3", "3-10" ou "mais-10"
   tecnicas       String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
   categorias     String[] // ids de Categoria
   status         StatusArtesao @default(emAnalise)
@@ -138,6 +139,11 @@ model Produto {
   descricao  String
   cuidados   String
   criadoEm   DateTime      @default(now())
+
+  // Dados de envio do formulário de peça. Opcionais: as peças do seed não têm.
+  peso          String? // em kg, como o artesão digitou (ex.: "1,2")
+  prazoPostagem String? // dias úteis para postar: "1", "3" ou "7"
+  embalagem     String? // "caixa", "envelope" ou "tubo"
 
   artesaoId   String
   artesao     Artesao   @relation(fields: [artesaoId], references: [id])

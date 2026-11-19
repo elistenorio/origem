@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import { escaparLike } from "../../shared/validacao"
-import type { Artesao, FiltrosArtesao } from "../../shared/types/artesao"
+import type { Artesao, FiltrosArtesao, PerfilArtesao, PerfilArtesaoInput } from "../../shared/types/artesao"
 
 // Junto com o artesão: o e-mail do usuário dele e quantas peças publicadas ele tem.
 const incluirExtras = {
@@ -81,6 +81,43 @@ export const artesaosRepository = {
   async buscarIdPorUsuario(usuarioId: string): Promise<string | null> {
     const registro = await prisma.artesao.findUnique({ where: { usuarioId }, select: { id: true } })
     return registro?.id ?? null
+  },
+
+  /** Perfil do artesão ligado ao usuário logado, em qualquer status, com telefone e tempo de atuação. */
+  async buscarPerfilDoUsuario(usuarioId: string): Promise<PerfilArtesao | null> {
+    const registro = await prisma.artesao.findUnique({
+      where: { usuarioId },
+      include: { ...incluirExtras, usuario: { select: { email: true, telefone: true } } },
+    })
+    if (!registro) return null
+    return { ...paraArtesao(registro), telefone: registro.usuario.telefone ?? "", tempoAtuacao: registro.tempoAtuacao ?? "" }
+  },
+
+  /**
+   * Salva o perfil do artesão. O telefone fica no usuário; o resto, no artesão.
+   * As duas gravações vão na mesma transação: ou salva tudo, ou nada.
+   * Textos opcionais vazios viram null (a seção some do perfil público).
+   */
+  async atualizarPerfil(usuarioId: string, dados: PerfilArtesaoInput): Promise<void> {
+    const ouNulo = (texto: string) => texto || null
+    await prisma.$transaction([
+      prisma.usuario.update({ where: { id: usuarioId }, data: { telefone: ouNulo(dados.telefone) } }),
+      prisma.artesao.update({
+        where: { usuarioId },
+        data: {
+          nome: dados.nome,
+          cidade: dados.cidade,
+          estado: dados.estado,
+          historia: dados.historia,
+          trabalho: ouNulo(dados.trabalho),
+          origemTrabalho: ouNulo(dados.origemTrabalho),
+          gostaDeFazer: ouNulo(dados.gostaDeFazer),
+          tempoAtuacao: ouNulo(dados.tempoAtuacao),
+          categorias: dados.categorias,
+          tecnicas: dados.tecnicas,
+        },
+      }),
+    ])
   },
 
   async buscarPublicadoPorId(id: string): Promise<Artesao | null> {

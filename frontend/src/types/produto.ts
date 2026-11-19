@@ -28,6 +28,10 @@ export type Produto = {
   descricao: string
   cuidados: string
   criadoEm: string      // ISO 8601
+  // Dados de envio do formulário de peça (só nas peças cadastradas pelo formulário).
+  peso?: string           // em kg, ex.: "1,2"
+  prazoPostagem?: string  // dias úteis: "1", "3" ou "7"
+  embalagem?: string      // "caixa", "envelope" ou "tubo"
 }
 
 export type OrdenacaoProduto = "relevancia" | "menor_preco" | "maior_preco" | "recentes"

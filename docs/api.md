@@ -9,7 +9,9 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). e `GET /admin/painel`. Com isso, **todas as rotas da Fake API já existem no backend**.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça e ler e salvar o perfil do artesão), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). e `GET /admin/painel`. Com isso, **todas as rotas da Fake API já existem no backend**.
+
+**Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
 ### Diferenças do backend
 
@@ -17,7 +19,7 @@
 - `totalProdutos` do artesão é **contado no banco** (peças publicadas). No `db.json` era um número fixo.
 - `pageSize` tem máximo de 100: um valor maior vira 100.
 - Ordem `relevancia` (padrão): no backend vem da coluna `relevancia`, que o seed preenche na ordem do `db.json`. Peças e artesãos novos entram no fim.
-- **Login de verdade:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); `/minha-conta/produtos`, `/minha-conta/resumo` e `PATCH /minha-conta/produtos/{id}` são só do perfil `artesao` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login e só o dono do pedido pode usá-las (o admin também pode cancelar); pedido de outra pessoa → `403`.
+- **Login de verdade:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); `/minha-conta/produtos` (e as de criar, editar e excluir peça), `/minha-conta/resumo` e `/minha-conta/perfil` são só do perfil `artesao` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login e só o dono do pedido pode usá-las (o admin também pode cancelar); pedido de outra pessoa → `403`.
 - **Pedidos de verdade:** `POST /pedidos` baixa o estoque e o cancelamento devolve as peças. O frete é recalculado pelo CEP (do `frete` enviado, só vale a `modalidade`). O número do pedido vem de uma sequência do banco (`10496`, `10497`...).
 
 - Toda resposta tem um atraso simulado de **300 ms**, para as telas mostrarem o estado de carregamento.
@@ -362,6 +364,85 @@ Erros:
 - `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
 - `409 CONFLICT`: tentar esconder ou mostrar uma peça que ainda não foi publicada (rascunho ou em análise).
 
+### `POST /minha-conta/produtos`
+
+O artesão logado cadastra uma peça nova ("Adicionar peça"). Corpo: `ProdutoInput` (`frontend/src/types/produto.ts`).
+
+```json
+{
+  "titulo": "Moringa Azul", "categoria": "ceramica-barro", "tecnica": "modelagem-manual", "material": "barro",
+  "descricao": "Moringa feita à mão em Tracunhaém.",
+  "altura": "20", "largura": "12", "profundidade": "12", "peso": "1,2",
+  "pecaUnica": false, "estoque": 3, "preco": 89.9,
+  "prazoPostagem": "3", "embalagem": "caixa", "cuidadosEnvio": "Peça frágil.",
+  "enviarParaAnalise": true
+}
+```
+
+Resposta `201` com o `Produto` criado:
+- `status`: `emAnalise` quando `enviarParaAnalise` é `true` (vai para a curadoria e só aparece na vitrine depois de aprovada); senão `rascunho`.
+- `medidas`: `"largura × altura × profundidade" + "cm"` (ex.: `"12 × 20 × 12cm"`); vazio se nenhuma medida foi informada.
+- `tags`: `"Peça única"` (quando for) e o nome do material.
+- Peça única fica sempre com `estoque: 1`.
+- `regiao`, `artesaoNome` e `cidade` vêm do artesão. As fotos ainda não são enviadas: `imagemUrl` e `imagens` recebem uma foto de exemplo.
+- `peso`, `prazoPostagem` e `embalagem` voltam no `Produto` (campos opcionais, só nas peças cadastradas pelo formulário).
+
+Erros:
+- `400 VALIDATION`: falta nome, categoria, técnica ou material; categoria, técnica ou material que não existe; medida ou peso que não é número (aceita vírgula ou ponto); preço ou quantidade negativos; `prazoPostagem` diferente de `1`, `3` ou `7`; `embalagem` diferente de `caixa`, `envelope` ou `tubo`. Para enviar à análise, também são obrigatórios descrição, preço maior que zero e quantidade (se não for peça única). A mensagem é a mesma que o formulário mostra.
+- `401 UNAUTHORIZED` / `403 FORBIDDEN` (backend): sem login / perfil diferente de `artesao` (vale para todas as rotas abaixo).
+
+### `PUT /minha-conta/produtos/{id}`
+
+O artesão salva as mudanças de uma peça dele ("Editar peça"). Corpo e validações iguais aos do `POST`. Resposta `200` com o `Produto` atualizado.
+
+- **Toda edição volta para a curadoria** (`emAnalise`) ou para `rascunho`, conforme `enviarParaAnalise`: o admin confere de novo antes de a peça voltar para a vitrine.
+- Fotos, região e relevância continuam como estavam.
+
+Erros: os do `POST`, mais `404 NOT_FOUND` (a peça não existe ou não é do artesão logado) e `409 CONFLICT` (peça com status `vendida`).
+
+### `DELETE /minha-conta/produtos/{id}`
+
+O artesão apaga uma peça dele. Resposta `204`, sem corpo.
+
+Erros:
+- `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
+- `409 CONFLICT`: a peça já está em algum pedido (o pedido guarda a ligação com ela). Nesse caso, o artesão pode escondê-la da vitrine com `PATCH /minha-conta/produtos/{id}`.
+
+### `GET /minha-conta/perfil`
+
+Perfil do artesão logado ("Meu perfil"), em qualquer status. É o `Artesao` de `GET /artesaos/{id}` com dois campos a mais, que só ele vê (tipo `PerfilArtesao`):
+
+```json
+{ "id": "a1", "nome": "Mestre Joãozinho", "cidade": "Tracunhaém", "estado": "PE", "...": "...", "telefone": "(81) 98888-7777", "tempoAtuacao": "mais-10" }
+```
+
+- `telefone`: do usuário ligado ao artesão; `""` se não foi preenchido.
+- `tempoAtuacao`: `menos-1`, `1-3`, `3-10` ou `mais-10`; `""` se não foi preenchido.
+
+Erros: `404 NOT_FOUND` se o usuário não tiver perfil de artesão.
+
+### `PUT /minha-conta/perfil`
+
+Salva o perfil do artesão logado. Corpo (`PerfilArtesaoInput`):
+
+```json
+{
+  "nome": "Mestre Joãozinho", "cidade": "Tracunhaém", "estado": "PE", "telefone": "(81) 98888-7777",
+  "historia": "Aprendi com os mais velhos de Tracunhaém.", "trabalho": "", "origemTrabalho": "", "gostaDeFazer": "",
+  "tempoAtuacao": "mais-10", "categorias": ["ceramica-barro"], "tecnicas": ["Modelagem manual", "Queima a lenha"]
+}
+```
+
+Resposta `200` com o `PerfilArtesao` salvo. As mudanças aparecem na hora no perfil público (`GET /artesaos/{id}`).
+- `trabalho`, `origemTrabalho` e `gostaDeFazer` vazios somem do perfil público (a seção não aparece).
+- O e-mail não muda por esta rota. O estado é gravado em maiúsculas.
+
+Erros:
+- `400 VALIDATION`: falta nome, cidade, história ou área de atuação (`categorias` vazio); estado sem 2 letras; telefone com menos de 10 números; `tempoAtuacao` fora das faixas.
+- `404 NOT_FOUND`: o usuário não tem perfil de artesão.
+
+Na Fake API, telefone e tempo de atuação ficam só em memória (não estão no `db.json`).
+
 ### `GET /admin/painel`
 
 Tela inicial do administrador: resumo da plataforma, pendências, notificações e atividades recentes.
@@ -456,7 +537,7 @@ Ainda não existem no código. Os dados de que elas precisam já estão no `db.j
 | Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
 | Admin | `GET /admin/acompanhamento` | acompanhamento |
 | Admin | `GET /admin/curadoria?tipo=` | curadoria |
-| Depois | criar e editar peça, gestão do admin | formulário de peça, tabelas de gestão |
+| Depois | gestão do admin | tabelas de gestão |
 
 Na Avaliação 2 entram também o carrinho salvo no backend e as rotas protegidas por perfil.
 
