@@ -35,6 +35,7 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - [Prisma](https://www.prisma.io) com PostgreSQL (Docker no ambiente local; Supabase em produção)
 - Autenticação com JWT (`jsonwebtoken`) em cookie httpOnly, senhas com `bcryptjs`
 - `cors` e `cookie-parser`
+- Cache com [Redis](https://redis.io) (`redis`) em `GET /produtos` e `GET /produtos/:id`: Docker no ambiente local; Key Value do Render em produção
 
 ## Como executar localmente
 
@@ -67,7 +68,7 @@ Pré-requisitos: Node.js e [Docker](https://www.docker.com) (para o PostgreSQL l
 cd origem/backend
 npm install
 cp .env.example .env          # preencha (veja "Variáveis de ambiente")
-docker compose up -d          # PostgreSQL na porta 5434
+docker compose up -d          # PostgreSQL (porta 5434) e Redis (porta 6380)
 npm run prisma:migrate        # cria as tabelas
 npm run prisma:seed           # carrega os dados de exemplo
 npm run dev                   # API em http://localhost:3001/api
@@ -113,6 +114,7 @@ Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie par
 | `FRONTEND_URL` | Sim | Endereço exato do frontend, liberado no CORS (local: `http://localhost:3000`) |
 | `PORT` | Não | Porta da API (padrão 3001) |
 | `NODE_ENV` | Não | `production` no Render: o cookie passa a ir com `secure` e `sameSite=none` |
+| `REDIS_URL` | Não | Redis do cache (local: `redis://localhost:6380`). Vazia = API sem cache |
 
 ## Funcionalidades implementadas
 
