@@ -5,7 +5,7 @@ Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, J
 Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o projeto usa o formato com `env("DATABASE_URL")` e `env("DIRECT_URL")`.
 
 ## Comandos (dentro de `backend/`)
-- `docker compose up -d` — PostgreSQL local (porta 5434)
+- `docker compose up -d` — PostgreSQL (porta 5434) e Redis (porta 6380) locais
 - `npm run dev` — API em http://localhost:3001/api
 - `npm run build` — compila com `tsc`; rode antes de dar a tarefa por concluída
 - `npm run prisma:migrate -- --name <nome>` — cria e aplica migration depois de mudar o `schema.prisma`
@@ -34,6 +34,7 @@ src/
 - Ids são texto (os do seed mantêm os do `db.json`: `p1`, `a1`, `u1`). Campos derivados (ex.: `artesaoNome` e `cidade` do produto) são montados no repository a partir das relações.
 - Tipos do contrato (`Produto`, `Artesao`, `Paginated`...) ficam em `src/shared/types/`, iguais aos de `frontend/src/types/`. Paginação com `readPagination`/`paginated` de `src/shared/pagination.ts`.
 - Busca sem acento: SQL com `unaccent` via `prisma.$queryRaw` (template com `${...}`, nunca concatenando texto), que devolve só os ids; filtros, ordem e paginação continuam no Prisma. Nunca use `$queryRawUnsafe`.
+- Cache (Redis, `src/infrastructure/cache/`): `GET /produtos` e `GET /produtos/:id` passam por `produtosCache.comCache`. **Toda mudança em peça (estoque, status, dados, artesão) precisa chamar `produtosCache.invalidar()` no service, depois de gravar.** O cache é opcional: sem `REDIS_URL` ou com o Redis fora do ar, a API segue sem ele.
 - Respostas de usuário nunca incluem `senhaHash` (use o `select` público do repository).
 - Rotas protegidas: `authMiddleware` (cookie `token` → `req.user`) e, se for por perfil, `roleMiddleware(["artesao"])` depois dele. Recurso de outro usuário: filtrar por `req.user.id`; acesso indevido (sem ser admin) → 403.
 - CORS só com `FRONTEND_URL` e `credentials: true`; nunca `"*"`.

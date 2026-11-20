@@ -23,3 +23,16 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true # o Render gera um segredo aleatório
+      - key: REDIS_URL # endereço do cache abaixo, preenchido sozinho pelo Render
+        fromService:
+          type: keyvalue
+          name: origem-cache
+          property: connectionString
+
+  # Cache (Redis) de GET /produtos e GET /produtos/:id. Se ele cair, a API segue sem cache.
+  - type: keyvalue
+    name: origem-cache
+    plan: free
+    region: virginia # mesma região do backend
+    ipAllowList: [] # vazio = só serviços do próprio Render acessam (nada de fora)
+    maxmemoryPolicy: allkeys-lru # memória cheia: descarta as chaves usadas há mais tempo
