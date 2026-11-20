@@ -1,4 +1,4 @@
-# Banco PostgreSQL para desenvolvimento local (em produção o banco fica no Supabase).
+# Serviços para desenvolvimento local: PostgreSQL e Redis (em produção: Supabase e o Key Value do Render).
 # Subir: docker compose up -d   |   Parar: docker compose down
 services:
   db:
@@ -13,6 +13,15 @@ services:
       - "5434:5432"
     volumes:
       - pgdata_origem:/var/lib/postgresql/data
+
+  # Cache de GET /produtos e GET /produtos/:id. Opcional: sem ele a API funciona, só sem cache.
+  # Porta 6380 para não brigar com outro Redis que já use a 6379.
+  cache:
+    image: redis:7-alpine
+    container_name: origem_cache
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
 
 volumes:
   pgdata_origem:

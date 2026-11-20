@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import { env, isProduction } from "./shared/env"
 import { router } from "./application/routes"
+import { iniciarCache } from "./infrastructure/cache/redis"
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler"
 
 const app = express()
@@ -25,6 +26,9 @@ app.use("/api", router)
 // Depois de todas as rotas: 404 e tratamento global de erros.
 app.use(notFoundHandler)
 app.use(errorHandler)
+
+// Conecta ao Redis já na subida (sem REDIS_URL, a API roda sem cache).
+iniciarCache()
 
 app.listen(env.PORT, () => {
   console.log(`API do Origem rodando em http://localhost:${env.PORT}`)

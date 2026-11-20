@@ -1,6 +1,7 @@
 import { AppError } from "../../shared/AppError"
 import type { TokenPayload } from "../../shared/jwt"
 import type { CriarPedidoInput, ItemPedido, Pedido } from "../../shared/types/pedido"
+import { produtosCache } from "../cache/produtos.cache"
 import { pedidosRepository } from "../repositories/pedidos.repository"
 import { produtosRepository } from "../repositories/produtos.repository"
 import { freteService } from "./frete.service"
@@ -63,6 +64,7 @@ export const pedidosService = {
       const titulo = itens.find((i) => i.produtoId === resultado.semEstoque)?.titulo ?? "uma das peças"
       throw new AppError(409, "OUT_OF_STOCK", `Estoque insuficiente para "${titulo}".`)
     }
+    await produtosCache.invalidar() // o estoque das peças mudou
     return resultado
   },
 
@@ -81,6 +83,7 @@ export const pedidosService = {
 
     const cancelado = await pedidosRepository.cancelar(id, motivo)
     if (!cancelado) throw new AppError(409, "CONFLICT", "Este pedido já foi enviado e não pode mais ser cancelado.")
+    await produtosCache.invalidar() // as peças voltaram ao estoque
     return cancelado
   },
 
