@@ -1,8 +1,10 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import swaggerUi from "swagger-ui-express"
 import { env, isProduction } from "./shared/env"
 import { router } from "./application/routes"
+import { openapi } from "./application/docs/openapi"
 import { iniciarCache } from "./infrastructure/cache/redis"
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler"
 
@@ -20,6 +22,9 @@ app.use(cookieParser())
 app.get("/", (_req, res) => {
   res.json({ status: "ok", api: "Origem" })
 })
+
+// Swagger: documentação interativa de todas as rotas (src/application/docs/openapi.ts).
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi, { customSiteTitle: "API do Origem" }))
 
 app.use("/api", router)
 

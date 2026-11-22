@@ -27,6 +27,27 @@ export type Artesao = {
   criadoEm: string      // ISO 8601
 }
 
+// Perfil do artesão logado (GET /minha-conta/perfil): o público mais o que só ele vê.
+export type PerfilArtesao = Artesao & {
+  telefone: string
+  tempoAtuacao: string  // "menos-1" | "1-3" | "3-10" | "mais-10", ou "" se ainda não preencheu
+}
+
+// O que o artesão envia ao salvar o próprio perfil (PUT /minha-conta/perfil). O e-mail não muda por aqui.
+export type PerfilArtesaoInput = {
+  nome: string
+  cidade: string
+  estado: string        // UF, ex.: "PE"
+  telefone: string
+  historia: string
+  trabalho: string
+  origemTrabalho: string
+  gostaDeFazer: string
+  tempoAtuacao: string
+  categorias: string[]  // ids de constants/categorias.ts ("Área de atuação")
+  tecnicas: string[]    // rótulos, ex.: ["Modelagem manual"]
+}
+
 // Filtros da lista de artesãos (GET /artesaos). Todos opcionais.
 export type FiltrosArtesao = {
   busca?: string

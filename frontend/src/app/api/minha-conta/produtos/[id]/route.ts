@@ -2,7 +2,8 @@ import type { NextRequest } from "next/server"
 import { db } from "@/mocks/db"
 import { fail, ok } from "@/app/api/_lib/responses"
 import { sessaoDemo } from "@/app/api/_lib/session"
-import type { AtualizarEstoqueInput } from "@/types/produto"
+import { camposDaPeca, erroDaPeca } from "@/app/api/_lib/pecas"
+import type { AtualizarEstoqueInput, ProdutoInput } from "@/types/produto"
 
 // PATCH /api/minha-conta/produtos/{id}: o artesão logado atualiza o estoque de uma peça dele
 // e/ou esconde ("indisponivel") e mostra de novo ("publicado") a peça na vitrine.
@@ -32,4 +33,35 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (input.estoque !== undefined) peca.estoque = input.estoque
   if (input.status) peca.status = input.status
   return ok(peca)
+}
+
+// PUT /api/minha-conta/produtos/{id}: o artesão salva as mudanças de uma peça dele.
+// Toda edição volta para a curadoria (ou para rascunho), como no backend.
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const input = (await request.json().catch(() => null)) as ProdutoInput | null
+  const erro = erroDaPeca(input)
+  if (erro || !input) return fail(400, "VALIDATION", erro ?? "Dados da peça inválidos.")
+
+  const peca = db.produtos.find((p) => p.id === id && p.artesaoId === sessaoDemo.artesaoId)
+  if (!peca) return fail(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
+  if (peca.status === "vendida") return fail(409, "CONFLICT", "Esta peça já foi vendida e não pode ser editada.")
+
+  Object.assign(peca, camposDaPeca(input))
+  return ok(peca)
+}
+
+// DELETE /api/minha-conta/produtos/{id}: apaga a peça, se ela nunca entrou em um pedido.
+export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const indice = db.produtos.findIndex((p) => p.id === id && p.artesaoId === sessaoDemo.artesaoId)
+  if (indice === -1) return fail(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
+
+  const vendida = db.pedidos.some((pedido) => pedido.itens.some((item) => item.produtoId === id))
+  if (vendida) {
+    return fail(409, "CONFLICT", "Esta peça já foi vendida, por isso não pode ser excluída. Você pode escondê-la da vitrine em Meu estoque.")
+  }
+
+  db.produtos.splice(indice, 1)
+  return new Response(null, { status: 204 })
 }

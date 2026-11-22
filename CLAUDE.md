@@ -10,7 +10,7 @@ Perfis:
 ## Fase atual: Avaliação 2
 Backend real substituindo a Fake API da Avaliação 1: Node + TypeScript + Express + Prisma + PostgreSQL, com autenticação JWT em cookie httpOnly e rotas protegidas por perfil. O backend implementa as mesmas rotas, parâmetros e formatos de `docs/api.md`, para o frontend não mudar (basta definir `NEXT_PUBLIC_API_URL`).
 
-Deploy: banco no Supabase, backend no Render e frontend na Vercel. Previstos para depois: cache com Redis (`GET /produtos` e `GET /produtos/:id`) e Swagger. Processamento assíncrono ainda não foi decidido: não implemente sem pedido explícito.
+Deploy: banco no Supabase, backend no Render e frontend na Vercel. Swagger do backend em `/api/docs` e cache com Redis em `GET /produtos` e `GET /produtos/:id`. Processamento assíncrono ainda não foi decidido: não implemente sem pedido explícito.
 
 - `frontend/` — aplicação Next.js. Regras detalhadas em `frontend/CLAUDE.md`.
 - `backend/` — API Express + Prisma. Regras detalhadas em `backend/CLAUDE.md`.
