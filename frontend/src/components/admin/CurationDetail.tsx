@@ -7,6 +7,8 @@ import { Tile } from "@/components/common/Tile"
 import { StatusBadge } from "@/components/common/StatusBadge"
 import { Timeline } from "@/components/common/Timeline"
 import { TextareaField } from "@/components/common/TextareaField"
+import { ApiError } from "@/services/api"
+import { adminService } from "@/services/admin.service"
 import { formatDateTime } from "@/utils/formatDate"
 import type { DecisaoCuradoria, ItemCuradoria } from "@/types/admin"
 
@@ -15,10 +17,25 @@ type CurationDetailProps = { item: ItemCuradoria; onDecidido: (decisao: DecisaoC
 // Detalhes de um item da fila da curadoria + parecer e decisão.
 export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
   const [parecer, setParecer] = useState("")
+  const [faltaParecer, setFaltaParecer] = useState(false)
+  const [enviando, setEnviando] = useState<DecisaoCuradoria>()
+  const [erro, setErro] = useState<string>()
 
-  function handleDecidir(decisao: DecisaoCuradoria) {
-    setParecer("")
-    onDecidido(decisao)
+  async function handleDecidir(decisao: DecisaoCuradoria) {
+    const texto = parecer.trim()
+    setFaltaParecer(decisao !== "aprovar" && !texto)
+    if (decisao !== "aprovar" && !texto) return
+    setEnviando(decisao)
+    setErro(undefined)
+    try {
+      await adminService.decidirCuradoria(item.tipo, item.id, { decisao, parecer: texto })
+      setParecer("")
+      onDecidido(decisao)
+    } catch (e) {
+      setErro(e instanceof ApiError ? e.message : "Não foi possível registrar a decisão.")
+    } finally {
+      setEnviando(undefined)
+    }
   }
 
   return (
@@ -65,12 +82,19 @@ export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
           <Timeline eventos={item.historico} />
         </Stack>
 
-        <TextareaField label="Parecer da curadoria" placeholder="Obrigatório para solicitar ajustes ou recusar." value={parecer} onChange={(e) => setParecer(e.target.value)} />
+        <TextareaField
+          label="Parecer da curadoria"
+          placeholder="Obrigatório para solicitar ajustes ou recusar."
+          value={parecer}
+          onChange={(e) => setParecer(e.target.value)}
+          error={faltaParecer ? "Escreva o parecer para solicitar ajustes ou recusar." : undefined}
+        />
+        {erro && <Text color="origem.perigo" fontSize="sm" role="alert">{erro}</Text>}
         <Flex gap="3" justify="space-between" wrap="wrap">
-          <Button variant="perigo" onClick={() => handleDecidir("recusar")}>Recusar</Button>
+          <Button variant="perigo" onClick={() => handleDecidir("recusar")} loading={enviando === "recusar"} disabled={!!enviando}>Recusar</Button>
           <HStack gap="3">
-            <Button variant="secundario" onClick={() => handleDecidir("ajustes")}>Solicitar ajustes</Button>
-            <Button variant="origem" onClick={() => handleDecidir("aprovar")}>Aprovar</Button>
+            <Button variant="secundario" onClick={() => handleDecidir("ajustes")} loading={enviando === "ajustes"} disabled={!!enviando}>Solicitar ajustes</Button>
+            <Button variant="origem" onClick={() => handleDecidir("aprovar")} loading={enviando === "aprovar"} disabled={!!enviando}>Aprovar</Button>
           </HStack>
         </Flex>
       </Stack>

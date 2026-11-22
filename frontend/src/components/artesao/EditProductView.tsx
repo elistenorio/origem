@@ -17,6 +17,7 @@ import { produtoParaFormulario } from "@/utils/productForm"
 import { formatDate } from "@/utils/formatDate"
 import { ArtisanShell } from "./ArtisanShell"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
+import { CurationNotice } from "./CurationNotice"
 import { ProductForm } from "./ProductForm"
 
 // Editar peça existente no catálogo (Tela 06.1 - edição). A peça vem de GET /minha-conta/produtos.
@@ -76,6 +77,7 @@ export function EditProductView({ id }: { id: string }) {
                       <StatusBadge status={produto.status} />
                       <Text textStyle="apoio">Cadastrada em {formatDate(produto.criadoEm)}</Text>
                     </HStack>
+                    <CurationNotice status={produto.status} parecer={produto.parecerCuradoria} item="peca" />
                   </SectionCard>
                   <SectionCard title="Vendas e estoque">
                     <SimpleGrid columns={2} gap="3">

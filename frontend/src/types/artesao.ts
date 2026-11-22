@@ -1,7 +1,7 @@
 // Contrato de artesão: perfil PÚBLICO (o que o comprador vê).
 // O formulário de cadastro fica em types/artisan-registration.ts.
 
-export type StatusArtesao = "publicado" | "emAnalise" | "ajustesSolicitados" | "indisponivel"
+export type StatusArtesao = "publicado" | "emAnalise" | "ajustesSolicitados" | "indisponivel" | "recusado"
 
 export type Artesao = {
   id: string
@@ -31,6 +31,7 @@ export type Artesao = {
 export type PerfilArtesao = Artesao & {
   telefone: string
   tempoAtuacao: string  // "menos-1" | "1-3" | "3-10" | "mais-10", ou "" se ainda não preencheu
+  parecerCuradoria?: string
 }
 
 // O que o artesão envia ao salvar o próprio perfil (PUT /minha-conta/perfil). O e-mail não muda por aqui.
