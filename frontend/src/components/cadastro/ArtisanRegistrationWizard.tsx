@@ -38,7 +38,7 @@ export function ArtisanRegistrationWizard() {
       setStep(step + 1)
       window.scrollTo({ top: 0 }) // as etapas são longas: volta ao topo
     } else {
-      console.log(data) // depois: enviar para a API
+      // TODO: enviar `data` para a API quando a rota de cadastro do artesão existir
       setSent(true)
     }
   }
