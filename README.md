@@ -5,7 +5,7 @@
 
 Projeto Integrador 2026.2 (CESAR School), disciplina de Desenvolvimento Web. Branch principal: `main`.
 
-**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL) substituindo a Fake API da Avaliação 1, com autenticação JWT em cookie. Em construção: já existem a estrutura base, o banco (schema e seed), o login/cadastro, a vitrine, os pedidos e Minha conta.
+**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL), com autenticação JWT em cookie, cache com Redis e Swagger. O frontend busca todos os dados nele: login e cadastro, vitrine, pedidos (com o andamento pelo admin), Minha conta, área do artesão e curadoria.
 
 ## Problema de Negócio
 
@@ -48,7 +48,7 @@ npm install
 npm run dev
 ```
 
-Acesse http://localhost:3000.
+Acesse http://localhost:3000. O site busca tudo no backend: suba o backend antes (seção [Backend](#backend), abaixo).
 
 Outros comandos (dentro de `frontend/`):
 
@@ -74,7 +74,7 @@ npm run prisma:seed           # carrega os dados de exemplo
 npm run dev                   # API em http://localhost:3001/api
 ```
 
-Para o frontend usar o backend, defina `NEXT_PUBLIC_API_URL=http://localhost:3001/api` em `frontend/.env.local`.
+O frontend usa `http://localhost:3001/api` por padrão. Para outro endereço, defina `NEXT_PUBLIC_API_URL` em `frontend/.env.local`.
 
 Contas criadas pelo seed (senha de todas: `Origem@123`, só para desenvolvimento):
 
@@ -100,7 +100,7 @@ Outros comandos (dentro de `backend/`):
 
 | Variável | Obrigatória | Descrição |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | Não | Endereço base da API. Se não for definida, o frontend usa `/api` (a Fake API do próprio Next). Na Avaliação 2 aponta para o backend real. |
+| `NEXT_PUBLIC_API_URL` | Na Vercel, sim | Endereço do backend + `/api`. Sem ela, o frontend usa o backend local (`http://localhost:3001/api`). |
 
 Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie para `frontend/.env.local`. Nunca coloque credenciais reais no `.env.example`.
 
@@ -118,7 +118,7 @@ Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie par
 
 ## Funcionalidades implementadas
 
-Telas implementadas com dados de exemplo; a integração com a Fake API está em andamento.
+Os dados vêm do backend. Ainda usam dados de exemplo as telas de indicadores, gestão e visão geral do admin e o início do painel do artesão.
 
 **Comprador**
 - Vitrine (home) com peças e artesãos em destaque
@@ -129,7 +129,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Login e cadastro de comprador ligados ao backend (JWT em cookie): o cabeçalho mostra quem está logado, "Sair" encerra a sessão e as áreas do comprador (`/minha-conta`, `/pedidos`), do artesão (`/artesao/*`) e do admin (`/admin/*`) pedem login com o perfil certo. O cadastro de artesão ainda é só a tela, sem API
 
 **Artesão**
-- Dashboard, meu perfil, meu catálogo (adicionar, editar e ocultar peças) e estoque
+- Dashboard, meu perfil, meu catálogo (adicionar, editar e ocultar peças, com o parecer da curadoria), estoque e pedidos com as peças dele
 
 **Administrador**
 - Início, gestão da plataforma, curadoria, acompanhamento, indicadores e visão geral
@@ -138,7 +138,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Sobre, newsletter, páginas de ajuda (como comprar, entregas e frete, formas de pagamento, trocas e devoluções, perguntas frequentes), termos de uso, política de privacidade e política de cookies
 
 ## Rotas da API
-Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`), autenticação (`/auth/login`, `/auth/logout`, `/auth/me`) as rotas da vitrine (`/produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) de Minha conta (`/minha-conta` e sub-rotas) e o painel do admin (`GET /admin/painel`): todas as rotas da Fake API já existem no backend.
+Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). Com o backend rodando, a documentação interativa (Swagger) fica em `/api/docs`.
 
 ## Deploy
 Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo a passo em [`docs/deploy.md`](docs/deploy.md).

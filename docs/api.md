@@ -2,30 +2,20 @@
 
 ## Visão geral
 
-| | Avaliação 1 (agora) | Avaliação 2 |
-|---|---|---|
-| Quem responde | **Fake API**: Route Handlers do Next.js em `frontend/src/app/api/` | Backend Node.js + Express + Prisma |
-| URL base | `/api` (mesmo endereço do site) | valor de `NEXT_PUBLIC_API_URL` |
-| Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
-| Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
+A API é o backend em `backend/` (Node.js + Express + Prisma + PostgreSQL). O frontend chama a URL de `NEXT_PUBLIC_API_URL` (local: `http://localhost:3001/api`, que é também o padrão quando a variável não existe). As rotas ficam em `backend/src/application/routes`.
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça, ler e salvar o perfil do artesão e ver os pedidos com as peças dele) e as do admin (`GET /admin/painel`, `/admin/acompanhamento`, `/admin/pedidos` e `/admin/curadoria`, decidir a curadoria em `PATCH /admin/curadoria/{tipo}/{id}` e avançar o andamento do pedido em `PATCH /pedidos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
+Rotas: cadastro e autenticação (seção "Autenticação e cadastro", no fim), vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `/minha-conta/vendas`, `/minha-conta/perfil`, e criar, editar e excluir peça) e admin (`GET /admin/painel`, `/admin/acompanhamento`, `/admin/pedidos`, `/admin/curadoria` e `PATCH /admin/curadoria/{tipo}/{id}`).
 
 **Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
-### Diferenças do backend
+### Comportamentos gerais
 
-- Datas vêm com milissegundos (`"2026-09-20T10:00:00.000Z"` em vez de `"2026-09-20T10:00:00Z"`). É o mesmo instante, no mesmo formato ISO 8601.
-- `totalProdutos` do artesão é **contado no banco** (peças publicadas). No `db.json` era um número fixo.
+- Datas em ISO 8601 com milissegundos (`"2026-09-20T10:00:00.000Z"`).
 - `pageSize` tem máximo de 100: um valor maior vira 100.
-- **Cache (Redis)** em `GET /produtos` e `GET /produtos/{id}`: a resposta traz o cabeçalho `X-Cache: HIT` (veio do cache) ou `MISS` (veio do banco). Cada resposta fica guardada por até 5 minutos, e o cache é zerado na hora em que uma peça muda (compra, cancelamento, estoque ou visibilidade alterados pelo artesão, edição ou exclusão da peça e mudança no perfil do artesão). Sem Redis, as rotas funcionam igual, sempre com `MISS`.
-- Ordem `relevancia` (padrão): no backend vem da coluna `relevancia`, que o seed preenche na ordem do `db.json`. Peças e artesãos novos entram no fim.
-- **Login de verdade:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); `/minha-conta/produtos` (e as de criar, editar e excluir peça), `/minha-conta/resumo` e `/minha-conta/perfil` são só do perfil `artesao` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login e só o dono do pedido pode usá-las (o admin também pode cancelar); pedido de outra pessoa → `403`.
-- **Pedidos de verdade:** `POST /pedidos` baixa o estoque e o cancelamento devolve as peças. O frete é recalculado pelo CEP (do `frete` enviado, só vale a `modalidade`). O número do pedido vem de uma sequência do banco (`10496`, `10497`...).
-
-- Toda resposta tem um atraso simulado de **300 ms**, para as telas mostrarem o estado de carregamento.
-- As rotas que gravam (`POST`) alteram os dados **só em memória**: valem até o servidor reiniciar. Na Vercel, cada chamada pode cair numa instância diferente, então a tela usa a própria resposta do `POST` (ex.: a confirmação do pedido).
-- Sem login na Avaliação 1: as rotas de `/minha-conta` usam usuários de demonstração (compradora Ana Beatriz, `u1`).
+- **Cache (Redis)** em `GET /produtos` e `GET /produtos/{id}`: a resposta traz o cabeçalho `X-Cache: HIT` (veio do cache) ou `MISS` (veio do banco). Cada resposta fica guardada por até 5 minutos, e o cache é zerado na hora em que uma peça muda (compra, cancelamento, estoque ou visibilidade alterados pelo artesão, edição ou exclusão da peça, mudança no perfil do artesão e decisões da curadoria). Sem Redis, as rotas funcionam igual, sempre com `MISS`.
+- Ordem `relevancia` (padrão): vem da coluna `relevancia`, que o seed preenche na ordem do `backend/prisma/data/db.json`. Peças e artesãos novos entram no fim.
+- **Login:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); as rotas de peças, `/minha-conta/resumo`, `/minha-conta/vendas` e `/minha-conta/perfil` são só do perfil `artesao`, e as de `/admin` só do `admin` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login.
+- **Pedidos:** `POST /pedidos` baixa o estoque e o cancelamento devolve as peças. O frete é recalculado pelo CEP (do `frete` enviado, só vale a `modalidade`). O número do pedido vem de uma sequência do banco (`10496`, `10497`...).
 - As fotos são provisórias (Unsplash e picsum.photos).
 - Nomes: o que é do domínio fica em português (`/produtos`, `titulo`, `preco`); o formato técnico de paginação e de erro fica em inglês (`items`, `page`, `error`).
 
@@ -33,14 +23,13 @@
 
 | Pasta | Papel |
 |---|---|
-| `frontend/src/mocks/db.json` | os dados: cada lista é uma "tabela" (produtos, artesaos, usuarios, pedidos...) |
-| `frontend/src/mocks/db.ts` | importa o `db.json` com os tipos de `src/types` |
-| `frontend/src/app/api/<rota>/route.ts` | as rotas: leem o `db`, filtram e respondem |
-| `frontend/src/app/api/_lib/` | apoio às rotas: `responses.ts` (sucesso, erro e atraso), `pagination.ts`, `session.ts` (usuários de demonstração) |
-| `frontend/src/types/` | o contrato: formato de cada entidade e resposta |
+| `backend/src/application/` | rotas, controllers (validação do corpo) e o Swagger (`docs/openapi.ts`) |
+| `backend/src/infrastructure/` | services (regras), repositories (Prisma) e o cache (Redis) |
+| `backend/src/shared/types/` | o contrato no backend, igual ao de `frontend/src/types/` |
+| `frontend/src/types/` | o contrato no frontend: formato de cada entidade e resposta |
 | `frontend/src/services/` | as funções que as telas usam para chamar a API; `api.ts` tem a instância do axios usada por todos |
 
-Fluxo: tela → hook `useApi` → service → `api` (axios) → `/api/...` → `db.json`.
+Fluxo: tela → hook `useApi` → service → `api` (axios) → backend → PostgreSQL.
 
 ## Formatos comuns
 
@@ -65,12 +54,12 @@ Usada por `GET /produtos` e `GET /artesaos`.
 | Status | `code` | Quando |
 |---|---|---|
 | 400 | `VALIDATION` | dado enviado inválido (ex.: CEP, nota da avaliação, pedido sem peças) |
-| 401 | `UNAUTHORIZED` | sem login, sessão inválida ou expirada, ou e-mail/senha incorretos (só backend) |
-| 403 | `FORBIDDEN` | logado, mas sem permissão: perfil errado, recurso de outro usuário ou conta suspensa (só backend) |
+| 401 | `UNAUTHORIZED` | sem login, sessão inválida ou expirada, ou e-mail/senha incorretos |
+| 403 | `FORBIDDEN` | logado, mas sem permissão: perfil errado, recurso de outro usuário ou conta suspensa |
 | 404 | `NOT_FOUND` | o recurso não existe ou não está publicado |
 | 409 | `OUT_OF_STOCK` | quantidade pedida maior que o estoque |
 | 409 | `CONFLICT` | ação não permitida no estado atual (ex.: avaliar um pedido duas vezes, e-mail já cadastrado) |
-| 500 | `INTERNAL` | erro inesperado no servidor (só backend) |
+| 500 | `INTERNAL` | erro inesperado no servidor |
 
 O `services/api.ts` transforma essa resposta em um `ApiError` (com `code`, `message` e `status`), e a tela mostra a `message`. Sem resposta do servidor, o erro vira `NETWORK` (status 0).
 
@@ -78,11 +67,11 @@ O `services/api.ts` transforma essa resposta em um `ApiError` (com `code`, `mess
 
 ### `GET /produtos`
 
-Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peças com `status` `publicado`; no backend, o artesão da peça também precisa estar `publicado` (peças de artesão em análise, com ajustes pedidos, indisponível ou recusado não aparecem na lista, na busca, no detalhe nem nos relacionados, e não podem ser compradas).
+Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peças com `status` `publicado` cujo artesão também esteja `publicado` (peças de artesão em análise, com ajustes pedidos, indisponível ou recusado não aparecem na lista, na busca, no detalhe nem nos relacionados, e não podem ser compradas).
 
 | Parâmetro | Valores | Observação |
 |---|---|---|
-| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica"). No backend, usa a extensão `unaccent` do PostgreSQL |
+| `busca` | texto | procura em título, artesão, cidade, categoria, técnica, material e tags; ignora acentos e maiúsculas (`ceramica` acha "Cerâmica"), com a extensão `unaccent` do PostgreSQL |
 | `categoria` | id, ex.: `ceramica-barro` | ids de `constants/categorias.ts` (ou de `GET /filtros`) |
 | `tecnica` | id, ex.: `modelagem-manual` | ids de `constants/tecnicas.ts` |
 | `material` | id, ex.: `barro` | ids de `constants/materiais.ts` |
@@ -132,7 +121,7 @@ Erro: `404 NOT_FOUND` se a peça não existe ou não está publicada (rascunho, 
 
 "Peças relacionadas" do detalhe: lista de 4 `Produto`, sem paginação. Primeiro as peças publicadas da mesma categoria, depois as outras, completando 4.
 
-Esta é a **recomendação simulada** da Avaliação 1. Na Avaliação 2, o módulo de recomendação assume esta rota, com o mesmo endereço e o mesmo formato de resposta.
+É uma recomendação simples por categoria. Um módulo de recomendação pode assumir esta rota depois, com o mesmo endereço e o mesmo formato de resposta.
 
 Erro: `404 NOT_FOUND` se a peça não existe ou não está publicada.
 
@@ -149,7 +138,7 @@ Opções dos filtros da vitrine, no formato `{ value, label }`.
 }
 ```
 
-Na Fake API as listas vêm de `frontend/src/constants/`; no backend vêm das tabelas `Categoria`, `Tecnica`, `Material` e `Regiao`, na mesma ordem (coluna `ordem`).
+As listas vêm das tabelas `Categoria`, `Tecnica`, `Material` e `Regiao`, na ordem da coluna `ordem`.
 
 ### `GET /artesaos`
 
@@ -229,7 +218,6 @@ Finaliza a compra (como visitante). A tela envia os itens do carrinho, os dados 
 
 Resposta `201` com o `Pedido` criado: `status` `processando`, título e preço de cada peça "fotografados" no momento da compra, `subtotal` e `total` calculados pela API.
 
-No backend:
 - Aberta a visitantes. Se houver login (cookie), o pedido fica ligado à conta e aparece em `GET /minha-conta/pedidos`.
 - Preço, título e artesão vêm do banco, nunca do corpo enviado.
 - Do `frete`, só a `modalidade` (`pac` ou `sedex`) é usada: valor e prazo são recalculados pelo CEP do endereço, com a mesma regra de `GET /frete`.
@@ -257,15 +245,15 @@ No backend:
 ```
 
 Erros:
-- `400 VALIDATION`: sem peças, sem nome ou e-mail do comprador, sem CEP, sem frete ou sem forma de pagamento. No backend também: quantidade que não é inteiro de pelo menos 1, e-mail inválido, CEP sem 8 números, modalidade de frete ou forma de pagamento desconhecida, parcelas fora de 1 a 12.
+- `400 VALIDATION`: sem peças, sem nome ou e-mail do comprador, sem CEP, sem frete ou sem forma de pagamento; quantidade que não é inteiro de pelo menos 1, e-mail inválido, CEP sem 8 números, modalidade de frete ou forma de pagamento desconhecida, parcelas fora de 1 a 12.
 - `404 NOT_FOUND`: uma das peças não existe ou não está mais publicada.
 - `409 OUT_OF_STOCK`: quantidade maior que o estoque da peça.
 
-Os dados do cartão não são enviados na Avaliação 1.
+Os dados do cartão não são enviados.
 
 ### `GET /minha-conta`
 
-Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de `Usuario` mais CPF mascarado, telefone, endereço e formas de pagamento. No backend vale para qualquer perfil logado (sem login → `401`); campos ainda não preenchidos voltam vazios (`""`, endereço com campos vazios e `formasPagamento: []`).
+Dados do usuário logado (qualquer perfil; sem login → `401`): os campos de `Usuario` mais CPF mascarado, telefone, endereço e formas de pagamento; campos ainda não preenchidos voltam vazios (`""`, endereço com campos vazios e `formasPagamento: []`).
 
 ```json
 {
@@ -285,9 +273,7 @@ Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de
 
 ### `GET /minha-conta/pedidos`
 
-"Meus pedidos": lista de `Pedido` da compradora logada (pelo e-mail), do mais recente para o mais antigo. Sem paginação. Pedidos criados em `POST /pedidos` com o mesmo e-mail aparecem aqui enquanto o servidor não reiniciar.
-
-No backend, a lista traz os pedidos **ligados à conta logada** (feitos com login), não os feitos como visitante com o mesmo e-mail. Erro: `401 UNAUTHORIZED` sem login.
+"Meus pedidos": lista de `Pedido` **ligados à conta logada** (feitos com login), do mais recente para o mais antigo. Sem paginação. Pedidos feitos como visitante com o mesmo e-mail não entram. Erro: `401 UNAUTHORIZED` sem login.
 
 ### `POST /avaliacoes`
 
@@ -300,9 +286,9 @@ Avaliação de um pedido entregue ("Avaliar o pedido" em Meus pedidos).
 Resposta `201` com a `Avaliacao` (os mesmos campos, mais `id` e `criadoEm`). O pedido passa a ter `avaliado: true`.
 
 Erros:
-- `400 VALIDATION`: nota fora de 1 a 5 (no backend, também as notas de `notas`, quando enviadas).
-- `401 UNAUTHORIZED` (backend): sem login.
-- `403 FORBIDDEN` (backend): o pedido não é de quem está logado.
+- `400 VALIDATION`: nota fora de 1 a 5 (também as notas de `notas`, quando enviadas).
+- `401 UNAUTHORIZED`: sem login.
+- `403 FORBIDDEN`: o pedido não é de quem está logado.
 - `404 NOT_FOUND`: o pedido não existe.
 - `409 CONFLICT`: o pedido não foi entregue ou já foi avaliado.
 
@@ -316,9 +302,9 @@ Atualiza o pedido. Exemplo: `PATCH /api/pedidos/10495`. São dois usos:
 { "status": "cancelado", "motivo": "Comprei por engano", "observacao": "opcional" }
 ```
 
-Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelamento` preenchido e um evento "Pedido cancelado" no fim de `eventos`. No backend, cancelar devolve as peças do pedido ao estoque.
+Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelamento` preenchido e um evento "Pedido cancelado" no fim de `eventos`. Cancelar devolve as peças do pedido ao estoque.
 
-**Avançar o andamento** (só backend, só admin, na tela Acompanhamento): uma etapa por vez, `processando` → `emSeparacao` → `enviado` → `entregue`.
+**Avançar o andamento** (só admin, na tela Acompanhamento): uma etapa por vez, `processando` → `emSeparacao` → `enviado` → `entregue`.
 
 ```json
 { "status": "enviado", "codigoRastreio": "BR123456789BR" }
@@ -334,14 +320,14 @@ Resposta `200` com o `Pedido` atualizado.
 
 Erros:
 - `400 VALIDATION`: `status` inválido, cancelamento sem `motivo` ou envio sem `codigoRastreio`.
-- `401 UNAUTHORIZED` (backend): sem login.
-- `403 FORBIDDEN` (backend): cancelar pedido de outra pessoa (sem ser admin) ou avançar o andamento sem ser admin.
+- `401 UNAUTHORIZED`: sem login.
+- `403 FORBIDDEN`: cancelar pedido de outra pessoa (sem ser admin) ou avançar o andamento sem ser admin.
 - `404 NOT_FOUND`: o pedido não existe.
 - `409 CONFLICT`: o pedido não está na etapa certa (ex.: cancelar depois do envio, marcar como entregue um pedido em separação) ou mudou ao mesmo tempo por outra pessoa.
 
 ### `GET /minha-conta/produtos`
 
-"Meu catálogo" e "Estoque" do artesão logado (na Avaliação 1, o de demonstração: Mestre Joãozinho, `a1`). Lista de `Produto` com **todas** as peças dele, em qualquer `status` (publicada, em análise, rascunho, indisponível), das mais recentes para as mais antigas. Sem paginação e sem filtros: busca, filtros e ordem são feitos na tela.
+"Meu catálogo" e "Estoque" do artesão logado. Lista de `Produto` com **todas** as peças dele, em qualquer `status` (publicada, em análise, rascunho, indisponível), das mais recentes para as mais antigas. Sem paginação e sem filtros: busca, filtros e ordem são feitos na tela.
 
 ### `GET /minha-conta/resumo`
 
@@ -359,7 +345,7 @@ Números do topo de "Meu catálogo" e "Estoque" do artesão logado.
 
 ### `GET /minha-conta/vendas`
 
-Só backend. Tela "Pedidos" do artesão logado: os pedidos que têm peças dele, dos mais recentes para os mais antigos. Cada pedido traz **só os itens do artesão** e não traz os dados pessoais do comprador (só a cidade de entrega).
+Tela "Pedidos" do artesão logado: os pedidos que têm peças dele, dos mais recentes para os mais antigos. Cada pedido traz **só os itens do artesão** e não traz os dados pessoais do comprador (só a cidade de entrega).
 
 ```json
 [
@@ -397,7 +383,7 @@ Resposta `200` com o `Produto` atualizado.
 
 Erros:
 - `400 VALIDATION`: nenhum campo enviado, estoque negativo ou não inteiro, ou status diferente de `publicado`/`indisponivel`.
-- `401 UNAUTHORIZED` / `403 FORBIDDEN` (backend): sem login / perfil diferente de `artesao` (vale também para `GET /minha-conta/produtos` e `/minha-conta/resumo`).
+- `401 UNAUTHORIZED` / `403 FORBIDDEN`: sem login / perfil diferente de `artesao` (vale também para `GET /minha-conta/produtos` e `/minha-conta/resumo`).
 - `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
 - `409 CONFLICT`: tentar esconder ou mostrar uma peça que ainda não foi publicada (rascunho ou em análise).
 
@@ -426,7 +412,7 @@ Resposta `201` com o `Produto` criado:
 
 Erros:
 - `400 VALIDATION`: falta nome, categoria, técnica ou material; categoria, técnica ou material que não existe; medida ou peso que não é número (aceita vírgula ou ponto); preço ou quantidade negativos; `prazoPostagem` diferente de `1`, `3` ou `7`; `embalagem` diferente de `caixa`, `envelope` ou `tubo`. Para enviar à análise, também são obrigatórios descrição, preço maior que zero e quantidade (se não for peça única). A mensagem é a mesma que o formulário mostra.
-- `401 UNAUTHORIZED` / `403 FORBIDDEN` (backend): sem login / perfil diferente de `artesao` (vale para todas as rotas abaixo).
+- `401 UNAUTHORIZED` / `403 FORBIDDEN`: sem login / perfil diferente de `artesao` (vale para todas as rotas abaixo).
 
 ### `PUT /minha-conta/produtos/{id}`
 
@@ -475,13 +461,11 @@ Salva o perfil do artesão logado. Corpo (`PerfilArtesaoInput`):
 Resposta `200` com o `PerfilArtesao` salvo. As mudanças aparecem na hora no perfil público (`GET /artesaos/{id}`).
 - `trabalho`, `origemTrabalho` e `gostaDeFazer` vazios somem do perfil público (a seção não aparece).
 - O e-mail não muda por esta rota. O estado é gravado em maiúsculas.
-- No backend, se o artesão estava com `ajustesSolicitados`, salvar manda o perfil de volta para a curadoria (`emAnalise`). O `PerfilArtesao` traz `parecerCuradoria` quando houver.
+- Se o artesão estava com `ajustesSolicitados`, salvar manda o perfil de volta para a curadoria (`emAnalise`). O `PerfilArtesao` traz `parecerCuradoria` quando houver.
 
 Erros:
 - `400 VALIDATION`: falta nome, cidade, história ou área de atuação (`categorias` vazio); estado sem 2 letras; telefone com menos de 10 números; `tempoAtuacao` fora das faixas.
 - `404 NOT_FOUND`: o usuário não tem perfil de artesão.
-
-Na Fake API, telefone e tempo de atuação ficam só em memória (não estão no `db.json`).
 
 ### `GET /admin/painel`
 
@@ -500,18 +484,14 @@ Tela inicial do administrador: resumo da plataforma, pendências, notificações
 }
 ```
 
-- `pedidosHoje`, `vendasMes` e `clientes` são números fixos do `db.json` (`resumoPlataforma`); `artesaosAtivos`, `produtosPublicados` e as `pendencias` são contados a partir dos dados.
-- Sem login na Avaliação 1; na Avaliação 2 a rota fica protegida para o perfil `admin`.
-
-No backend:
 - Exige login (`401`) e perfil `admin` (`403`).
 - **Todos os números do `resumo` são contados no banco**: `pedidosHoje` (pedidos criados desde 0h), `vendasMes` (soma do `total` dos pedidos não cancelados do mês), `clientes` (usuários com perfil `comprador`), `artesaosAtivos` e `produtosPublicados`. "Hoje" e "mês" seguem o horário de Recife.
-- `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`. (Na Fake API, "artesãos aguardando curadoria" contava a lista `curadoria` do `db.json`, que incluía uma artesã já publicada; por isso o número pode ser menor.)
-- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). As decisões da curadoria (`PATCH /admin/curadoria/{tipo}/{id}`) criam novas atividades; notificações novas ainda não são criadas por nenhuma ação.
+- `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`.
+- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed, das mais recentes para as mais antigas (até 10 de cada). As decisões da curadoria (`PATCH /admin/curadoria/{tipo}/{id}`) criam novas atividades; notificações novas ainda não são criadas por nenhuma ação.
 
 ### `GET /admin/acompanhamento`
 
-Só backend, só admin. Tela Acompanhamento: contagem dos pedidos, alertas e filas.
+Só admin. Tela Acompanhamento: contagem dos pedidos, alertas e filas.
 
 ```json
 {
@@ -532,7 +512,7 @@ Só backend, só admin. Tela Acompanhamento: contagem dos pedidos, alertas e fil
 
 ### `GET /admin/pedidos`
 
-Só backend, só admin. Lista de pedidos da tela Acompanhamento, dos mais recentes para os mais antigos, em `Paginated<Pedido>`.
+Só admin. Lista de pedidos da tela Acompanhamento, dos mais recentes para os mais antigos, em `Paginated<Pedido>`.
 
 | Parâmetro | Exemplo | Descrição |
 |---|---|---|
@@ -543,7 +523,7 @@ Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
 
 ### `GET /admin/curadoria?tipo=`
 
-Só backend, só admin. Fila da tela Curadoria: artesãos (`tipo=artesaos`) ou peças (`tipo=pecas`) com status `emAnalise`, dos mais recentes para os mais antigos, no formato `ItemCuradoria`.
+Só admin. Fila da tela Curadoria: artesãos (`tipo=artesaos`) ou peças (`tipo=pecas`) com status `emAnalise`, dos mais recentes para os mais antigos, no formato `ItemCuradoria`.
 
 ```json
 [
@@ -574,7 +554,7 @@ Só backend, só admin. Fila da tela Curadoria: artesãos (`tipo=artesaos`) ou p
 
 ### `PATCH /admin/curadoria/{tipo}/{id}`
 
-Só backend, só admin. Registra a decisão da curadoria sobre um artesão (`tipo` `artesaos`) ou uma peça (`tipo` `pecas`) que está em análise. Resposta `204`, sem corpo.
+Só admin. Registra a decisão da curadoria sobre um artesão (`tipo` `artesaos`) ou uma peça (`tipo` `pecas`) que está em análise. Resposta `204`, sem corpo.
 
 ```json
 { "decisao": "ajustes", "parecer": "Envie fotos com fundo neutro." }
@@ -590,9 +570,9 @@ Só backend, só admin. Registra a decisão da curadoria sobre um artesão (`tip
 - O cache da vitrine é zerado: aprovar ou recusar um artesão muda quais peças aparecem.
 - Erros: `400 VALIDATION` (`tipo` ou `decisao` inválidos, ou ajustes/recusa sem `parecer`); `401 UNAUTHORIZED`; `403 FORBIDDEN`; `404 NOT_FOUND` (artesão ou peça não existe); `409 CONFLICT` (o item não está `emAnalise`).
 
-## Autenticação e cadastro (backend)
+## Autenticação e cadastro
 
-Existem **só no backend** (`backend/`), não na Fake API. O login grava um JWT num **cookie httpOnly** chamado `token`: o JavaScript do site não lê o token, o navegador envia o cookie sozinho em cada requisição. Para isso o `services/api.ts` usa `withCredentials: true`, e o backend libera no CORS só o endereço do frontend (`FRONTEND_URL`) com `credentials: true`.
+O login grava um JWT num **cookie httpOnly** chamado `token`: o JavaScript do site não lê o token, o navegador envia o cookie sozinho em cada requisição. Para isso o `services/api.ts` usa `withCredentials: true`, e o backend libera no CORS só o endereço do frontend (`FRONTEND_URL`) com `credentials: true`.
 
 - O token tem `{ id, perfil }` e vale **1 dia** (o cookie também).
 - Cookie: `httpOnly`, `path=/`. Local: `sameSite=lax`. Produção (front na Vercel e backend no Render, domínios diferentes): `sameSite=none` e `secure`.
@@ -651,19 +631,10 @@ Erro: `401 UNAUTHORIZED` sem cookie, com token inválido ou expirado, ou se o us
 
 ## Rotas planejadas
 
-Ainda não existem no código. Os dados de que elas precisam já estão no `db.json`.
+Ainda não existem no código.
 
-| Fase | Rota | Tela |
-|---|---|---|
-| Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
-| Depois | gestão do admin | tabelas de gestão |
-
-Na Avaliação 2 entram também o carrinho salvo no backend e as rotas protegidas por perfil.
-
-## Como a Fake API será substituída pelo backend
-
-1. O backend implementa as mesmas rotas deste documento, com os mesmos parâmetros e os mesmos formatos de resposta e de erro.
-2. O `db.json` vira o seed do banco (Prisma). As listas de `constants/` (categorias, técnicas, materiais, regiões) viram tabelas.
-3. As rotas de `/minha-conta` passam a identificar o usuário pelo login (JWT em cookie) em vez de `_lib/session.ts`.
-4. No frontend, basta definir `NEXT_PUBLIC_API_URL` com o endereço do backend. O `services/api.ts` já usa essa variável; services, hooks e telas não mudam.
-5. As pastas `frontend/src/app/api/` e `frontend/src/mocks/` são apagadas.
+| Rota | Tela |
+|---|---|
+| `GET /admin/indicadores?periodo=` | indicadores e visão geral do admin |
+| gestão do admin | tabelas de gestão |
+| carrinho salvo no backend | carrinho |
