@@ -285,8 +285,6 @@ Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de
 
 "Meus pedidos": lista de `Pedido` da compradora logada (pelo e-mail), do mais recente para o mais antigo. Sem paginação. Pedidos criados em `POST /pedidos` com o mesmo e-mail aparecem aqui enquanto o servidor não reiniciar.
 
-Na tela, a lista também mostra os pedidos finalizados **neste navegador** (`store/ordersStore.ts`, salvo no localStorage). Assim o pedido recém-criado aparece mesmo no deploy, onde a próxima requisição pode cair noutra instância do servidor, e com qualquer e-mail. Na Avaliação 2 o backend salva o pedido de verdade e esse store sai.
-
 No backend, a lista traz os pedidos **ligados à conta logada** (feitos com login), não os feitos como visitante com o mesmo e-mail. Erro: `401 UNAUTHORIZED` sem login.
 
 ### `POST /avaliacoes`
