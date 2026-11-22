@@ -12,7 +12,7 @@ const incluirExtras = {
 type ArtesaoComExtras = Prisma.ArtesaoGetPayload<{ include: typeof incluirExtras }>
 
 // Converte o registro do banco no formato do contrato (frontend/src/types/artesao.ts).
-// Campos opcionais nulos viram undefined e somem do JSON, como na Fake API.
+// Campos opcionais nulos viram undefined e somem do JSON.
 function paraArtesao(a: ArtesaoComExtras): Artesao {
   return {
     id: a.id,

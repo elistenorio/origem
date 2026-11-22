@@ -8,13 +8,13 @@ Perfis:
 - **Administrador**: gestão da plataforma, indicadores, curadoria.
 
 ## Fase atual: Avaliação 2
-Backend real substituindo a Fake API da Avaliação 1: Node + TypeScript + Express + Prisma + PostgreSQL, com autenticação JWT em cookie httpOnly e rotas protegidas por perfil. O backend implementa as mesmas rotas, parâmetros e formatos de `docs/api.md`, para o frontend não mudar (basta definir `NEXT_PUBLIC_API_URL`).
+Backend real: Node + TypeScript + Express + Prisma + PostgreSQL, com autenticação JWT em cookie httpOnly e rotas protegidas por perfil. A Fake API da Avaliação 1 foi removida: o frontend busca tudo no backend (`NEXT_PUBLIC_API_URL`; sem ela, `http://localhost:3001/api`). Rotas, parâmetros e formatos estão em `docs/api.md`.
 
 Deploy: banco no Supabase, backend no Render e frontend na Vercel. Swagger do backend em `/api/docs` e cache com Redis em `GET /produtos` e `GET /produtos/:id`. Processamento assíncrono ainda não foi decidido: não implemente sem pedido explícito.
 
 - `frontend/` — aplicação Next.js. Regras detalhadas em `frontend/CLAUDE.md`.
 - `backend/` — API Express + Prisma. Regras detalhadas em `backend/CLAUDE.md`.
-- `docs/api.md` — contrato da API (Fake API e backend). `docs/arquitetura.md` — decisões de arquitetura. `docs/uso-de-ia.md` — declaração de uso de IA.
+- `docs/api.md` — contrato da API. `docs/arquitetura.md` — decisões de arquitetura. `docs/uso-de-ia.md` — declaração de uso de IA.
 - `README.md` — segue o modelo mínimo do professor.
 
 ## Regras gerais
@@ -24,13 +24,13 @@ Deploy: banco no Supabase, backend no Render e frontend na Vercel. Swagger do ba
 - Ao terminar, explique o que foi feito e por quê: todos os integrantes precisam saber explicar o código na apresentação.
 
 ## Idioma
-- **Português, sem acento**, em tudo que é do domínio: rotas da API (`/produtos`, `/artesaos`, `/pedidos`, `/minha-conta`), tipos e seus campos (`Produto`, `titulo`, `preco`, `artesaoId`), parâmetros de filtro e seus valores (`busca`, `categoria`, `ordenar=menor_preco`), services e suas funções (`produtos.service.ts`, `listar`), listas do `mocks/db.json` (`produtos`, `pedidos`), constantes (`constants/categorias.ts`) e hooks de domínio (`useProdutos`).
+- **Português, sem acento**, em tudo que é do domínio: rotas da API (`/produtos`, `/artesaos`, `/pedidos`, `/minha-conta`), tipos e seus campos (`Produto`, `titulo`, `preco`, `artesaoId`), parâmetros de filtro e seus valores (`busca`, `categoria`, `ordenar=menor_preco`), services e suas funções (`produtos.service.ts`, `listar`), tabelas do Prisma (`Produto`, `Pedido`), constantes (`constants/categorias.ts`) e hooks de domínio (`useProdutos`).
 - **Inglês** no que é técnico: formato das respostas (`Paginated`, `ApiError`, `{ error: { code, message } }`), códigos de erro (`NOT_FOUND`, `VALIDATION`), paginação (`page`, `pageSize`, `pagination.ts`), `services/api.ts`, stores (`cartStore.ts`), utils (`normalizeText.ts`), nomes de componentes (`ProductCard`) e hooks genéricos (`useApi`).
 - Textos da interface, comentários e documentação em português.
-- Mensagens de commit em inglês, no formato Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:` (ex.: `feat: add products fake api`).
+- Mensagens de commit em inglês, no formato Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:` (ex.: `feat: add curation routes`).
 
 ## Documentação
-- Criou ou alterou uma rota da API (Fake API ou backend): atualize `docs/api.md` (método, rota, parâmetros, exemplo de resposta, erros e como será trocada pelo backend real).
+- Criou ou alterou uma rota da API: atualize `docs/api.md` (método, rota, parâmetros, exemplo de resposta e erros) e o Swagger (`backend/src/application/docs/openapi.ts`).
 - Documente só o que existe no código.
 - README: mantenha as seções do modelo do professor e indique `main` como branch principal. `.env.example` nunca com credenciais reais.
 

@@ -4,7 +4,7 @@ import { readPagination } from "../../shared/pagination"
 import { ORDENACOES_PRODUTO, type FiltrosProduto, type OrdenacaoProduto } from "../../shared/types/produto"
 import { numeroDaQuery, textoDaQuery } from "../../shared/validacao"
 
-// Lê os filtros da query string. Valores inválidos são ignorados (como na Fake API), não dão erro.
+// Lê os filtros da query string. Valores inválidos são ignorados, não dão erro.
 function lerFiltros(query: Request["query"]): FiltrosProduto {
   const ordenar = textoDaQuery(query.ordenar)
   return {
@@ -14,7 +14,7 @@ function lerFiltros(query: Request["query"]): FiltrosProduto {
     material: textoDaQuery(query.material),
     regiao: textoDaQuery(query.regiao),
     artesaoId: textoDaQuery(query.artesaoId),
-    // "|| undefined": 0 ou valor inválido = sem limite, como na Fake API.
+    // "|| undefined": 0 ou valor inválido = sem limite.
     precoMin: numeroDaQuery(query.precoMin) || undefined,
     precoMax: numeroDaQuery(query.precoMax) || undefined,
     disponivel: textoDaQuery(query.disponivel) === "sim",

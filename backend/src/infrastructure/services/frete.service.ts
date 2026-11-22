@@ -3,7 +3,7 @@ import type { OpcaoFrete } from "../../shared/types/frete"
 export const freteService = {
   /**
    * GET /frete?cep=: opções de PAC e SEDEX para o CEP (8 números, já validado pelo controller).
-   * Simulação, igual à da Fake API: CEPs de Pernambuco (começam de 50 a 56) pagam menos.
+   * Simulação: CEPs de Pernambuco (começam de 50 a 56) pagam menos.
    * Pode ser trocada depois por uma consulta aos Correios, mantendo o mesmo formato.
    */
   calcular(cep: string): OpcaoFrete[] {

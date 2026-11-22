@@ -1,6 +1,6 @@
 import type { OpcaoFiltro } from "@/constants/categorias"
 
-// Contrato de produto: o formato que a Fake API devolve agora e o backend devolverá na Avaliação 2.
+// Contrato de produto: o formato que o backend devolve.
 
 // Situação da peça no catálogo do artesão (as chaves batem com o StatusBadge).
 // Só "publicado" aparece para o comprador.

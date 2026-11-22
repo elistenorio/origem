@@ -59,7 +59,7 @@ export type DadosPeca = {
   materialId: string
 }
 
-// Empates sempre desempatam pela relevância, como a ordem do db.json na Fake API.
+// Empates sempre desempatam pela relevância.
 const ORDEM: Record<OrdenacaoProduto, Prisma.ProdutoOrderByWithRelationInput[]> = {
   relevancia: [{ relevancia: "desc" }, { criadoEm: "desc" }],
   menor_preco: [{ preco: "asc" }, { relevancia: "desc" }],

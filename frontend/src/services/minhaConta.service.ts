@@ -4,8 +4,7 @@ import type { Pedido, VendaArtesao } from "@/types/pedido"
 import type { AtualizarEstoqueInput, Produto, ProdutoInput } from "@/types/produto"
 import type { MinhaConta } from "@/types/usuario"
 
-// Dados do usuário logado. Na Avaliação 1 a Fake API usa uma compradora de demonstração;
-// na Avaliação 2 o backend identifica o usuário pelo login, e estas chamadas continuam iguais.
+// Dados do usuário logado: o backend identifica o usuário pelo login (cookie).
 export const minhaContaService = {
   /** GET /minha-conta: dados pessoais, endereço e formas de pagamento. */
   async buscar() {

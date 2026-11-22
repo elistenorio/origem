@@ -13,7 +13,6 @@ const MAX_PARCELAS = 12
 const erro = (message: string) => new AppError(400, "VALIDATION", message)
 
 // Valida o corpo de POST /pedidos e monta o input do service (só com os campos conhecidos).
-// Mesmas mensagens da Fake API, mais as checagens que um backend real precisa.
 function lerPedido(body: unknown): CriarPedidoInput {
   const b = ehObjeto(body) ? body : {}
 

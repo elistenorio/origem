@@ -19,8 +19,6 @@ Peso na nota: 50% telas, responsividade, navegação e carrinho · 35% Fake API 
 ```
 app/                  rotas; URLs em português (/login, /cadastro, /produtos, /carrinho...)
   (auth)/ (main)/     grupos de rotas com layouts próprios
-  api/                Fake API (Route Handlers), lê os dados de mocks/
-    _lib/             apoio às rotas (respostas, paginação, sessão de demonstração); o "_" tira a pasta das rotas
 components/<assunto>/ componentes por domínio, pastas em português (autenticacao, cadastro, inicio, carrinho...)
 components/common/    campos de formulário reutilizáveis
 components/feedback/  estados de carregamento, erro e vazio
@@ -29,22 +27,20 @@ services/             única camada que faz requisições: api.ts (instância do
 store/                stores Zustand
 hooks/                lógica reutilizável (ex.: buscar dados com loading/erro)
 types/                entidades e formatos de resposta da API
-mocks/                dados sintéticos da Fake API: db.json (uma lista por recurso) + db.ts (tipagem)
 utils/ constants/     funções auxiliares e valores fixos (categorias, regiões, técnicas)
 theme/                system e recipes do Chakra
 ```
 Crie as pastas que ainda não existem conforme a necessidade, seguindo essa organização.
 
 ## Fluxo de dados
-Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, em `services/api.ts`) → `/api/*` (Fake API em `src/app/api/`, que lê `src/mocks/db.json`).
+Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, em `services/api.ts`) → backend (`backend/`).
 
 - Só `src/services/` faz requisições. Páginas, componentes e stores nunca usam `api`, axios ou `fetch` diretamente.
 - Telas buscam dados com `hooks/useApi.ts`, que devolve `data`, `loading`, `error` e `recarregar`.
 - Um tipo por entidade (`Produto`, `Artesao`): listas e detalhe devolvem o mesmo formato; o card usa só os campos de que precisa.
-- Mocks só são importados pelas rotas de `src/app/api/`.
 - Respostas seguem `src/types/api.ts`: listas em `Paginated<T>`, erros em `ApiErrorBody` (`{ error: { code, message } }`), lançados como `ApiError`.
-- Na Avaliação 2 basta definir `NEXT_PUBLIC_API_URL` apontando para o backend; services, hooks e componentes não mudam. Não quebre essa garantia.
-- Recursos da Fake API: produtos, artesãos, usuários, categorias, técnicas, regiões, pedidos, avaliações e recomendações iniciais.
+- O endereço do backend vem de `NEXT_PUBLIC_API_URL` (sem ela, `http://localhost:3001/api`). Só o `services/api.ts` conhece esse endereço.
+- Não existe mais Fake API: dado novo precisa de rota no backend, documentada em `docs/api.md` e no Swagger.
 
 ## Estado global (Zustand)
 - Estado compartilhado entre telas (carrinho, usuário logado) fica em `src/store/`, um store por assunto — ex.: `store/cartStore.ts` exportando `useCartStore`. Não use Context nem Redux para isso.
@@ -64,11 +60,11 @@ Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, e
 ## TypeScript
 - Tipe entidades, props, respostas da API, dados de formulário e estados.
 - Sem `any`; se o tipo for desconhecido, use `unknown` e valide.
-- Tipos das entidades ficam em `src/types/` e são os mesmos para Fake API, services, stores e componentes.
+- Tipos das entidades ficam em `src/types/` e são os mesmos para services, stores e componentes, iguais aos de `backend/src/shared/types/`.
 
 ## Convenções
 - Idioma dos nomes: seção "Idioma" do `CLAUDE.md` da raiz (domínio em português sem acento, técnico em inglês, commits em inglês).
-- A pasta `dados-exemplo/` e os tipos antigos em inglês (`types/product.ts`, `types/artisan.ts`) ainda alimentam as telas que não migraram para a Fake API. Não use em código novo; eles saem quando as telas migrarem.
+- A pasta `dados-exemplo/` ainda alimenta telas que não migraram para o backend (indicadores, gestão e visão geral do admin). Não use em código novo; ela sai quando essas telas migrarem.
 - Imports com o alias `@/` (= `src/`).
 
 ## Antes de dar uma tela por pronta
@@ -77,5 +73,5 @@ Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, e
 - [ ] Funciona no celular e no desktop
 - [ ] Sem `any`; props tipadas
 - [ ] `npm run lint` e `npm run build` passam
-- [ ] Rotas novas da Fake API documentadas em `docs/api.md`
+- [ ] Rotas novas do backend documentadas em `docs/api.md` e no Swagger
 - [ ] Registro em `docs/uso-de-ia.local.md`, se houve apoio relevante de IA
