@@ -27,7 +27,7 @@ function alertaDeAtraso(pedido: Pedido, agora: Date): Alerta {
 export const adminService = {
   /**
    * GET /admin/painel: tela inicial do administrador.
-   * Todos os números são contados no banco (na Fake API, pedidos de hoje, vendas do mês e clientes eram fixos).
+   * Todos os números são contados no banco.
    * "Hoje" e "este mês" seguem o horário de Recife.
    */
   async painel(agora = new Date()): Promise<PainelAdmin> {

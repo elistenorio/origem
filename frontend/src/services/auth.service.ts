@@ -1,7 +1,7 @@
 import { api } from "./api"
 import type { CadastroCompradorInput, Usuario } from "@/types/usuario"
 
-// Login e cadastro (só existem no backend; a Fake API não tem estas rotas).
+// Login e cadastro.
 // O token fica num cookie httpOnly que o navegador guarda e envia sozinho (withCredentials no api.ts):
 // o JavaScript nunca vê o token. Por isso, para saber quem está logado, a tela pergunta ao backend (me).
 export const authService = {
