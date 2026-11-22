@@ -5,6 +5,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import bcrypt from "bcryptjs"
+import { createClient } from "redis"
 import {
   PrismaClient,
   type FormaPagamento,
@@ -16,6 +17,24 @@ import {
 } from "@prisma/client"
 
 const prisma = new PrismaClient()
+
+// Zera o cache de peças (GET /produtos), para a vitrine não mostrar dados de antes do seed.
+// Usa o mesmo mecanismo da API (soma 1 na versão). Sem REDIS_URL ou com o Redis fora do ar, só avisa.
+async function zerarCacheDePecas() {
+  const url = process.env.REDIS_URL
+  if (!url) return
+  const cliente = createClient({ url, socket: { connectTimeout: 2000, reconnectStrategy: false } })
+  cliente.on("error", () => {})
+  try {
+    await cliente.connect()
+    await cliente.incr("produtos:versao")
+    console.log("Cache de peças zerado.")
+  } catch {
+    console.log("Redis indisponível: cache não zerado (ele expira sozinho em 5 minutos).")
+  } finally {
+    if (cliente.isOpen) await cliente.quit()
+  }
+}
 
 const SENHA_PADRAO = "Origem@123"
 
@@ -346,6 +365,8 @@ async function main() {
   await prisma.$executeRaw`
     SELECT setval('pedido_numero_seq', (SELECT MAX("id"::bigint) FROM "Pedido" WHERE "id" ~ '^[0-9]+$'))
   `
+
+  await zerarCacheDePecas()
 
   console.log(`Seed concluído. Senha de todas as contas: ${SENHA_PADRAO}`)
 }

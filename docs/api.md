@@ -9,7 +9,7 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) e as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo` `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça e ler e salvar o perfil do artesão), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). e `GET /admin/painel`. Com isso, **todas as rotas da Fake API já existem no backend**.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça e ler e salvar o perfil do artesão) e `GET /admin/painel`, com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
 
 **Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
@@ -18,6 +18,7 @@
 - Datas vêm com milissegundos (`"2026-09-20T10:00:00.000Z"` em vez de `"2026-09-20T10:00:00Z"`). É o mesmo instante, no mesmo formato ISO 8601.
 - `totalProdutos` do artesão é **contado no banco** (peças publicadas). No `db.json` era um número fixo.
 - `pageSize` tem máximo de 100: um valor maior vira 100.
+- **Cache (Redis)** em `GET /produtos` e `GET /produtos/{id}`: a resposta traz o cabeçalho `X-Cache: HIT` (veio do cache) ou `MISS` (veio do banco). Cada resposta fica guardada por até 5 minutos, e o cache é zerado na hora em que uma peça muda (compra, cancelamento, estoque ou visibilidade alterados pelo artesão). Sem Redis, as rotas funcionam igual, sempre com `MISS`.
 - Ordem `relevancia` (padrão): no backend vem da coluna `relevancia`, que o seed preenche na ordem do `db.json`. Peças e artesãos novos entram no fim.
 - **Login de verdade:** as rotas de `/minha-conta` identificam o usuário pelo cookie (sem login → `401`); `/minha-conta/produtos` (e as de criar, editar e excluir peça), `/minha-conta/resumo` e `/minha-conta/perfil` são só do perfil `artesao` (outro perfil → `403`). `PATCH /pedidos/{id}` e `POST /avaliacoes` também exigem login e só o dono do pedido pode usá-las (o admin também pode cancelar); pedido de outra pessoa → `403`.
 - **Pedidos de verdade:** `POST /pedidos` baixa o estoque e o cancelamento devolve as peças. O frete é recalculado pelo CEP (do `frete` enviado, só vale a `modalidade`). O número do pedido vem de uma sequência do banco (`10496`, `10497`...).
@@ -285,8 +286,6 @@ Dados da compradora logada (na Avaliação 1, a de demonstração): os campos de
 ### `GET /minha-conta/pedidos`
 
 "Meus pedidos": lista de `Pedido` da compradora logada (pelo e-mail), do mais recente para o mais antigo. Sem paginação. Pedidos criados em `POST /pedidos` com o mesmo e-mail aparecem aqui enquanto o servidor não reiniciar.
-
-Na tela, a lista também mostra os pedidos finalizados **neste navegador** (`store/ordersStore.ts`, salvo no localStorage). Assim o pedido recém-criado aparece mesmo no deploy, onde a próxima requisição pode cair noutra instância do servidor, e com qualquer e-mail. Na Avaliação 2 o backend salva o pedido de verdade e esse store sai.
 
 No backend, a lista traz os pedidos **ligados à conta logada** (feitos com login), não os feitos como visitante com o mesmo e-mail. Erro: `401 UNAUTHORIZED` sem login.
 

@@ -26,8 +26,9 @@ export const produtosController = {
   // GET /produtos — vitrine com busca, filtros, ordenação e paginação.
   async listar(req: Request, res: Response, next: NextFunction) {
     try {
-      const resultado = await produtosService.listar(lerFiltros(req.query), readPagination(req.query))
-      return res.status(200).json(resultado)
+      const { dados, cache } = await produtosService.listar(lerFiltros(req.query), readPagination(req.query))
+      res.setHeader("X-Cache", cache) // HIT = veio do Redis; MISS = veio do banco
+      return res.status(200).json(dados)
     } catch (err) {
       return next(err)
     }
@@ -36,8 +37,9 @@ export const produtosController = {
   // GET /produtos/:id
   async buscarPorId(req: Request, res: Response, next: NextFunction) {
     try {
-      const produto = await produtosService.buscarPorId(req.params.id)
-      return res.status(200).json(produto)
+      const { dados, cache } = await produtosService.buscarPorId(req.params.id)
+      res.setHeader("X-Cache", cache)
+      return res.status(200).json(dados)
     } catch (err) {
       return next(err)
     }

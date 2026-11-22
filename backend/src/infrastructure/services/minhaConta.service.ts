@@ -3,6 +3,7 @@ import type { AtualizarEstoqueInput, PerfilArtesao, PerfilArtesaoInput, ResumoPa
 import type { Endereco } from "../../shared/types/pedido"
 import type { Produto, ProdutoInput } from "../../shared/types/produto"
 import type { FormaPagamentoSalva, MinhaConta } from "../../shared/types/usuario"
+import { produtosCache } from "../cache/produtos.cache"
 import { artesaosRepository } from "../repositories/artesaos.repository"
 import { filtrosRepository } from "../repositories/filtros.repository"
 import { produtosRepository, type DadosPeca } from "../repositories/produtos.repository"
@@ -136,7 +137,9 @@ export const minhaContaService = {
       throw new AppError(409, "CONFLICT", "Só é possível esconder ou mostrar peças já publicadas.")
     }
 
-    return produtosRepository.atualizarEstoqueEStatus(produtoId, input)
+    const atualizada = await produtosRepository.atualizarEstoqueEStatus(produtoId, input)
+    await produtosCache.invalidar() // estoque ou visibilidade da peça mudou
+    return atualizada
   },
 
   /** POST /minha-conta/produtos: nova peça, como rascunho ou já enviada para a curadoria. */
