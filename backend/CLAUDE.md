@@ -1,6 +1,6 @@
 # Backend — Origem
 
-Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`, `swagger-ui-express` (Swagger em `/api/docs`). Nada além disso sem perguntar (Redis está previsto; processamento assíncrono ainda não foi decidido).
+Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`, `redis` (cache), `swagger-ui-express` (Swagger em `/api/docs`). Nada além disso sem perguntar (processamento assíncrono ainda não foi decidido).
 
 Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o projeto usa o formato com `env("DATABASE_URL")` e `env("DIRECT_URL")`.
 

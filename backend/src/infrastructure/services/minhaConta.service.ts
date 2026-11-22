@@ -160,7 +160,9 @@ export const minhaContaService = {
     if (!peca) throw new AppError(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
     if (peca.status === "vendida") throw new AppError(409, "CONFLICT", "Esta peça já foi vendida e não pode ser editada.")
 
-    return produtosRepository.editar(produtoId, await montarDadosPeca(input))
+    const editada = await produtosRepository.editar(produtoId, await montarDadosPeca(input))
+    await produtosCache.invalidar()
+    return editada
   },
 
   /**
@@ -176,6 +178,7 @@ export const minhaContaService = {
       throw new AppError(409, "CONFLICT", "Esta peça já foi vendida, por isso não pode ser excluída. Você pode escondê-la da vitrine em Meu estoque.")
     }
     await produtosRepository.excluir(produtoId)
+    await produtosCache.invalidar()
   },
 
   /** GET /minha-conta/perfil: o perfil do artesão logado, em qualquer status. */
@@ -187,6 +190,7 @@ export const minhaContaService = {
   async atualizarPerfil(usuarioId: string, input: PerfilArtesaoInput): Promise<PerfilArtesao> {
     await perfilDoUsuario(usuarioId) // 404 se o usuário não tiver perfil de artesão
     await artesaosRepository.atualizarPerfil(usuarioId, input)
+    await produtosCache.invalidar()
     return perfilDoUsuario(usuarioId)
   },
 }
