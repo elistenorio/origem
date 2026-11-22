@@ -15,7 +15,6 @@ import { OrderSummary } from "@/components/carrinho/OrderSummary"
 import { ApiError } from "@/services/api"
 import { pedidosService } from "@/services/pedidos.service"
 import { useCartStore } from "@/store/cartStore"
-import { useOrdersStore } from "@/store/ordersStore"
 import { validateCheckout } from "@/utils/validateCheckout"
 import { ESTADOS } from "@/constants/regioes"
 import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
@@ -38,7 +37,6 @@ export function CheckoutView() {
   const subtotal = useCartStore((state) => state.totalPrice())
   const quantidade = useCartStore((state) => state.totalItems())
   const clearCart = useCartStore((state) => state.clearCart)
-  const addOrder = useOrdersStore((state) => state.addOrder)
   const [dados, setDados] = useState<DadosCheckout>(INICIAL)
   const [erros, setErros] = useState<ErrosCheckout>({})
   const [pedidoCriado, setPedidoCriado] = useState<PedidoRealizado | null>(null)
@@ -75,7 +73,6 @@ export function CheckoutView() {
         pagamento: dados.pagamento,
         parcelas: Number(dados.parcelas),
       })
-      addOrder(pedido) // para "Meus pedidos" mostrar o pedido mesmo no deploy (ver store/ordersStore.ts)
       setPedidoCriado({ nome: pedido.comprador.nome, codigo: pedido.codigo, total: pedido.total })
       clearCart()
     } catch (erro) {
