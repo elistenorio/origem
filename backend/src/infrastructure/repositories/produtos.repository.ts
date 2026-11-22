@@ -203,6 +203,16 @@ export const produtosRepository = {
     await prisma.produto.delete({ where: { id } })
   },
 
+  async listarEmAnalise(take: number): Promise<Produto[]> {
+    const registros = await prisma.produto.findMany({
+      where: { status: "emAnalise" },
+      include: incluirArtesao,
+      orderBy: [{ criadoEm: "desc" }, { id: "desc" }],
+      take,
+    })
+    return registros.map(paraProduto)
+  },
+
   /** Soma das quantidades das peças do artesão em pedidos que não foram cancelados. */
   async contarVendidasDoArtesao(artesaoId: string): Promise<number> {
     const resultado = await prisma.itemPedido.aggregate({

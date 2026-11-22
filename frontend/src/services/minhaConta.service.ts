@@ -1,6 +1,6 @@
 import { api } from "./api"
 import type { PerfilArtesao, PerfilArtesaoInput, ResumoPainelArtesao } from "@/types/artesao"
-import type { Pedido } from "@/types/pedido"
+import type { Pedido, VendaArtesao } from "@/types/pedido"
 import type { AtualizarEstoqueInput, Produto, ProdutoInput } from "@/types/produto"
 import type { MinhaConta } from "@/types/usuario"
 
@@ -22,6 +22,11 @@ export const minhaContaService = {
   /** GET /minha-conta/produtos: todas as peças do artesão, em qualquer status ("Meu catálogo" e "Estoque"). */
   async produtos() {
     const response = await api.get<Produto[]>("/minha-conta/produtos")
+    return response.data
+  },
+
+  async vendas() {
+    const response = await api.get<VendaArtesao[]>("/minha-conta/vendas")
     return response.data
   },
 

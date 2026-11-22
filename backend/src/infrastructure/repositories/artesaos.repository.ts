@@ -124,4 +124,9 @@ export const artesaosRepository = {
     const registro = await prisma.artesao.findFirst({ where: { id, ...SO_PUBLICADOS }, include: incluirExtras })
     return registro ? paraArtesao(registro) : null
   },
+
+  async listarRecentes(take: number): Promise<Artesao[]> {
+    const registros = await prisma.artesao.findMany({ include: incluirExtras, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], take })
+    return registros.map(paraArtesao)
+  },
 }

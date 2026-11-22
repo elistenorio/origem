@@ -18,3 +18,18 @@ export function inicioDoMes(agora = new Date()): Date {
   const local = emRecife(agora)
   return new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), 1, -FUSO_RECIFE_HORAS))
 }
+
+export function adicionarDiasUteis(inicio: Date, dias: number): Date {
+  const data = new Date(inicio.getTime())
+  let restantes = dias
+  while (restantes > 0) {
+    data.setUTCDate(data.getUTCDate() + 1)
+    const diaDaSemana = emRecife(data).getUTCDay()
+    if (diaDaSemana !== 0 && diaDaSemana !== 6) restantes--
+  }
+  return data
+}
+
+export function diasDesde(data: Date, agora = new Date()): number {
+  return Math.floor((agora.getTime() - data.getTime()) / (24 * 60 * 60 * 1000))
+}

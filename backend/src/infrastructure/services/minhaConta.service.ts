@@ -1,11 +1,13 @@
 import { AppError } from "../../shared/AppError"
+import { arredondar } from "../../shared/dinheiro"
 import type { AtualizarEstoqueInput, PerfilArtesao, PerfilArtesaoInput, ResumoPainelArtesao } from "../../shared/types/artesao"
-import type { Endereco } from "../../shared/types/pedido"
+import type { Endereco, Pedido, VendaArtesao } from "../../shared/types/pedido"
 import type { Produto, ProdutoInput } from "../../shared/types/produto"
 import type { FormaPagamentoSalva, MinhaConta } from "../../shared/types/usuario"
 import { produtosCache } from "../cache/produtos.cache"
 import { artesaosRepository } from "../repositories/artesaos.repository"
 import { filtrosRepository } from "../repositories/filtros.repository"
+import { pedidosRepository } from "../repositories/pedidos.repository"
 import { produtosRepository, type DadosPeca } from "../repositories/produtos.repository"
 import { usuariosRepository } from "../repositories/usuarios.repository"
 
@@ -22,6 +24,20 @@ async function artesaoDoUsuario(usuarioId: string): Promise<string> {
   const artesaoId = await artesaosRepository.buscarIdPorUsuario(usuarioId)
   if (!artesaoId) throw new AppError(404, "NOT_FOUND", "Perfil de artesão não encontrado.")
   return artesaoId
+}
+
+function paraVenda(pedido: Pedido): VendaArtesao {
+  return {
+    id: pedido.id,
+    codigo: pedido.codigo,
+    status: pedido.status,
+    criadoEm: pedido.criadoEm,
+    itens: pedido.itens,
+    subtotal: arredondar(pedido.itens.reduce((soma, item) => soma + item.precoUnitario * item.quantidade, 0)),
+    cidade: `${pedido.endereco.cidade}/${pedido.endereco.estado}`,
+    codigoRastreio: pedido.codigoRastreio,
+    previsaoEntrega: pedido.previsaoEntrega,
+  }
 }
 
 async function perfilDoUsuario(usuarioId: string): Promise<PerfilArtesao> {
@@ -179,6 +195,11 @@ export const minhaContaService = {
     }
     await produtosRepository.excluir(produtoId)
     await produtosCache.invalidar()
+  },
+
+  async vendas(usuarioId: string): Promise<VendaArtesao[]> {
+    const pedidos = await pedidosRepository.listarComItensDoArtesao(await artesaoDoUsuario(usuarioId))
+    return pedidos.map(paraVenda)
   },
 
   /** GET /minha-conta/perfil: o perfil do artesão logado, em qualquer status. */
