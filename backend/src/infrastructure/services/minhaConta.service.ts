@@ -175,6 +175,7 @@ export const minhaContaService = {
     const peca = await produtosRepository.buscarDoArtesao(produtoId, artesaoId)
     if (!peca) throw new AppError(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
     if (peca.status === "vendida") throw new AppError(409, "CONFLICT", "Esta peça já foi vendida e não pode ser editada.")
+    if (peca.status === "recusado") throw new AppError(409, "CONFLICT", "Esta peça foi recusada pela curadoria e não pode ser editada.")
 
     const editada = await produtosRepository.editar(produtoId, await montarDadosPeca(input))
     await produtosCache.invalidar()
@@ -209,8 +210,8 @@ export const minhaContaService = {
 
   /** PUT /minha-conta/perfil: salva o perfil e devolve como ficou. */
   async atualizarPerfil(usuarioId: string, input: PerfilArtesaoInput): Promise<PerfilArtesao> {
-    await perfilDoUsuario(usuarioId) // 404 se o usuário não tiver perfil de artesão
-    await artesaosRepository.atualizarPerfil(usuarioId, input)
+    const atual = await perfilDoUsuario(usuarioId) // 404 se o usuário não tiver perfil de artesão
+    await artesaosRepository.atualizarPerfil(usuarioId, input, atual.status === "ajustesSolicitados" ? "emAnalise" : undefined)
     await produtosCache.invalidar()
     return perfilDoUsuario(usuarioId)
   },

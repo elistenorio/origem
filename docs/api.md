@@ -9,7 +9,7 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça, ler e salvar o perfil do artesão e ver os pedidos com as peças dele) e as do admin (`GET /admin/painel`, `/admin/acompanhamento` e `/admin/pedidos`, e avançar o andamento do pedido em `PATCH /pedidos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça, ler e salvar o perfil do artesão e ver os pedidos com as peças dele) e as do admin (`GET /admin/painel`, `/admin/acompanhamento`, `/admin/pedidos` e `/admin/curadoria`, decidir a curadoria em `PATCH /admin/curadoria/{tipo}/{id}` e avançar o andamento do pedido em `PATCH /pedidos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
 
 **Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
@@ -78,7 +78,7 @@ O `services/api.ts` transforma essa resposta em um `ApiError` (com `code`, `mess
 
 ### `GET /produtos`
 
-Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peças com `status` `publicado`.
+Vitrine: catálogo, destaques da home e peças de um artesão. Só aparecem peças com `status` `publicado`; no backend, o artesão da peça também precisa estar `publicado` (peças de artesão em análise, com ajustes pedidos, indisponível ou recusado não aparecem na lista, na busca, no detalhe nem nos relacionados, e não podem ser compradas).
 
 | Parâmetro | Valores | Observação |
 |---|---|---|
@@ -435,7 +435,9 @@ O artesão salva as mudanças de uma peça dele ("Editar peça"). Corpo e valida
 - **Toda edição volta para a curadoria** (`emAnalise`) ou para `rascunho`, conforme `enviarParaAnalise`: o admin confere de novo antes de a peça voltar para a vitrine.
 - Fotos, região e relevância continuam como estavam.
 
-Erros: os do `POST`, mais `404 NOT_FOUND` (a peça não existe ou não é do artesão logado) e `409 CONFLICT` (peça com status `vendida`).
+Erros: os do `POST`, mais `404 NOT_FOUND` (a peça não existe ou não é do artesão logado) e `409 CONFLICT` (peça com status `vendida` ou `recusado`).
+
+Peça com `ajustesSolicitados` pode ser editada: salvar com `enviarParaAnalise: true` manda de volta para a curadoria. O `Produto` das rotas do artesão traz `parecerCuradoria` quando a curadoria pediu ajustes ou recusou.
 
 ### `DELETE /minha-conta/produtos/{id}`
 
@@ -473,6 +475,7 @@ Salva o perfil do artesão logado. Corpo (`PerfilArtesaoInput`):
 Resposta `200` com o `PerfilArtesao` salvo. As mudanças aparecem na hora no perfil público (`GET /artesaos/{id}`).
 - `trabalho`, `origemTrabalho` e `gostaDeFazer` vazios somem do perfil público (a seção não aparece).
 - O e-mail não muda por esta rota. O estado é gravado em maiúsculas.
+- No backend, se o artesão estava com `ajustesSolicitados`, salvar manda o perfil de volta para a curadoria (`emAnalise`). O `PerfilArtesao` traz `parecerCuradoria` quando houver.
 
 Erros:
 - `400 VALIDATION`: falta nome, cidade, história ou área de atuação (`categorias` vazio); estado sem 2 letras; telefone com menos de 10 números; `tempoAtuacao` fora das faixas.
@@ -504,7 +507,7 @@ No backend:
 - Exige login (`401`) e perfil `admin` (`403`).
 - **Todos os números do `resumo` são contados no banco**: `pedidosHoje` (pedidos criados desde 0h), `vendasMes` (soma do `total` dos pedidos não cancelados do mês), `clientes` (usuários com perfil `comprador`), `artesaosAtivos` e `produtosPublicados`. "Hoje" e "mês" seguem o horário de Recife.
 - `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`. (Na Fake API, "artesãos aguardando curadoria" contava a lista `curadoria` do `db.json`, que incluía uma artesã já publicada; por isso o número pode ser menor.)
-- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). Ainda não há ação no sistema que crie novas; isso vem com a curadoria e a gestão.
+- `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). As decisões da curadoria (`PATCH /admin/curadoria/{tipo}/{id}`) criam novas atividades; notificações novas ainda não são criadas por nenhuma ação.
 
 ### `GET /admin/acompanhamento`
 
@@ -537,6 +540,55 @@ Só backend, só admin. Lista de pedidos da tela Acompanhamento, dos mais recent
 | `page`, `pageSize` | `1`, `10` | paginação |
 
 Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
+### `GET /admin/curadoria?tipo=`
+
+Só backend, só admin. Fila da tela Curadoria: artesãos (`tipo=artesaos`) ou peças (`tipo=pecas`) com status `emAnalise`, dos mais recentes para os mais antigos, no formato `ItemCuradoria`.
+
+```json
+[
+  {
+    "id": "a7",
+    "tipo": "artesaos",
+    "titulo": "Antônio Lopes",
+    "subtitulo": "Bezerros/PE · Mascareiro",
+    "enviadoEm": "2026-09-21T10:00:00.000Z",
+    "imagemUrl": "https://...",
+    "fotos": ["https://..."],
+    "descricao": "Máscaras de papangu entalhadas em madeira e pintadas à mão.",
+    "trajetoria": "Faz máscaras do carnaval de Bezerros desde menino.",
+    "documentos": [],
+    "historico": [
+      { "titulo": "Cadastro concluído", "data": "2026-09-21T10:00:00.000Z" },
+      { "titulo": "Ajustes solicitados por Maria Clara: “Envie fotos das peças.”", "data": "2026-11-22T21:00:00.000Z" }
+    ]
+  }
+]
+```
+
+- Artesão: `descricao` é a `bio`, `trajetoria` é a `historia` e `fotos` tem a foto do perfil.
+- Peça: `subtitulo` é "artesão · técnica", `descricao` junta descrição, medidas e preço, e `fotos` são as imagens da peça.
+- `documentos` vem vazio: o cadastro de artesão ainda não envia documentos.
+- `historico`: o envio e as decisões anteriores da curadoria sobre o item (ex.: ajustes pedidos antes de o artesão reenviar).
+- Erros: `400 VALIDATION` com `tipo` diferente de `artesaos` e `pecas`; `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
+### `PATCH /admin/curadoria/{tipo}/{id}`
+
+Só backend, só admin. Registra a decisão da curadoria sobre um artesão (`tipo` `artesaos`) ou uma peça (`tipo` `pecas`) que está em análise. Resposta `204`, sem corpo.
+
+```json
+{ "decisao": "ajustes", "parecer": "Envie fotos com fundo neutro." }
+```
+
+| `decisao` | Novo status | `parecer` |
+|---|---|---|
+| `aprovar` | `publicado` | opcional; o `parecerCuradoria` do item é apagado |
+| `ajustes` | `ajustesSolicitados` | obrigatório; fica em `parecerCuradoria` para o artesão ver |
+| `recusar` | `recusado` | obrigatório; fica em `parecerCuradoria`. Peça recusada não pode mais ser editada |
+
+- Cada decisão fica no histórico (tabela `AnaliseCuradoria`) e vira uma atividade do painel (ex.: "Maria Clara aprovou a peça “Céu de Agreste”").
+- O cache da vitrine é zerado: aprovar ou recusar um artesão muda quais peças aparecem.
+- Erros: `400 VALIDATION` (`tipo` ou `decisao` inválidos, ou ajustes/recusa sem `parecer`); `401 UNAUTHORIZED`; `403 FORBIDDEN`; `404 NOT_FOUND` (artesão ou peça não existe); `409 CONFLICT` (o item não está `emAnalise`).
 
 ## Autenticação e cadastro (backend)
 
@@ -604,7 +656,6 @@ Ainda não existem no código. Os dados de que elas precisam já estão no `db.j
 | Fase | Rota | Tela |
 |---|---|---|
 | Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
-| Admin | `GET /admin/curadoria?tipo=` | curadoria |
 | Depois | gestão do admin | tabelas de gestão |
 
 Na Avaliação 2 entram também o carrinho salvo no backend e as rotas protegidas por perfil.

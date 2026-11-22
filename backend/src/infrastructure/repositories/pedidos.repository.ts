@@ -160,7 +160,7 @@ export const pedidosRepository = {
       const registro = await prisma.$transaction(async (tx) => {
         for (const item of dados.itens) {
           const { count } = await tx.produto.updateMany({
-            where: { id: item.produtoId, status: "publicado", estoque: { gte: item.quantidade } },
+            where: { id: item.produtoId, status: "publicado", artesao: { status: "publicado" }, estoque: { gte: item.quantidade } },
             data: { estoque: { decrement: item.quantidade } },
           })
           if (count === 0) throw new EstoqueAcabou(item.produtoId)
