@@ -1,5 +1,5 @@
 import { api } from "./api"
-import type { CancelarPedidoInput, CriarPedidoInput, Pedido } from "@/types/pedido"
+import type { AvancarPedidoInput, CancelarPedidoInput, CriarPedidoInput, Pedido } from "@/types/pedido"
 
 export const pedidosService = {
   /** POST /pedidos: finaliza a compra e devolve o pedido criado. */
@@ -10,6 +10,11 @@ export const pedidosService = {
 
   /** PATCH /pedidos/{id}: cancela o pedido (só antes do envio) e devolve o pedido atualizado. */
   async cancelar(id: string, input: CancelarPedidoInput) {
+    const response = await api.patch<Pedido>(`/pedidos/${id}`, input)
+    return response.data
+  },
+
+  async avancar(id: string, input: AvancarPedidoInput) {
     const response = await api.patch<Pedido>(`/pedidos/${id}`, input)
     return response.data
   },
