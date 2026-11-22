@@ -139,6 +139,14 @@ export const minhaContaController = {
     }
   },
 
+  async vendas(req: Request, res: Response, next: NextFunction) {
+    try {
+      return res.status(200).json(await minhaContaService.vendas(usuarioLogado(req).id))
+    } catch (err) {
+      return next(err)
+    }
+  },
+
   // PATCH /minha-conta/produtos/:id (artesão) — corpo: { estoque? } e/ou { status? }
   async atualizarProduto(req: Request, res: Response, next: NextFunction) {
     try {

@@ -9,3 +9,5 @@ export const adminRouter = Router()
 adminRouter.use(authMiddleware, roleMiddleware(["admin"]))
 
 adminRouter.get("/painel", adminController.painel)
+adminRouter.get("/acompanhamento", adminController.acompanhamento)
+adminRouter.get("/pedidos", adminController.pedidos)

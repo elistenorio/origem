@@ -65,6 +65,26 @@ export type CriarPedidoInput = {
   parcelas: number
 }
 
+export const STATUS_AVANCO = ["emSeparacao", "enviado", "entregue"] as const
+export type StatusAvanco = (typeof STATUS_AVANCO)[number]
+
+export type AvancarPedidoInput = {
+  status: StatusAvanco
+  codigoRastreio?: string
+}
+
+export type VendaArtesao = {
+  id: string
+  codigo: string
+  status: StatusPedido
+  criadoEm: Date
+  itens: ItemPedido[]
+  subtotal: number
+  cidade: string
+  codigoRastreio?: string
+  previsaoEntrega?: Date
+}
+
 export type NotasAvaliacao = {
   produto?: number
   embalagem?: number

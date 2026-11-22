@@ -166,11 +166,20 @@ export const openapi = {
     "/pedidos/{id}": {
       patch: {
         tags: ["Pedidos e avaliações"],
-        summary: "Cancelar pedido",
-        description: "Só o dono (ou o admin), e só antes do envio. Devolve as peças ao estoque.",
+        summary: "Cancelar ou avançar o andamento do pedido",
+        description:
+          "Cancelar: só o dono (ou o admin), e só antes do envio; devolve as peças ao estoque. " +
+          "Avançar: só o admin, uma etapa por vez (processando → emSeparacao → enviado → entregue); enviado exige codigoRastreio.",
         security: comLogin,
         parameters: [idNoCaminho("10495")],
-        requestBody: corpo("CancelarPedidoInput"),
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { oneOf: [{ $ref: "#/components/schemas/CancelarPedidoInput" }, { $ref: "#/components/schemas/AvancarPedidoInput" }] },
+            },
+          },
+        },
         responses: { 200: json("Pedido"), 400: invalido, 401: semLogin, 403: perfilErrado, 404: naoEncontrado, 409: conflito },
       },
     },
@@ -244,6 +253,15 @@ export const openapi = {
         responses: { 200: json("ResumoPainelArtesao"), 401: semLogin, 403: perfilErrado },
       },
     },
+    "/minha-conta/vendas": {
+      get: {
+        tags: ["Artesão"],
+        summary: "Pedidos com as peças do artesão",
+        description: "Cada pedido traz só os itens do artesão e a cidade de entrega, sem os dados pessoais do comprador.",
+        security: comLogin,
+        responses: { 200: lista("VendaArtesao"), 401: semLogin, 403: perfilErrado },
+      },
+    },
     "/minha-conta/perfil": {
       get: {
         tags: ["Artesão"],
@@ -267,6 +285,23 @@ export const openapi = {
         summary: "Tela inicial do administrador",
         security: comLogin,
         responses: { 200: json("PainelAdmin"), 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/acompanhamento": {
+      get: {
+        tags: ["Admin"],
+        summary: "Contagem de pedidos, alertas de envio atrasado e filas",
+        security: comLogin,
+        responses: { 200: json("Acompanhamento"), 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/pedidos": {
+      get: {
+        tags: ["Admin"],
+        summary: "Pedidos, dos mais recentes para os mais antigos",
+        security: comLogin,
+        parameters: [naQuery("status", "processando, emSeparacao, enviado, entregue ou cancelado", "emSeparacao"), ...paginacao],
+        responses: { 200: paginado("Pedido"), 401: semLogin, 403: perfilErrado },
       },
     },
   },
@@ -488,29 +523,51 @@ export const openapi = {
           codigo: { type: "string", example: "#10496" },
           status: { type: "string", enum: ["processando", "emSeparacao", "enviado", "entregue", "cancelado"] },
           criadoEm: { type: "string", format: "date-time" },
-          itens: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                produtoId: { type: "string" },
-                titulo: { type: "string" },
-                imagemUrl: { type: "string" },
-                artesaoNome: { type: "string" },
-                precoUnitario: { type: "number" },
-                quantidade: { type: "integer" },
-              },
-            },
-          },
+          itens: { type: "array", items: { $ref: "#/components/schemas/ItemPedido" } },
           subtotal: { type: "number" },
           frete: { $ref: "#/components/schemas/OpcaoFrete" },
           total: { type: "number" },
           endereco: { $ref: "#/components/schemas/Endereco" },
           pagamento: { type: "string", enum: ["cartao", "pix", "boleto"] },
           parcelas: { type: "integer" },
+          codigoRastreio: { type: "string", description: "Só depois do envio" },
+          previsaoEntrega: { type: "string", format: "date-time", description: "Só depois do envio" },
           eventos: { type: "array", items: { type: "object", properties: { titulo: { type: "string" }, data: { type: "string", format: "date-time" } } } },
           motivoCancelamento: { type: "string", description: "Só nos pedidos cancelados" },
           avaliado: { type: "boolean" },
+        },
+      },
+      ItemPedido: {
+        type: "object",
+        properties: {
+          produtoId: { type: "string" },
+          titulo: { type: "string" },
+          imagemUrl: { type: "string" },
+          artesaoNome: { type: "string" },
+          precoUnitario: { type: "number" },
+          quantidade: { type: "integer" },
+        },
+      },
+      AvancarPedidoInput: {
+        type: "object",
+        required: ["status"],
+        properties: {
+          status: { type: "string", enum: ["emSeparacao", "enviado", "entregue"] },
+          codigoRastreio: { type: "string", example: "BR123456789BR", description: "Obrigatório quando status é enviado" },
+        },
+      },
+      VendaArtesao: {
+        type: "object",
+        properties: {
+          id: { type: "string", example: "10495" },
+          codigo: { type: "string", example: "#10495" },
+          status: { type: "string", enum: ["processando", "emSeparacao", "enviado", "entregue", "cancelado"] },
+          criadoEm: { type: "string", format: "date-time" },
+          itens: { type: "array", items: { $ref: "#/components/schemas/ItemPedido" } },
+          subtotal: { type: "number", description: "Só as peças do artesão, sem frete" },
+          cidade: { type: "string", example: "Recife/PE" },
+          codigoRastreio: { type: "string" },
+          previsaoEntrega: { type: "string", format: "date-time" },
         },
       },
       CancelarPedidoInput: {
@@ -570,6 +627,28 @@ export const openapi = {
             items: { type: "object", properties: { id: { type: "string" }, titulo: { type: "string" }, quantidade: { type: "integer" }, href: { type: "string" } } },
           },
           notificacoes: { type: "array", items: { type: "object", properties: { id: { type: "string" }, titulo: { type: "string" }, descricao: { type: "string" } } } },
+          atividades: {
+            type: "array",
+            items: { type: "object", properties: { id: { type: "string" }, autor: { type: "string" }, descricao: { type: "string" }, data: { type: "string", format: "date-time" } } },
+          },
+        },
+      },
+      Acompanhamento: {
+        type: "object",
+        properties: {
+          contagem: {
+            type: "object",
+            properties: { processando: { type: "integer" }, enviado: { type: "integer" }, entregue: { type: "integer" }, cancelado: { type: "integer" } },
+          },
+          alertas: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { id: { type: "string" }, titulo: { type: "string" }, descricao: { type: "string" }, gravidade: { type: "string", enum: ["alta", "media"] } },
+            },
+          },
+          artesaosRecentes: { type: "array", items: { $ref: "#/components/schemas/Artesao" } },
+          produtosPendentes: { type: "array", items: { $ref: "#/components/schemas/Produto" } },
           atividades: {
             type: "array",
             items: { type: "object", properties: { id: { type: "string" }, autor: { type: "string" }, descricao: { type: "string" }, data: { type: "string", format: "date-time" } } },

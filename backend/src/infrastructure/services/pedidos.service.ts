@@ -1,13 +1,34 @@
+import type { StatusPedido } from "@prisma/client"
 import { AppError } from "../../shared/AppError"
+import { adicionarDiasUteis } from "../../shared/datas"
+import { arredondar } from "../../shared/dinheiro"
 import type { TokenPayload } from "../../shared/jwt"
-import type { CriarPedidoInput, ItemPedido, Pedido } from "../../shared/types/pedido"
+import { paginated, type Pagination } from "../../shared/pagination"
+import type { Paginated } from "../../shared/types/api"
+import type { AvancarPedidoInput, CriarPedidoInput, ItemPedido, Pedido, StatusAvanco } from "../../shared/types/pedido"
 import { produtosCache } from "../cache/produtos.cache"
 import { pedidosRepository } from "../repositories/pedidos.repository"
 import { produtosRepository } from "../repositories/produtos.repository"
 import { freteService } from "./frete.service"
 
-// Valores em reais com 2 casas (evita 0.1 + 0.2 = 0.30000000000000004).
-const arredondar = (valor: number) => Math.round(valor * 100) / 100
+const ROTULO_STATUS: Record<StatusPedido, string> = {
+  processando: "em processamento",
+  emSeparacao: "em separação",
+  enviado: "enviado",
+  entregue: "entregue",
+  cancelado: "cancelado",
+}
+
+const PASSOS: Record<StatusAvanco, { anterior: StatusPedido; evento: string }> = {
+  emSeparacao: { anterior: "processando", evento: "Pedido separado" },
+  enviado: { anterior: "emSeparacao", evento: "Pedido enviado" },
+  entregue: { anterior: "enviado", evento: "Pedido entregue" },
+}
+
+function maiorPrazoEmDias(prazo: string): number | undefined {
+  const numeros = prazo.match(/\d+/g)
+  return numeros ? Math.max(...numeros.map(Number)) : undefined
+}
 
 export const pedidosService = {
   /**
@@ -85,6 +106,39 @@ export const pedidosService = {
     if (!cancelado) throw new AppError(409, "CONFLICT", "Este pedido já foi enviado e não pode mais ser cancelado.")
     await produtosCache.invalidar() // as peças voltaram ao estoque
     return cancelado
+  },
+
+  async avancar(id: string, input: AvancarPedidoInput, usuario: TokenPayload): Promise<Pedido> {
+    if (usuario.perfil !== "admin") {
+      throw new AppError(403, "FORBIDDEN", "Só a equipe do Origem pode atualizar o andamento do pedido.")
+    }
+
+    const encontrado = await pedidosRepository.buscarPorId(id)
+    if (!encontrado) throw new AppError(404, "NOT_FOUND", "Pedido não encontrado.")
+
+    const passo = PASSOS[input.status]
+    const atual = encontrado.pedido.status
+    if (atual !== passo.anterior) {
+      throw new AppError(
+        409,
+        "CONFLICT",
+        `O pedido está ${ROTULO_STATUS[atual]}; só um pedido ${ROTULO_STATUS[passo.anterior]} pode ficar ${ROTULO_STATUS[input.status]}.`,
+      )
+    }
+
+    const dias = input.status === "enviado" ? maiorPrazoEmDias(encontrado.pedido.frete.prazo) : undefined
+    const atualizado = await pedidosRepository.avancarStatus(id, passo.anterior, input.status, {
+      evento: passo.evento,
+      codigoRastreio: input.codigoRastreio,
+      previsaoEntrega: dias ? adicionarDiasUteis(new Date(), dias) : undefined,
+    })
+    if (!atualizado) throw new AppError(409, "CONFLICT", "O pedido mudou enquanto você atualizava. Recarregue e tente de novo.")
+    return atualizado
+  },
+
+  async listar(status: StatusPedido | undefined, paginacao: Pagination): Promise<Paginated<Pedido>> {
+    const { itens, total } = await pedidosRepository.listar({ status }, paginacao)
+    return paginated(itens, total, paginacao)
   },
 
   // GET /minha-conta/pedidos

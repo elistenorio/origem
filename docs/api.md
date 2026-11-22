@@ -9,7 +9,7 @@
 | Dados | `frontend/src/mocks/db.json`, lido em memória | PostgreSQL (o seed vem do mesmo `db.json`) |
 | Código | `frontend/src/app/api/` | `backend/` (rotas em `backend/src/application/routes`) |
 
-**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça e ler e salvar o perfil do artesão) e `GET /admin/painel`, com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
+**Andamento da Avaliação 2:** o backend já tem cadastro e autenticação (seção "Autenticação e cadastro", no fim das rotas), as rotas da vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), as de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), as de Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `PATCH /minha-conta/produtos/{id}`, além de criar, editar e excluir peça, ler e salvar o perfil do artesão e ver os pedidos com as peças dele) e as do admin (`GET /admin/painel`, `/admin/acompanhamento` e `/admin/pedidos`, e avançar o andamento do pedido em `PATCH /pedidos/{id}`), com as mesmas respostas da Fake API (diferenças em "Diferenças do backend", abaixo). Com isso, **todas as rotas da Fake API já existem no backend**.
 
 **Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
@@ -308,22 +308,36 @@ Erros:
 
 ### `PATCH /pedidos/{id}`
 
-Atualiza o pedido ("Cancelar o pedido" em Meus pedidos). Na Avaliação 1 a única mudança permitida é cancelar, e só antes do envio (`processando` ou `emSeparacao`). Exemplo: `PATCH /api/pedidos/10495`
+Atualiza o pedido. Exemplo: `PATCH /api/pedidos/10495`. São dois usos:
+
+**Cancelar** ("Cancelar o pedido" em Meus pedidos): só antes do envio (`processando` ou `emSeparacao`). Pode ser feito pelo dono do pedido ou pelo admin.
 
 ```json
 { "status": "cancelado", "motivo": "Comprei por engano", "observacao": "opcional" }
 ```
 
-Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelamento` preenchido e um evento "Pedido cancelado" no fim de `eventos`.
+Resposta `200` com o `Pedido` atualizado: `status` `cancelado`, `motivoCancelamento` preenchido e um evento "Pedido cancelado" no fim de `eventos`. No backend, cancelar devolve as peças do pedido ao estoque.
+
+**Avançar o andamento** (só backend, só admin, na tela Acompanhamento): uma etapa por vez, `processando` → `emSeparacao` → `enviado` → `entregue`.
+
+```json
+{ "status": "enviado", "codigoRastreio": "BR123456789BR" }
+```
+
+| `status` enviado | Precisa estar | Evento registrado | O que mais muda |
+|---|---|---|---|
+| `emSeparacao` | `processando` | "Pedido separado" | — |
+| `enviado` | `emSeparacao` | "Pedido enviado" | grava `codigoRastreio` (obrigatório) e calcula `previsaoEntrega` somando o maior prazo do frete em dias úteis (ex.: "6 a 8 dias úteis" → 8) |
+| `entregue` | `enviado` | "Pedido entregue" | o comprador passa a poder avaliar (`POST /avaliacoes`) |
+
+Resposta `200` com o `Pedido` atualizado.
 
 Erros:
-- `400 VALIDATION`: `status` diferente de `cancelado` ou sem `motivo`.
+- `400 VALIDATION`: `status` inválido, cancelamento sem `motivo` ou envio sem `codigoRastreio`.
 - `401 UNAUTHORIZED` (backend): sem login.
-- `403 FORBIDDEN` (backend): o pedido não é de quem está logado (o admin pode cancelar qualquer um).
+- `403 FORBIDDEN` (backend): cancelar pedido de outra pessoa (sem ser admin) ou avançar o andamento sem ser admin.
 - `404 NOT_FOUND`: o pedido não existe.
-- `409 CONFLICT`: o pedido já foi enviado, entregue ou cancelado.
-
-No backend, cancelar devolve as peças do pedido ao estoque.
+- `409 CONFLICT`: o pedido não está na etapa certa (ex.: cancelar depois do envio, marcar como entregue um pedido em separação) ou mudou ao mesmo tempo por outra pessoa.
 
 ### `GET /minha-conta/produtos`
 
@@ -342,6 +356,30 @@ Números do topo de "Meu catálogo" e "Estoque" do artesão logado.
 
 - `vendidas`: soma das quantidades das peças do artesão em pedidos que não foram cancelados.
 - `estoque`: conta só as peças publicadas ou indisponíveis; `baixoEstoque` é 1 unidade (`LIMITE_BAIXO_ESTOQUE`).
+
+### `GET /minha-conta/vendas`
+
+Só backend. Tela "Pedidos" do artesão logado: os pedidos que têm peças dele, dos mais recentes para os mais antigos. Cada pedido traz **só os itens do artesão** e não traz os dados pessoais do comprador (só a cidade de entrega).
+
+```json
+[
+  {
+    "id": "10495",
+    "codigo": "#10495",
+    "status": "enviado",
+    "criadoEm": "2026-09-20T11:43:00.000Z",
+    "itens": [{ "produtoId": "p1", "titulo": "Jarro Tradicional", "imagemUrl": "https://...", "artesaoNome": "Mestre Joãozinho", "precoUnitario": 167.9, "quantidade": 1 }],
+    "subtotal": 167.9,
+    "cidade": "Recife/PE",
+    "codigoRastreio": "BR123456789BR",
+    "previsaoEntrega": "2026-12-03T14:00:00.000Z"
+  }
+]
+```
+
+- `subtotal`: soma só das peças do artesão (sem frete).
+- `codigoRastreio` e `previsaoEntrega` só aparecem depois do envio.
+- Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é artesão.
 
 ### `PATCH /minha-conta/produtos/{id}`
 
@@ -468,6 +506,38 @@ No backend:
 - `pendencias`: artesãos e peças com status `emAnalise`, e pedidos `processando` ou `emSeparacao`. (Na Fake API, "artesãos aguardando curadoria" contava a lista `curadoria` do `db.json`, que incluía uma artesã já publicada; por isso o número pode ser menor.)
 - `notificacoes` e `atividades`: tabelas `Notificacao` e `Atividade`, preenchidas pelo seed com o conteúdo do `db.json`, das mais recentes para as mais antigas (até 10 de cada). Ainda não há ação no sistema que crie novas; isso vem com a curadoria e a gestão.
 
+### `GET /admin/acompanhamento`
+
+Só backend, só admin. Tela Acompanhamento: contagem dos pedidos, alertas e filas.
+
+```json
+{
+  "contagem": { "processando": 1, "enviado": 1, "entregue": 1, "cancelado": 1 },
+  "alertas": [{ "id": "atraso-10495", "titulo": "Envio atrasado", "descricao": "Pedido #10495 aguardando envio há 4 dias", "gravidade": "media" }],
+  "artesaosRecentes": [ /* Artesao, como em GET /artesaos/{id} */ ],
+  "produtosPendentes": [ /* Produto, como em GET /produtos/{id} */ ],
+  "atividades": [{ "id": "at1", "autor": "Maria Clara", "descricao": "aprovou a peça “Natureza Onírica”", "data": "2026-09-25T13:55:00.000Z" }]
+}
+```
+
+- `contagem`: pedidos por status; `processando` soma `processando` e `emSeparacao`.
+- `alertas`: pedidos ainda não enviados (`processando` ou `emSeparacao`) feitos há mais de 3 dias, dos mais antigos para os mais novos (até 5). `gravidade` é `alta` com mais de 7 dias, senão `media`.
+- `artesaosRecentes`: os 3 últimos artesãos cadastrados, em qualquer status.
+- `produtosPendentes`: até 5 peças em análise (`emAnalise`), das mais recentes para as mais antigas.
+- `atividades`: as 5 mais recentes da tabela `Atividade`.
+- Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
+### `GET /admin/pedidos`
+
+Só backend, só admin. Lista de pedidos da tela Acompanhamento, dos mais recentes para os mais antigos, em `Paginated<Pedido>`.
+
+| Parâmetro | Exemplo | Descrição |
+|---|---|---|
+| `status` | `emSeparacao` | só pedidos com esse status (`processando`, `emSeparacao`, `enviado`, `entregue`, `cancelado`); valor desconhecido é ignorado |
+| `page`, `pageSize` | `1`, `10` | paginação |
+
+Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
 ## Autenticação e cadastro (backend)
 
 Existem **só no backend** (`backend/`), não na Fake API. O login grava um JWT num **cookie httpOnly** chamado `token`: o JavaScript do site não lê o token, o navegador envia o cookie sozinho em cada requisição. Para isso o `services/api.ts` usa `withCredentials: true`, e o backend libera no CORS só o endereço do frontend (`FRONTEND_URL`) com `credentials: true`.
@@ -534,7 +604,6 @@ Ainda não existem no código. Os dados de que elas precisam já estão no `db.j
 | Fase | Rota | Tela |
 |---|---|---|
 | Admin | `GET /admin/indicadores?periodo=` | indicadores e visão geral |
-| Admin | `GET /admin/acompanhamento` | acompanhamento |
 | Admin | `GET /admin/curadoria?tipo=` | curadoria |
 | Depois | gestão do admin | tabelas de gestão |
 
