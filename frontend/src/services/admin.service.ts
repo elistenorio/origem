@@ -1,6 +1,6 @@
 import { api } from "./api"
 import type { Paginated } from "@/types/api"
-import type { Acompanhamento, PainelAdmin } from "@/types/admin"
+import type { Acompanhamento, DecidirCuradoriaInput, ItemCuradoria, PainelAdmin, TipoCuradoria } from "@/types/admin"
 import type { Pedido, StatusPedido } from "@/types/pedido"
 
 // Chamadas das telas do administrador.
@@ -19,5 +19,14 @@ export const adminService = {
   async pedidos(filtros: { status?: StatusPedido; page?: number; pageSize?: number } = {}) {
     const response = await api.get<Paginated<Pedido>>("/admin/pedidos", { params: filtros })
     return response.data
+  },
+
+  async curadoria(tipo: TipoCuradoria) {
+    const response = await api.get<ItemCuradoria[]>("/admin/curadoria", { params: { tipo } })
+    return response.data
+  },
+
+  async decidirCuradoria(tipo: TipoCuradoria, id: string, input: DecidirCuradoriaInput) {
+    await api.patch(`/admin/curadoria/${tipo}/${id}`, input)
   },
 }

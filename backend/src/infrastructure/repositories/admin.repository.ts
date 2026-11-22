@@ -15,7 +15,7 @@ export const adminRepository = {
         }),
         prisma.usuario.count({ where: { perfil: "comprador" } }),
         prisma.artesao.count({ where: { status: "publicado" } }),
-        prisma.produto.count({ where: { status: "publicado" } }),
+        prisma.produto.count({ where: { status: "publicado", artesao: { status: "publicado" } } }),
         prisma.artesao.count({ where: { status: "emAnalise" } }),
         prisma.produto.count({ where: { status: "emAnalise" } }),
         prisma.pedido.count({ where: { status: { in: ["processando", "emSeparacao"] } } }),

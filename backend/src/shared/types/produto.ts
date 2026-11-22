@@ -22,6 +22,7 @@ export type Produto = {
   descricao: string
   cuidados: string
   criadoEm: Date // vira texto ISO 8601 no JSON
+  parecerCuradoria?: string
   // Dados de envio, preenchidos pelo artesão no formulário de peça. Somem do JSON quando vazios.
   peso?: string
   prazoPostagem?: string

@@ -13,6 +13,7 @@ import { ApiError } from "@/services/api"
 import { minhaContaService } from "@/services/minhaConta.service"
 import { formularioParaPerfil, perfilParaFormulario, validarPerfil, type FormularioPerfil } from "@/utils/perfilArtesao"
 import type { PerfilArtesao } from "@/types/artesao"
+import { CurationNotice } from "./CurationNotice"
 import { Greeting } from "./Greeting"
 
 const selecione = (opcoes: { value: string; label: string }[]) => [{ value: "", label: "Selecione" }, ...opcoes]
@@ -22,6 +23,7 @@ type ArtisanProfileFormProps = { perfil: PerfilArtesao }
 // Formulário de "Meu perfil": dados de contato, histórias e trabalho. Salva com PUT /minha-conta/perfil.
 export function ArtisanProfileForm({ perfil }: ArtisanProfileFormProps) {
   const [dados, setDados] = useState<FormularioPerfil>(() => perfilParaFormulario(perfil))
+  const [curadoria, setCuradoria] = useState({ status: perfil.status, parecer: perfil.parecerCuradoria })
   const [erros, setErros] = useState<ReturnType<typeof validarPerfil>>({})
   const [salvando, setSalvando] = useState(false)
   const [resultado, setResultado] = useState<{ tipo: "success" | "error"; mensagem: string }>()
@@ -46,7 +48,9 @@ export function ArtisanProfileForm({ perfil }: ArtisanProfileFormProps) {
     }
     setSalvando(true)
     try {
-      setDados(perfilParaFormulario(await minhaContaService.atualizarPerfil(formularioParaPerfil(dados))))
+      const salvo = await minhaContaService.atualizarPerfil(formularioParaPerfil(dados))
+      setDados(perfilParaFormulario(salvo))
+      setCuradoria({ status: salvo.status, parecer: salvo.parecerCuradoria })
       setResultado({ tipo: "success", mensagem: "Perfil salvo." })
     } catch (e) {
       setResultado({ tipo: "error", mensagem: e instanceof ApiError ? e.message : "Não foi possível salvar o perfil. Tente de novo." })
@@ -72,6 +76,7 @@ export function ArtisanProfileForm({ perfil }: ArtisanProfileFormProps) {
       </Stack>
 
       <Stack flex="1" maxW="720px" gap="8" w="full">
+        <CurationNotice status={curadoria.status} parecer={curadoria.parecer} item="perfil" />
         <Flex gap="6" align="center" wrap="wrap">
           <Image src={perfil.fotoUrl} alt={`Foto de ${perfil.nome}`} w="120px" h="150px" objectFit="cover" borderRadius="xl" />
           <Box flex="1" minW="240px">

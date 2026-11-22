@@ -206,6 +206,7 @@ async function limparBanco() {
   await prisma.regiao.deleteMany()
   await prisma.notificacao.deleteMany()
   await prisma.atividade.deleteMany()
+  await prisma.analiseCuradoria.deleteMany()
 }
 
 async function main() {

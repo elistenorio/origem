@@ -90,7 +90,12 @@ export const artesaosRepository = {
       include: { ...incluirExtras, usuario: { select: { email: true, telefone: true } } },
     })
     if (!registro) return null
-    return { ...paraArtesao(registro), telefone: registro.usuario.telefone ?? "", tempoAtuacao: registro.tempoAtuacao ?? "" }
+    return {
+      ...paraArtesao(registro),
+      telefone: registro.usuario.telefone ?? "",
+      tempoAtuacao: registro.tempoAtuacao ?? "",
+      parecerCuradoria: registro.parecerCuradoria ?? undefined,
+    }
   },
 
   /**
@@ -98,7 +103,7 @@ export const artesaosRepository = {
    * As duas gravações vão na mesma transação: ou salva tudo, ou nada.
    * Textos opcionais vazios viram null (a seção some do perfil público).
    */
-  async atualizarPerfil(usuarioId: string, dados: PerfilArtesaoInput): Promise<void> {
+  async atualizarPerfil(usuarioId: string, dados: PerfilArtesaoInput, status?: "emAnalise"): Promise<void> {
     const ouNulo = (texto: string) => texto || null
     await prisma.$transaction([
       prisma.usuario.update({ where: { id: usuarioId }, data: { telefone: ouNulo(dados.telefone) } }),
@@ -115,6 +120,7 @@ export const artesaosRepository = {
           tempoAtuacao: ouNulo(dados.tempoAtuacao),
           categorias: dados.categorias,
           tecnicas: dados.tecnicas,
+          status,
         },
       }),
     ])

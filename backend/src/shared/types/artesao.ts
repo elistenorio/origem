@@ -28,6 +28,7 @@ export type Artesao = {
 // GET /minha-conta/perfil: o perfil do artesão logado, com os dados que só ele vê.
 export type PerfilArtesao = Artesao & {
   telefone: string // do Usuario ligado
+  parecerCuradoria?: string
   tempoAtuacao: string // "" quando ainda não foi preenchido
 }
 

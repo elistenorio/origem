@@ -36,6 +36,7 @@ function paraProduto(p: ProdutoComArtesao): Produto {
     peso: p.peso ?? undefined,
     prazoPostagem: p.prazoPostagem ?? undefined,
     embalagem: p.embalagem ?? undefined,
+    parecerCuradoria: p.parecerCuradoria ?? undefined,
   }
 }
 
@@ -66,7 +67,7 @@ const ORDEM: Record<OrdenacaoProduto, Prisma.ProdutoOrderByWithRelationInput[]> 
   recentes: [{ criadoEm: "desc" }, { relevancia: "desc" }],
 }
 
-const SO_PUBLICADOS = { status: "publicado" } satisfies Prisma.ProdutoWhereInput
+const SO_PUBLICADOS = { status: "publicado", artesao: { status: "publicado" } } satisfies Prisma.ProdutoWhereInput
 
 export const produtosRepository = {
   /**
@@ -86,6 +87,7 @@ export const produtosRepository = {
       JOIN "Tecnica" t ON t."id" = p."tecnicaId"
       JOIN "Material" m ON m."id" = p."materialId"
       WHERE p."status" = 'publicado'
+        AND a."status" = 'publicado'
         AND unaccent(lower(concat_ws(' ',
               p."titulo", a."nome", a."cidade",
               c."id", c."label", t."id", t."label", m."id", m."label",

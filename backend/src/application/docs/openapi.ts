@@ -295,6 +295,29 @@ export const openapi = {
         responses: { 200: json("Acompanhamento"), 401: semLogin, 403: perfilErrado },
       },
     },
+    "/admin/curadoria": {
+      get: {
+        tags: ["Admin"],
+        summary: "Fila da curadoria (artesãos ou peças em análise)",
+        security: comLogin,
+        parameters: [{ name: "tipo", in: "query", required: true, schema: { type: "string", enum: ["artesaos", "pecas"] }, example: "artesaos" }],
+        responses: { 200: lista("ItemCuradoria"), 400: invalido, 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/curadoria/{tipo}/{id}": {
+      patch: {
+        tags: ["Admin"],
+        summary: "Aprovar, pedir ajustes ou recusar",
+        description: "aprovar → publicado; ajustes → ajustesSolicitados; recusar → recusado. O parecer é obrigatório para ajustes e recusa.",
+        security: comLogin,
+        parameters: [
+          { name: "tipo", in: "path", required: true, schema: { type: "string", enum: ["artesaos", "pecas"] }, example: "artesaos" },
+          idNoCaminho("a7"),
+        ],
+        requestBody: corpo("DecidirCuradoriaInput"),
+        responses: { 204: { description: "Decisão registrada" }, 400: invalido, 401: semLogin, 403: perfilErrado, 404: naoEncontrado, 409: conflito },
+      },
+    },
     "/admin/pedidos": {
       get: {
         tags: ["Admin"],
@@ -360,7 +383,8 @@ export const openapi = {
           regiao: { type: "string", example: "zona-da-mata" },
           estoque: { type: "integer", example: 1 },
           pecaUnica: { type: "boolean" },
-          status: { type: "string", enum: ["publicado", "emAnalise", "rascunho", "indisponivel", "vendida"] },
+          status: { type: "string", enum: ["publicado", "emAnalise", "rascunho", "indisponivel", "vendida", "ajustesSolicitados", "recusado"] },
+          parecerCuradoria: { type: "string", description: "Só nas rotas do artesão, quando a curadoria pediu ajustes ou recusou" },
           descricao: { type: "string" },
           cuidados: { type: "string" },
           criadoEm: { type: "string", format: "date-time" },
@@ -426,7 +450,7 @@ export const openapi = {
           categorias: { type: "array", items: { type: "string" }, example: ["ceramica-barro"] },
           totalProdutos: { type: "integer", example: 6 },
           email: { type: "string" },
-          status: { type: "string", enum: ["publicado", "emAnalise", "ajustesSolicitados", "indisponivel"] },
+          status: { type: "string", enum: ["publicado", "emAnalise", "ajustesSolicitados", "indisponivel", "recusado"] },
           criadoEm: { type: "string", format: "date-time" },
         },
       },
@@ -631,6 +655,30 @@ export const openapi = {
             type: "array",
             items: { type: "object", properties: { id: { type: "string" }, autor: { type: "string" }, descricao: { type: "string" }, data: { type: "string", format: "date-time" } } },
           },
+        },
+      },
+      ItemCuradoria: {
+        type: "object",
+        properties: {
+          id: { type: "string", example: "a7" },
+          tipo: { type: "string", enum: ["artesaos", "pecas"] },
+          titulo: { type: "string", example: "Antônio Lopes" },
+          subtitulo: { type: "string", example: "Bezerros/PE · Mascareiro" },
+          enviadoEm: { type: "string", format: "date-time" },
+          imagemUrl: { type: "string" },
+          fotos: { type: "array", items: { type: "string" } },
+          descricao: { type: "string" },
+          trajetoria: { type: "string", description: "Só para artesãos" },
+          documentos: { type: "array", items: { type: "object", properties: { nome: { type: "string" }, tamanho: { type: "string" } } } },
+          historico: { type: "array", items: { type: "object", properties: { titulo: { type: "string" }, data: { type: "string", format: "date-time" } } } },
+        },
+      },
+      DecidirCuradoriaInput: {
+        type: "object",
+        required: ["decisao"],
+        properties: {
+          decisao: { type: "string", enum: ["aprovar", "ajustes", "recusar"] },
+          parecer: { type: "string", example: "Envie fotos com fundo neutro.", description: "Obrigatório para ajustes e recusa" },
         },
       },
       Acompanhamento: {
