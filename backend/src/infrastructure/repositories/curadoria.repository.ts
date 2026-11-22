@@ -15,7 +15,7 @@ export const curadoriaRepository = {
   listarArtesaosEmAnalise() {
     return prisma.artesao.findMany({
       where: { status: "emAnalise" },
-      select: { id: true, nome: true, oficio: true, cidade: true, estado: true, bio: true, historia: true, fotoUrl: true, criadoEm: true },
+      select: { id: true, nome: true, oficio: true, cidade: true, estado: true, bio: true, historia: true, fotoUrl: true, criadoEm: true, comprovacoes: true },
       orderBy: [{ criadoEm: "desc" }, { id: "desc" }],
     })
   },

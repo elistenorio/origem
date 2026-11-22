@@ -69,3 +69,31 @@ export type FiltrosArtesao = {
   categoria?: string
   tecnica?: string // id de Tecnica (ex.: "renda")
 }
+
+export type ComprovacoesArtesao = {
+  possuiRegistro: boolean
+  participouFeiras: boolean
+  pertenceAssociacao: boolean
+  associacao: string
+  links: string[]
+}
+
+export type CadastroArtesaoInput = {
+  nome: string
+  email: string
+  senha: string
+  telefone: string
+  nomeArtistico: string
+  oficio: string
+  tempoAtuacao: string
+  categoria: string
+  tecnicas: string[]
+  cidade: string
+  estado: string
+  regiao: string
+  historia: string
+  trabalho: string
+  origemTrabalho: string
+  gostaDeFazer: string
+  comprovacoes: ComprovacoesArtesao
+}

@@ -11,6 +11,7 @@ export type ItemCuradoria = {
   descricao: string
   trajetoria?: string
   documentos: { nome: string; tamanho: string }[]
+  comprovacoes?: { rotulo: string; valor: string }[]
   historico: { titulo: string; data: Date }[]
 }
 
