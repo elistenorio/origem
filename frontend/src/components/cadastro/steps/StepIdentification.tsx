@@ -13,15 +13,15 @@ export function StepIdentification({ data, onChange, onNext }: StepProps) {
 
   return (
     <StepForm onSubmit={onNext} disabled={!data.aceitouTermos || senhasDiferentes}>
-      <FormField label="Nome completo" placeholder="Nome Sobrenome"
+      <FormField label="Nome completo" placeholder="Nome Sobrenome" required
         value={data.nome} onChange={(e) => onChange("nome", e.target.value)} />
-      <FormField label="Email" type="email" placeholder="email@exemplo.com"
+      <FormField label="Email" type="email" placeholder="email@exemplo.com" required
         value={data.email} onChange={(e) => onChange("email", e.target.value)} />
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-        <FormField label="Senha" type="password" placeholder="******"
+        <FormField label="Senha" type="password" placeholder="******" required minLength={8}
           value={data.senha} onChange={(e) => onChange("senha", e.target.value)} />
-        <FormField label="Confirme a senha" type="password" placeholder="******"
+        <FormField label="Confirme a senha" type="password" placeholder="******" required
           value={data.confirmarSenha}
           onChange={(e) => onChange("confirmarSenha", e.target.value)}
           error={senhasDiferentes ? "As senhas não conferem" : undefined} />

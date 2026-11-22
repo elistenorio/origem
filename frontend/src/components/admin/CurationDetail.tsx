@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Box, Button, Card, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text } from "@chakra-ui/react"
+import { Box, Button, Card, Flex, Heading, HStack, Image, Link, SimpleGrid, Stack, Text } from "@chakra-ui/react"
 import { BiFile } from "react-icons/bi"
 import { Tile } from "@/components/common/Tile"
 import { StatusBadge } from "@/components/common/StatusBadge"
@@ -74,6 +74,22 @@ export function CurationDetail({ item, onDecidido }: CurationDetailProps) {
                 </Card.Root>
               ))}
             </SimpleGrid>
+          </Stack>
+        )}
+
+        {item.comprovacoes && item.comprovacoes.length > 0 && (
+          <Stack gap="2">
+            <Text textStyle="rotulo">Comprovações</Text>
+            <Stack gap="1" as="dl">
+              {item.comprovacoes.map((c, i) => (
+                <HStack key={`${c.rotulo}-${i}`} gap="2" align="flex-start" wrap="wrap">
+                  <Text as="dt" fontWeight="bold">{c.rotulo}:</Text>
+                  <Text as="dd" wordBreak="break-all">
+                    {/^https?:\/\//i.test(c.valor) ? <Link href={c.valor} target="_blank" rel="noopener noreferrer" variant="origem">{c.valor}</Link> : c.valor}
+                  </Text>
+                </HStack>
+              ))}
+            </Stack>
           </Stack>
         )}
 
