@@ -8,7 +8,14 @@ Stack da disciplina: Next.js 16 (App Router), React 19, TypeScript, Chakra UI v3
 - `npm run dev` — servidor local
 - `npm run build` — build de produção; rode antes de dar a tarefa por concluída
 - `npm run lint` — ESLint
+- `npm test` — testes unitários (Jest, em `tests/`); `npm run test:coverage` mostra a cobertura
 - `npm run typegen` — regenera os tipos do tema do Chakra; rode depois de mudar `src/theme/`
+
+## Testes
+- Ficam em `tests/`, espelhando `src/` (`tests/store/`, `tests/utils/`), com dados de exemplo em `tests/helpers/fixtures.ts` (peças e usuários do seed).
+- Rodam no Node, sem navegador (`testEnvironment: "node"`); o `tests/setup-env.ts` cria um `localStorage` em memória para o `persist` do carrinho.
+- Teste de caso do plano de testes: o `describe` leva o ID e o título exatos do caso (ex.: "TC36 - Adição de peça ao carrinho..."), e cada `it` diz o passo.
+- Teste de regra (store, utils), não de tela: componentes ainda não têm teste.
 
 ## Escopo da Avaliação 1
 Vitrine · busca e filtros por produto, técnica, região e categoria · detalhes do produto · perfil do artesão com seus produtos · carrinho (adicionar, remover, alterar quantidade, visualizar) · fluxo inicial de pedido ou simulação de compra · área inicial do comprador · área inicial do artesão (catálogo/estoque) · estrutura inicial do painel admin · deploy público.

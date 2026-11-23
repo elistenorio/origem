@@ -28,6 +28,7 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - [Zustand](https://zustand.docs.pmnd.rs): estado global no navegador (ex.: preferências de cookies)
 - React Icons
 - ESLint
+- Testes unitários com [Jest](https://jestjs.io), configurado pelo `next/jest`
 - Tailwind CSS (instalado pela stack da disciplina; os estilos das telas são feitos com Chakra UI)
 
 **Backend (Avaliação 2, em `backend/`)**
@@ -59,6 +60,8 @@ Outros comandos (dentro de `frontend/`):
 | `npm run build` | Build de produção (gera os tipos do tema antes, via `prebuild`) |
 | `npm run start` | Roda o build de produção |
 | `npm run lint` | Verifica o código com ESLint |
+| `npm test` | Testes unitários (Jest) do carrinho e das validações dos formulários, sem precisar do backend |
+| `npm run test:coverage` | Os mesmos testes, com a cobertura por arquivo (relatório em `frontend/coverage/`) |
 | `npm run typegen` | Regenera os tipos do tema do Chakra (rodar depois de mudar `src/theme/`) |
 
 ### Backend
@@ -153,4 +156,5 @@ Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo
 ## Evidências
 - Declaração de uso de IA: [`docs/uso-de-ia.md`](docs/uso-de-ia.md)
 - Testes unitários do backend (`npm test`, 23/11/2026): 106 testes, 104 passando. Os 2 que falham são defeitos já registrados no plano de testes: estoque 1000 aceito (TC09, HU-030) e senha sem caractere especial aceita (TC25, HU-001). Cobertura de ramificações do `pedidos.service.ts`: 82%.
+- Testes unitários do frontend (`npm test`, 23/11/2026): 42 testes, todos passando, com os casos TC36, TC37, TC38, TC40 (passo 1) e TC48 do plano de testes. Cobertura de linhas de 100% no `cartStore.ts` e nos utils testados.
 - Prints e vídeo do fluxo no ambiente publicado: _a incluir após o deploy_
