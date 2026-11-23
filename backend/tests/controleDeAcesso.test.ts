@@ -3,7 +3,7 @@
 // Sem login, a mesma rota responde 401. Só o admin recebe 200.
 //
 // Roda contra a API já ligada (npm run dev) e com o seed aplicado (npm run prisma:seed).
-// Para testar outro endereço (ex.: o backend no Render): API_URL=https://<backend>/api npm test
+// Para testar outro endereço (ex.: o backend no Render): API_URL=https://<backend>/api npm run test:acesso
 import { test } from "node:test"
 import assert from "node:assert/strict"
 

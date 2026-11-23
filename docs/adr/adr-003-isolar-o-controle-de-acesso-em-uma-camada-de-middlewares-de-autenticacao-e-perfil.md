@@ -48,7 +48,7 @@ backend/src/middleware/authMiddleware.ts, backend/src/middleware/roleMiddleware.
 
 ## Verificação
 
-- **Teste do cenário:** Teste automatizado backend/tests/controleDeAcesso.test.ts (npm test, usando node:test, nativo do Node): sem login, GET /api/admin/painel deve responder 401; logado como comprador e como artesão, deve responder 403 com corpo contendo apenas { error: { code, message } }, sem dados do painel; logado como admin, deve responder 200. O cenário passa se os 4 casos passarem. Pode rodar localmente ou contra o backend do Render (variável API_URL).
+- **Teste do cenário:** Teste automatizado backend/tests/controleDeAcesso.test.ts (npm run test:acesso, usando node:test, nativo do Node): sem login, GET /api/admin/painel deve responder 401; logado como comprador e como artesão, deve responder 403 com corpo contendo apenas { error: { code, message } }, sem dados do painel; logado como admin, deve responder 200. O cenário passa se os 4 casos passarem. Pode rodar localmente ou contra o backend do Render (variável API_URL).
 
 ---
 

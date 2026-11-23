@@ -1,6 +1,6 @@
 # Backend — Origem
 
-Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`, `redis` (cache), `swagger-ui-express` (Swagger em `/api/docs`). Nada além disso sem perguntar (processamento assíncrono ainda não foi decidido).
+Stack da disciplina: Node.js + TypeScript + Express 4 + Prisma 6 + PostgreSQL, JWT (`jsonwebtoken`) em cookie httpOnly, `bcryptjs`, `cors`, `cookie-parser`, `dotenv`, `redis` (cache), `swagger-ui-express` (Swagger em `/api/docs`), Jest + `ts-jest` (testes). Nada além disso sem perguntar (processamento assíncrono ainda não foi decidido).
 
 Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o projeto usa o formato com `env("DATABASE_URL")` e `env("DIRECT_URL")`.
 
@@ -10,6 +10,8 @@ Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o pro
 - `npm run build` — compila com `tsc`; rode antes de dar a tarefa por concluída
 - `npm run prisma:migrate -- --name <nome>` — cria e aplica migration depois de mudar o `schema.prisma`
 - `npm run prisma:seed` — apaga os dados e recarrega o seed (`prisma/seed.ts`, a partir de `prisma/data/db.json`)
+- `npm test` — testes unitários com Jest (sem banco nem Redis); `npm run test:coverage` mostra a cobertura
+- `npm run test:acesso` — teste do ADR-003 (`node:test`), contra a API ligada e com o seed aplicado
 
 ## Estrutura
 ```
@@ -25,7 +27,17 @@ src/
   middleware/                authMiddleware, roleMiddleware, errorHandler
   shared/                    env, AppError, jwt, cookie, validacao
   @types/express.d.ts        tipo de req.user ({ id, perfil })
+tests/
+  services/ controllers/     testes Jest, com o ID do caso do plano de testes no describe (ex.: "TC09 - ...")
+  middleware/ shared/        testes Jest dos middlewares e das funções compartilhadas
+  helpers/                   fakeReq/fakeRes/fakeNext e fixtures (produtoFake, pedidoFake, usuarioFake)
+  controleDeAcesso.test.ts   teste do ADR-003 (node:test), fora do Jest
 ```
+
+## Testes
+- Unitários: o service roda de verdade e o repository e o cache são trocados por `jest.mock` com fábrica (o arquivo real, que importa o Prisma, nem é carregado). No controller, o service é simulado e o teste confere o `AppError` passado ao `next`.
+- `tests/setup-env.ts` define variáveis falsas; nenhum teste conecta no banco ou no Redis.
+- Os testes ficam fora de `src/`, então não vão para o `dist` (o `tsconfig.test.json` é que inclui `tests/`).
 
 ## Fluxo e regras
 - route → controller → service → repository. Controller não usa Prisma; repository não tem regra de negócio.
