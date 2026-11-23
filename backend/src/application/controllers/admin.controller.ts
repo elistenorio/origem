@@ -2,9 +2,11 @@ import type { NextFunction, Request, Response } from "express"
 import { DecisaoCuradoria, StatusPedido, TipoCuradoria } from "@prisma/client"
 import { adminService } from "../../infrastructure/services/admin.service"
 import { curadoriaService } from "../../infrastructure/services/curadoria.service"
+import { indicadoresService } from "../../infrastructure/services/indicadores.service"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
 import { AppError } from "../../shared/AppError"
 import { readPagination } from "../../shared/pagination"
+import { PERIODOS_INDICADORES, type PeriodoIndicadores } from "../../shared/types/admin"
 import { ehObjeto, texto, textoDaQuery } from "../../shared/validacao"
 
 const STATUS_PEDIDO = Object.values(StatusPedido)
@@ -39,7 +41,17 @@ export const adminController = {
     try {
       const status = textoDaQuery(req.query.status) as StatusPedido | undefined
       const filtro = status && STATUS_PEDIDO.includes(status) ? status : undefined
-      return res.status(200).json(await pedidosService.listar(filtro, readPagination(req.query)))
+      return res.status(200).json(await pedidosService.listar({ status: filtro, busca: textoDaQuery(req.query.busca) }, readPagination(req.query)))
+    } catch (err) {
+      return next(err)
+    }
+  },
+
+  async indicadores(req: Request, res: Response, next: NextFunction) {
+    try {
+      const periodo = textoDaQuery(req.query.periodo) as PeriodoIndicadores | undefined
+      const escolhido = periodo && PERIODOS_INDICADORES.includes(periodo) ? periodo : "30d"
+      return res.status(200).json(await indicadoresService.calcular(escolhido))
     } catch (err) {
       return next(err)
     }

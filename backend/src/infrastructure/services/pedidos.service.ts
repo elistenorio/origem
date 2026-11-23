@@ -136,8 +136,8 @@ export const pedidosService = {
     return atualizado
   },
 
-  async listar(status: StatusPedido | undefined, paginacao: Pagination): Promise<Paginated<Pedido>> {
-    const { itens, total } = await pedidosRepository.listar({ status }, paginacao)
+  async listar(filtros: { status?: StatusPedido; busca?: string }, paginacao: Pagination): Promise<Paginated<Pedido>> {
+    const { itens, total } = await pedidosRepository.listar(filtros, paginacao)
     return paginated(itens, total, paginacao)
   },
 

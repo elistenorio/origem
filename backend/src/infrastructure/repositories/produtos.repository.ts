@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma, StatusProduto } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import { escaparLike } from "../../shared/validacao"
 import type { FiltrosProduto, OrdenacaoProduto, Produto } from "../../shared/types/produto"
@@ -222,5 +222,21 @@ export const produtosRepository = {
       where: { produto: { artesaoId }, pedido: { status: { not: "cancelado" } } },
     })
     return resultado._sum.quantidade ?? 0
+  },
+
+  async listarTodos(
+    filtros: { busca?: string; status?: StatusProduto },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: Produto[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.ProdutoWhereInput = {
+      status: filtros.status,
+      OR: contem ? [{ titulo: contem }, { artesao: { nome: contem } }] : undefined,
+    }
+    const [total, registros] = await prisma.$transaction([
+      prisma.produto.count({ where }),
+      prisma.produto.findMany({ where, include: incluirArtesao, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens: registros.map(paraProduto), total }
   },
 }

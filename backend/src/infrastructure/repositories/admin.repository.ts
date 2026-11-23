@@ -48,4 +48,28 @@ export const adminRepository = {
       take: LIMITE_LISTAS,
     })
   },
+
+  async criarAtividade(autor: string, descricao: string): Promise<void> {
+    await prisma.atividade.create({ data: { autor, descricao } })
+  },
+
+  async contarAtivos() {
+    const [artesaosAtivos, clientes, produtosPublicados] = await prisma.$transaction([
+      prisma.artesao.count({ where: { status: "publicado" } }),
+      prisma.usuario.count({ where: { perfil: "comprador" } }),
+      prisma.produto.count({ where: { status: "publicado", artesao: { status: "publicado" } } }),
+    ])
+    return { artesaosAtivos, clientes, produtosPublicados }
+  },
+
+  async listarPedidosParaIndicadores(desde: Date) {
+    return prisma.pedido.findMany({
+      where: { criadoEm: { gte: desde }, status: { not: "cancelado" } },
+      select: {
+        criadoEm: true,
+        total: true,
+        itens: { select: { quantidade: true, produto: { select: { categoria: { select: { label: true } } } } } },
+      },
+    })
+  },
 }

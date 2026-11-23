@@ -4,7 +4,7 @@
 
 A API é o backend em `backend/` (Node.js + Express + Prisma + PostgreSQL). O frontend chama a URL de `NEXT_PUBLIC_API_URL` (local: `http://localhost:3001/api`, que é também o padrão quando a variável não existe). As rotas ficam em `backend/src/application/routes`.
 
-Rotas: cadastro e autenticação (seção "Autenticação e cadastro", no fim), vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `/minha-conta/vendas`, `/minha-conta/perfil`, e criar, editar e excluir peça) e admin (`GET /admin/painel`, `/admin/acompanhamento`, `/admin/pedidos`, `/admin/curadoria` e `PATCH /admin/curadoria/{tipo}/{id}`).
+Rotas: cadastro e autenticação (seção "Autenticação e cadastro", no fim), vitrine (`GET /produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`), Minha conta (`GET /minha-conta`, `/minha-conta/pedidos`, `/minha-conta/produtos`, `/minha-conta/resumo`, `/minha-conta/vendas`, `/minha-conta/perfil`, e criar, editar e excluir peça) e admin (`GET /admin/painel`, `/admin/indicadores`, `/admin/acompanhamento`, `/admin/pedidos`, `/admin/artesaos`, `/admin/usuarios`, `/admin/produtos`, `/admin/curadoria`, e as ações `PATCH /admin/artesaos/{id}`, `/admin/usuarios/{id}` e `/admin/curadoria/{tipo}/{id}`).
 
 **Swagger:** com o backend rodando, a documentação interativa de todas as rotas fica em `/api/docs` (ex.: `http://localhost:3001/api/docs`). Para testar rotas com login, chame `POST /auth/login` pela própria página.
 
@@ -517,9 +517,63 @@ Só admin. Lista de pedidos da tela Acompanhamento, dos mais recentes para os ma
 | Parâmetro | Exemplo | Descrição |
 |---|---|---|
 | `status` | `emSeparacao` | só pedidos com esse status (`processando`, `emSeparacao`, `enviado`, `entregue`, `cancelado`); valor desconhecido é ignorado |
+| `busca` | `10495` ou `Pedro` | parte do número do pedido (com ou sem `#`) ou do nome do comprador (diferencia maiúsculas) |
 | `page`, `pageSize` | `1`, `10` | paginação |
 
 Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
+### `GET /admin/indicadores?periodo=`
+
+Só admin. Tela Indicadores e Visão geral. `periodo` é `7d`, `30d` (padrão) ou `12m` (365 dias); valor desconhecido vira `30d`.
+
+```json
+{
+  "periodo": "30d",
+  "faturamento": 186.8, "pedidos": 1, "ticketMedio": 186.8, "pecasVendidas": 1,
+  "artesaosAtivos": 4, "clientes": 6, "produtosPublicados": 8,
+  "variacoes": { "faturamento": 100, "pedidos": 100, "ticketMedio": 100, "pecasVendidas": 100 },
+  "faturamentoMensal": [{ "mes": "dez", "atual": 0, "anterior": 0 }],
+  "vendasPorCategoria": [{ "categoria": "Cerâmica e Barro", "quantidade": 1 }],
+  "pedidosPorSemana": [{ "semana": "15/11", "quantidade": 1 }]
+}
+```
+
+- Tudo é calculado no banco, só com pedidos **não cancelados**. `faturamento` soma o `total` (com frete), `pecasVendidas` soma as quantidades e `ticketMedio` é faturamento ÷ pedidos.
+- `variacoes`: % em relação ao período anterior de mesmo tamanho (sem pedidos antes e com pedidos agora, 100).
+- `artesaosAtivos`, `clientes` e `produtosPublicados`: totais de hoje (não dependem do período).
+- `faturamentoMensal`: os últimos 12 meses (horário de Recife), cada um comparado ao mesmo mês do ano anterior.
+- `vendasPorCategoria`: peças vendidas no período, por categoria (as 5 maiores e "Outras").
+- `pedidosPorSemana`: as últimas 8 semanas (blocos de 7 dias terminando agora); `semana` é o dia em que o bloco começa.
+- Erros: `401 UNAUTHORIZED` sem login; `403 FORBIDDEN` para quem não é admin.
+
+### `GET /admin/artesaos`, `GET /admin/usuarios` e `GET /admin/produtos`
+
+Só admin. Listas da tela Gestão, em `Paginated<T>`, das mais recentes para as mais antigas, em qualquer status.
+
+| Rota | Itens | `busca` procura em | `status` aceita |
+|---|---|---|---|
+| `GET /admin/artesaos` | `Artesao` | nome, cidade e e-mail | `publicado`, `emAnalise`, `ajustesSolicitados`, `indisponivel`, `recusado` |
+| `GET /admin/usuarios` | `Usuario` (só compradores) | nome, e-mail e cidade | `ativo`, `suspenso` |
+| `GET /admin/produtos` | `Produto` | título e nome do artesão | os status de peça |
+
+A busca ignora maiúsculas (não ignora acentos). `status` desconhecido é ignorado. Paginação com `page` e `pageSize`. Erros: `401 UNAUTHORIZED`; `403 FORBIDDEN`.
+
+### `PATCH /admin/artesaos/{id}`
+
+Só admin. Suspende (`{ "status": "indisponivel" }`) ou reativa (`{ "status": "publicado" }`) um artesão. Resposta `204`, sem corpo.
+
+- Só um artesão `publicado` pode ser suspenso, e só um `indisponivel` pode ser reativado; os outros status passam pela curadoria.
+- Suspenso, o artesão e as peças dele saem da vitrine na hora (o cache é zerado). Ele continua entrando na conta.
+- Registra uma atividade no painel (ex.: "Maria Clara suspendeu o artesão “Carla Maria”").
+- Erros: `400 VALIDATION` (status inválido); `401`; `403`; `404 NOT_FOUND`; `409 CONFLICT` (status atual não permite a ação).
+
+### `PATCH /admin/usuarios/{id}`
+
+Só admin. Suspende (`{ "status": "suspenso" }`) ou reativa (`{ "status": "ativo" }`) um **cliente** (perfil `comprador`). Resposta `204`, sem corpo.
+
+- Conta suspensa perde o acesso na hora: toda rota com login passa a responder `403 FORBIDDEN` ("Esta conta está suspensa"), mesmo com o cookie de antes, e o login também é recusado.
+- Registra uma atividade no painel (ex.: "Maria Clara suspendeu o cliente pedro.h@email.com").
+- Erros: `400 VALIDATION`; `401`; `403`; `404 NOT_FOUND` (não existe ou não é comprador); `409 CONFLICT` (já está nesse status).
 
 ### `GET /admin/curadoria?tipo=`
 
@@ -653,6 +707,4 @@ Ainda não existem no código.
 
 | Rota | Tela |
 |---|---|
-| `GET /admin/indicadores?periodo=` | indicadores e visão geral do admin |
-| gestão do admin | tabelas de gestão |
 | carrinho salvo no backend | carrinho |

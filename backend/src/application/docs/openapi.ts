@@ -303,6 +303,62 @@ export const openapi = {
         responses: { 200: json("Acompanhamento"), 401: semLogin, 403: perfilErrado },
       },
     },
+    "/admin/indicadores": {
+      get: {
+        tags: ["Admin"],
+        summary: "Indicadores do período (7d, 30d ou 12m), calculados no banco",
+        security: comLogin,
+        parameters: [{ name: "periodo", in: "query", required: false, schema: { type: "string", enum: ["7d", "30d", "12m"] }, example: "30d" }],
+        responses: { 200: { description: "Indicadores", content: { "application/json": { schema: { type: "object" } } } }, 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/artesaos": {
+      get: {
+        tags: ["Admin"],
+        summary: "Artesãos em qualquer status (Gestão)",
+        security: comLogin,
+        parameters: [naQuery("busca", "Nome, cidade ou e-mail", "joao"), naQuery("status", "Status do artesão", "publicado"), ...paginacao],
+        responses: { 200: paginado("Artesao"), 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/artesaos/{id}": {
+      patch: {
+        tags: ["Admin"],
+        summary: "Suspender (indisponivel) ou reativar (publicado) um artesão",
+        security: comLogin,
+        parameters: [idNoCaminho("a2")],
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { status: { type: "string", enum: ["publicado", "indisponivel"] } } } } } },
+        responses: { 204: { description: "Status alterado" }, 400: invalido, 401: semLogin, 403: perfilErrado, 404: naoEncontrado, 409: conflito },
+      },
+    },
+    "/admin/usuarios": {
+      get: {
+        tags: ["Admin"],
+        summary: "Clientes (compradores) em qualquer status (Gestão)",
+        security: comLogin,
+        parameters: [naQuery("busca", "Nome, e-mail ou cidade", "ana"), naQuery("status", "ativo ou suspenso", "ativo"), ...paginacao],
+        responses: { 200: paginado("Usuario"), 401: semLogin, 403: perfilErrado },
+      },
+    },
+    "/admin/usuarios/{id}": {
+      patch: {
+        tags: ["Admin"],
+        summary: "Suspender ou reativar um cliente (a conta suspensa perde o acesso na hora)",
+        security: comLogin,
+        parameters: [idNoCaminho("u2")],
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { status: { type: "string", enum: ["ativo", "suspenso"] } } } } } },
+        responses: { 204: { description: "Status alterado" }, 400: invalido, 401: semLogin, 403: perfilErrado, 404: naoEncontrado, 409: conflito },
+      },
+    },
+    "/admin/produtos": {
+      get: {
+        tags: ["Admin"],
+        summary: "Peças em qualquer status (Gestão)",
+        security: comLogin,
+        parameters: [naQuery("busca", "Título ou artesão", "jarro"), naQuery("status", "Status da peça", "publicado"), ...paginacao],
+        responses: { 200: paginado("Produto"), 401: semLogin, 403: perfilErrado },
+      },
+    },
     "/admin/curadoria": {
       get: {
         tags: ["Admin"],
@@ -331,7 +387,7 @@ export const openapi = {
         tags: ["Admin"],
         summary: "Pedidos, dos mais recentes para os mais antigos",
         security: comLogin,
-        parameters: [naQuery("status", "processando, emSeparacao, enviado, entregue ou cancelado", "emSeparacao"), ...paginacao],
+        parameters: [naQuery("status", "processando, emSeparacao, enviado, entregue ou cancelado", "emSeparacao"), naQuery("busca", "Número do pedido ou nome do comprador", "10495"), ...paginacao],
         responses: { 200: paginado("Pedido"), 401: semLogin, 403: perfilErrado },
       },
     },

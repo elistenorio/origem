@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma, StatusArtesao } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import { escaparLike } from "../../shared/validacao"
 import type { Artesao, FiltrosArtesao, PerfilArtesao, PerfilArtesaoInput } from "../../shared/types/artesao"
@@ -134,5 +134,30 @@ export const artesaosRepository = {
   async listarRecentes(take: number): Promise<Artesao[]> {
     const registros = await prisma.artesao.findMany({ include: incluirExtras, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], take })
     return registros.map(paraArtesao)
+  },
+
+  async listarTodos(
+    filtros: { busca?: string; status?: StatusArtesao },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: Artesao[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.ArtesaoWhereInput = {
+      status: filtros.status,
+      OR: contem ? [{ nome: contem }, { cidade: contem }, { usuario: { email: contem } }] : undefined,
+    }
+    const [total, registros] = await prisma.$transaction([
+      prisma.artesao.count({ where }),
+      prisma.artesao.findMany({ where, include: incluirExtras, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens: registros.map(paraArtesao), total }
+  },
+
+  async buscarNomeEStatus(id: string) {
+    return prisma.artesao.findUnique({ where: { id }, select: { nome: true, status: true } })
+  },
+
+  async alterarStatus(id: string, de: StatusArtesao, para: StatusArtesao): Promise<boolean> {
+    const { count } = await prisma.artesao.updateMany({ where: { id, status: de }, data: { status: para } })
+    return count > 0
   },
 }

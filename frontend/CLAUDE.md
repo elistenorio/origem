@@ -64,7 +64,6 @@ Componente → hook (`useApi`) → service (`src/services/`) → `api` (axios, e
 
 ## Convenções
 - Idioma dos nomes: seção "Idioma" do `CLAUDE.md` da raiz (domínio em português sem acento, técnico em inglês, commits em inglês).
-- A pasta `dados-exemplo/` ainda alimenta telas que não migraram para o backend (indicadores, gestão e visão geral do admin). Não use em código novo; ela sai quando essas telas migrarem.
 - Imports com o alias `@/` (= `src/`).
 
 ## Antes de dar uma tela por pronta
