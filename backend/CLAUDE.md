@@ -12,6 +12,7 @@ Prisma fica na versão 6: a 7 tira `url`/`directUrl` do `schema.prisma`, e o pro
 - `npm run prisma:seed` — apaga os dados e recarrega o seed (`prisma/seed.ts`, a partir de `prisma/data/db.json`)
 - `npm test` — testes unitários com Jest (sem banco nem Redis); `npm run test:coverage` mostra a cobertura
 - `npm run test:acesso` — teste do ADR-003 (`node:test`), contra a API ligada e com o seed aplicado
+- `npm run test:estoque` — teste do ADR-001 (`node:test`, 20 compras simultâneas da última unidade), contra a API ligada e com o seed aplicado
 
 ## Estrutura
 ```
@@ -32,6 +33,7 @@ tests/
   middleware/ shared/        testes Jest dos middlewares e das funções compartilhadas
   helpers/                   fakeReq/fakeRes/fakeNext e fixtures (produtoFake, pedidoFake, usuarioFake)
   controleDeAcesso.test.ts   teste do ADR-003 (node:test), fora do Jest
+  concorrenciaEstoque.test.ts teste do ADR-001 (node:test), fora do Jest
 ```
 
 ## Testes
