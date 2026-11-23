@@ -22,7 +22,7 @@ app/                  rotas; URLs em português (/login, /cadastro, /produtos, /
 components/<assunto>/ componentes por domínio, pastas em português (autenticacao, cadastro, inicio, carrinho...)
 components/common/    campos de formulário reutilizáveis
 components/feedback/  estados de carregamento, erro e vazio
-components/ui/        snippets gerados pelo Chakra (provider, toaster...)
+components/ui/        snippets do Chakra (provider, emotion-registry, toaster...)
 services/             única camada que faz requisições: api.ts (instância do axios) + um <recurso>.service.ts por recurso
 store/                stores Zustand
 hooks/                lógica reutilizável (ex.: buscar dados com loading/erro)
