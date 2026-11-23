@@ -22,35 +22,47 @@ const invalidarCache = jest.mocked(produtosCache.invalidar)
 
 function novoPedido(itens: CriarPedidoInput["itens"]): CriarPedidoInput {
   const { comprador, endereco } = pedidoFake()
-  return { itens, comprador, endereco, modalidadeFrete: "pac", pagamento: "pix", parcelas: 1 }
+  return { itens, comprador, endereco: { ...endereco, cep: "50030-170" }, modalidadeFrete: "pac", pagamento: "cartao", parcelas: 1 }
 }
 
-describe("TC01 e TC02 - Compra com estoque insuficiente (nível componente)", () => {
-  it("quantidade maior que o estoque responde 409 OUT_OF_STOCK sem gravar o pedido", async () => {
-    buscarPublicadosPorIds.mockResolvedValue([produtoFake({ estoque: 1 })])
-
-    await expect(pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 2 }]))).rejects.toMatchObject({
-      status: 409,
-      code: "OUT_OF_STOCK",
-      message: "Estoque insuficiente para \"Conj. Brasileiro\".",
-    })
-    expect(criarComBaixaDeEstoque).not.toHaveBeenCalled()
-  })
-
-  it("outra compra levou a última unidade antes da gravação: também responde 409 OUT_OF_STOCK", async () => {
-    buscarPublicadosPorIds.mockResolvedValue([produtoFake({ estoque: 1 })])
+describe("TC01 - Falha ao tentar comprar item simultaneamente esgotado (HU-020, Cenário 2) - nível componente", () => {
+  it("outra compra levou a última unidade entre a conferência e a gravação: 409 OUT_OF_STOCK e o cache não muda", async () => {
+    buscarPublicadosPorIds.mockResolvedValue([produtoFake({ titulo: "Natureza Onírica", estoque: 1 })])
     criarComBaixaDeEstoque.mockResolvedValue({ semEstoque: "p3" })
 
     await expect(pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))).rejects.toMatchObject({
       status: 409,
       code: "OUT_OF_STOCK",
-      message: "Estoque insuficiente para \"Conj. Brasileiro\".",
+      message: "Estoque insuficiente para \"Natureza Onírica\".",
     })
     expect(invalidarCache).not.toHaveBeenCalled()
   })
+
+  it("quem chega depois da última unidade vendida recebe 409 OUT_OF_STOCK sem gravar o pedido", async () => {
+    buscarPublicadosPorIds.mockResolvedValue([produtoFake({ titulo: "Natureza Onírica", estoque: 0 })])
+
+    await expect(pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))).rejects.toMatchObject({
+      status: 409,
+      code: "OUT_OF_STOCK",
+    })
+    expect(criarComBaixaDeEstoque).not.toHaveBeenCalled()
+  })
 })
 
-describe("TC39 - Valores do pedido calculados pelo backend", () => {
+describe("TC02 - Confirmações simultâneas com estoque suficiente (HU-020, Cenário 3) - nível componente", () => {
+  it("com estoque 2, os dois pedidos de 1 unidade são gravados com baixa de estoque", async () => {
+    buscarPublicadosPorIds.mockResolvedValueOnce([produtoFake({ estoque: 2 })]).mockResolvedValueOnce([produtoFake({ estoque: 1 })])
+    criarComBaixaDeEstoque.mockResolvedValue(pedidoFake())
+
+    await pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))
+    await pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))
+
+    expect(criarComBaixaDeEstoque).toHaveBeenCalledTimes(2)
+    expect(invalidarCache).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe("TC39 - Conclusão de pedido com dados válidos e baixa de estoque (HU-018, Cenário 1, e HU-020, Cenário 1)", () => {
   beforeEach(() => {
     buscarPublicadosPorIds.mockResolvedValue([produtoFake({ preco: 167.9, estoque: 6 })])
     criarComBaixaDeEstoque.mockResolvedValue(pedidoFake())
@@ -82,12 +94,14 @@ describe("TC39 - Valores do pedido calculados pelo backend", () => {
     expect(dados.total).toBe(354.7)
   })
 
-  it("invalida o cache da vitrine depois de baixar o estoque", async () => {
-    await pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))
-
+  it("o pedido é gravado com baixa de estoque e o cache da vitrine é invalidado", async () => {
+    await expect(pedidosService.criar(novoPedido([{ produtoId: "p3", quantidade: 1 }]))).resolves.toMatchObject({ status: "processando" })
+    expect(criarComBaixaDeEstoque).toHaveBeenCalledTimes(1)
     expect(invalidarCache).toHaveBeenCalledTimes(1)
   })
+})
 
+describe("pedidosService.criar - outras regras", () => {
   it("peça que não está publicada responde 404", async () => {
     buscarPublicadosPorIds.mockResolvedValue([])
 
@@ -99,39 +113,41 @@ describe("TC39 - Valores do pedido calculados pelo backend", () => {
   })
 })
 
-describe("TC42 - Cancelamento do pedido por quem tem permissão", () => {
-  beforeEach(() => cancelar.mockResolvedValue(pedidoFake({ status: "cancelado" })))
-
-  it("o dono cancela, as peças voltam ao estoque e o cache é invalidado", async () => {
-    buscarPorId.mockResolvedValue(pedidoEncontrado())
+describe("TC42 - Cancelamento de pedido em preparo (HU-022, Cenário 1)", () => {
+  it("o dono cancela, as peças voltam ao estoque e o cache da vitrine é invalidado", async () => {
+    buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "processando" }))
+    cancelar.mockResolvedValue(pedidoFake({ status: "cancelado" }))
 
     await expect(pedidosService.cancelar("10500", "Desisti da compra", compradorLogado)).resolves.toMatchObject({ status: "cancelado" })
     expect(cancelar).toHaveBeenCalledWith("10500", "Desisti da compra")
     expect(invalidarCache).toHaveBeenCalledTimes(1)
   })
+})
+
+describe("pedidosService.cancelar - permissões", () => {
+  beforeEach(() => {
+    buscarPorId.mockResolvedValue(pedidoEncontrado())
+    cancelar.mockResolvedValue(pedidoFake({ status: "cancelado" }))
+  })
 
   it("o admin pode cancelar o pedido de outra pessoa", async () => {
-    buscarPorId.mockResolvedValue(pedidoEncontrado())
-
     await pedidosService.cancelar("10500", "Pagamento não confirmado", adminLogado)
 
     expect(cancelar).toHaveBeenCalledWith("10500", "Pagamento não confirmado")
   })
 
   it("outro comprador recebe 403 e nada é cancelado", async () => {
-    buscarPorId.mockResolvedValue(pedidoEncontrado())
-
     await expect(pedidosService.cancelar("10500", "Desisti", outroComprador)).rejects.toMatchObject({ status: 403, code: "FORBIDDEN" })
     expect(cancelar).not.toHaveBeenCalled()
   })
 })
 
-describe("TC43 - Cancelamento de pedido já enviado", () => {
-  it("o repository não cancela (pedido já enviado) e o service responde 409", async () => {
+describe("TC43 - Tentativa de cancelamento de pedido já enviado (HU-022, Cenário 2)", () => {
+  it("o pedido continua enviado e o service responde 409 informando que não pode mais ser cancelado", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "enviado" }))
     cancelar.mockResolvedValue(null)
 
-    await expect(pedidosService.cancelar("10500", "Desisti", compradorLogado)).rejects.toMatchObject({
+    await expect(pedidosService.cancelar("10494", "Desisti", compradorLogado)).rejects.toMatchObject({
       status: 409,
       code: "CONFLICT",
       message: "Este pedido já foi enviado e não pode mais ser cancelado.",
@@ -140,18 +156,10 @@ describe("TC43 - Cancelamento de pedido já enviado", () => {
   })
 })
 
-describe("TC50 - Andamento do pedido atualizado pelo admin", () => {
+describe("TC50 - Atualização do status do pedido para enviado e para entregue (HU-033, Cenários 1 e 2)", () => {
   afterEach(() => jest.useRealTimers())
 
-  it("quem não é admin recebe 403", async () => {
-    await expect(pedidosService.avancar("10500", { status: "emSeparacao" }, compradorLogado)).rejects.toMatchObject({
-      status: 403,
-      code: "FORBIDDEN",
-    })
-    expect(buscarPorId).not.toHaveBeenCalled()
-  })
-
-  it("processando vai para emSeparacao", async () => {
+  it("passo 1: processando passa a em separação", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "processando" }))
     avancarStatus.mockResolvedValue(pedidoFake({ status: "emSeparacao" }))
 
@@ -163,26 +171,49 @@ describe("TC50 - Andamento do pedido atualizado pelo admin", () => {
     })
   })
 
-  it("marcar como enviado grava o rastreio e calcula a previsão pelo maior prazo do frete, em dias úteis", async () => {
+  it("passo 2: marcar como enviado grava o rastreio e a previsão pelo maior prazo do frete, em dias úteis", async () => {
     jest.useFakeTimers({ now: new Date("2026-11-20T15:00:00Z") })
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "emSeparacao" }))
     avancarStatus.mockResolvedValue(pedidoFake({ status: "enviado" }))
 
-    await pedidosService.avancar("10500", { status: "enviado", codigoRastreio: "BR123456789BR" }, adminLogado)
-
+    await expect(pedidosService.avancar("10500", { status: "enviado", codigoRastreio: "BR123456789BR" }, adminLogado)).resolves.toMatchObject({
+      status: "enviado",
+    })
     expect(avancarStatus).toHaveBeenCalledWith("10500", "emSeparacao", "enviado", {
       evento: "Pedido enviado",
       codigoRastreio: "BR123456789BR",
       previsaoEntrega: new Date("2026-12-02T15:00:00Z"),
     })
   })
+
+  it("passo 3: enviado passa a entregue", async () => {
+    buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "enviado" }))
+    avancarStatus.mockResolvedValue(pedidoFake({ status: "entregue" }))
+
+    await expect(pedidosService.avancar("10500", { status: "entregue" }, adminLogado)).resolves.toMatchObject({ status: "entregue" })
+    expect(avancarStatus).toHaveBeenCalledWith("10500", "enviado", "entregue", {
+      evento: "Pedido entregue",
+      codigoRastreio: undefined,
+      previsaoEntrega: undefined,
+    })
+  })
 })
 
-describe("TC51 - Andamento fora da ordem", () => {
-  it("pedido enviado não pode voltar para emSeparacao: 409", async () => {
+describe("pedidosService.avancar - permissões", () => {
+  it("quem não é admin recebe 403", async () => {
+    await expect(pedidosService.avancar("10500", { status: "emSeparacao" }, compradorLogado)).rejects.toMatchObject({
+      status: 403,
+      code: "FORBIDDEN",
+    })
+    expect(buscarPorId).not.toHaveBeenCalled()
+  })
+})
+
+describe("TC51 - Tentativa de retroceder o status do pedido (HU-033, Cenário 3)", () => {
+  it("pedido enviado não volta para em separação: 409 e nada é gravado", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "enviado" }))
 
-    await expect(pedidosService.avancar("10500", { status: "emSeparacao" }, adminLogado)).rejects.toMatchObject({
+    await expect(pedidosService.avancar("10494", { status: "emSeparacao" }, adminLogado)).rejects.toMatchObject({
       status: 409,
       code: "CONFLICT",
       message: "O pedido está enviado; só um pedido em processamento pode ficar em separação.",

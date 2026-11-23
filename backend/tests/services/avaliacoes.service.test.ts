@@ -9,10 +9,10 @@ jest.mock("../../src/infrastructure/repositories/pedidos.repository", () => ({ p
 const buscarPorId = jest.mocked(pedidosRepository.buscarPorId)
 const criarAvaliacao = jest.mocked(avaliacoesRepository.criar)
 
-const input = { pedidoId: "10500", nota: 5, comentario: "Chegou bem embalado.", notas: { produto: 5 } }
+const input = { pedidoId: "10402", nota: 5, comentario: "Peça linda, superou minhas expectativas", notas: {} }
 
-describe("TC44 - Avaliação de pedido entregue", () => {
-  it("o dono avalia um pedido entregue e a avaliação é gravada", async () => {
+describe("TC44 - Avaliação de peça com pedido entregue (HU-023, Cenário 1)", () => {
+  it("o dono avalia o pedido entregue e a avaliação é registrada", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "entregue" }))
     criarAvaliacao.mockResolvedValue({ ...input, id: "av1", criadoEm: new Date() })
 
@@ -21,8 +21,8 @@ describe("TC44 - Avaliação de pedido entregue", () => {
   })
 })
 
-describe("TC45 - Avaliação não permitida", () => {
-  it("pedido já avaliado responde 409", async () => {
+describe("TC45 - Avaliação repetida, de pedido não entregue e sem nota (HU-023, Cenários 2, 3 e 4)", () => {
+  it("passo 1: pedido já avaliado responde 409 \"Este pedido já foi avaliado.\"", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "entregue", avaliado: true }))
 
     await expect(avaliacoesService.criar(input, compradorLogado)).rejects.toMatchObject({
@@ -33,17 +33,19 @@ describe("TC45 - Avaliação não permitida", () => {
     expect(criarAvaliacao).not.toHaveBeenCalled()
   })
 
-  it("pedido ainda não entregue responde 409", async () => {
-    buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "enviado" }))
+  it("passo 2: pedido em separação responde 409 \"Só é possível avaliar pedidos entregues.\"", async () => {
+    buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "emSeparacao" }))
 
-    await expect(avaliacoesService.criar(input, compradorLogado)).rejects.toMatchObject({
+    await expect(avaliacoesService.criar({ ...input, pedidoId: "10495" }, compradorLogado)).rejects.toMatchObject({
       status: 409,
       code: "CONFLICT",
       message: "Só é possível avaliar pedidos entregues.",
     })
     expect(criarAvaliacao).not.toHaveBeenCalled()
   })
+})
 
+describe("avaliacoesService.criar - outras regras", () => {
   it("pedido de outra pessoa responde 403", async () => {
     buscarPorId.mockResolvedValue(pedidoEncontrado({ status: "entregue" }))
 

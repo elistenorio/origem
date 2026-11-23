@@ -152,5 +152,5 @@ Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo
 
 ## Evidências
 - Declaração de uso de IA: [`docs/uso-de-ia.md`](docs/uso-de-ia.md)
-- Testes unitários do backend (`npm test`, 23/11/2026): 102 testes, 100 passando. Os 2 que falham são defeitos já registrados no plano de testes: estoque 1000 aceito (TC09, HU-030) e senha sem caractere especial aceita (TC25, HU-001). Cobertura de ramificações do `pedidos.service.ts`: 82%.
+- Testes unitários do backend (`npm test`, 23/11/2026): 106 testes, 104 passando. Os 2 que falham são defeitos já registrados no plano de testes: estoque 1000 aceito (TC09, HU-030) e senha sem caractere especial aceita (TC25, HU-001). Cobertura de ramificações do `pedidos.service.ts`: 82%.
 - Prints e vídeo do fluxo no ambiente publicado: _a incluir após o deploy_

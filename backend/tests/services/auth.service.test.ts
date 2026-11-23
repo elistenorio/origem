@@ -14,26 +14,28 @@ const buscarPorEmailComSenha = jest.mocked(usuariosRepository.buscarPorEmailComS
 const SENHA = "Origem@123"
 const senhaHash = bcrypt.hashSync(SENHA, 4)
 
-describe("TC07 - Login com e-mail ou senha incorretos", () => {
-  it("e-mail sem conta responde 401 com a mensagem genérica", async () => {
-    buscarPorEmailComSenha.mockResolvedValue(null)
+describe("TC07 - Login negado com credencial inválida (HU-002, Cenários 2 e 3)", () => {
+  it("passo 1: e-mail cadastrado com a senha errada responde 401 \"E-mail ou senha incorretos.\"", async () => {
+    buscarPorEmailComSenha.mockResolvedValue({ ...usuarioFake(), senhaHash })
 
-    const login = authService.login("ninguem@email.com", SENHA)
+    const login = authService.login("ana.beatriz@email.com", "SenhaErrada123")
 
     await expect(login).rejects.toBeInstanceOf(AppError)
     await expect(login).rejects.toMatchObject({ status: 401, code: "UNAUTHORIZED", message: "E-mail ou senha incorretos." })
   })
 
-  it("senha errada responde o mesmo 401, sem revelar que o e-mail existe", async () => {
-    buscarPorEmailComSenha.mockResolvedValue({ ...usuarioFake(), senhaHash })
+  it("passo 2: e-mail sem conta responde o mesmo 401, sem distinguir qual dos dois falhou", async () => {
+    buscarPorEmailComSenha.mockResolvedValue(null)
 
-    await expect(authService.login("ana.beatriz@email.com", "SenhaErrada#1")).rejects.toMatchObject({
+    await expect(authService.login("inexistente@exemplo.com", SENHA)).rejects.toMatchObject({
       status: 401,
       code: "UNAUTHORIZED",
       message: "E-mail ou senha incorretos.",
     })
   })
+})
 
+describe("authService.login - outras regras", () => {
   it("procura o e-mail sem espaços e em minúsculas", async () => {
     buscarPorEmailComSenha.mockResolvedValue(null)
 

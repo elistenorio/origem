@@ -11,44 +11,24 @@ jest.mock("../../src/infrastructure/repositories/filtros.repository", () => ({ f
 const existeEmail = jest.mocked(usuariosRepository.existeEmail)
 const criar = jest.mocked(usuariosRepository.criar)
 
-const cadastro = { nome: "  Ana Beatriz Souza ", email: " Ana.Beatriz@Email.com ", senha: "Senha#12" }
+const cadastro = { nome: "  Joana Ferreira ", email: " Joana.Ferreira@Exemplo.com ", senha: "Senha#2026" }
 
-describe("TC24 - Cadastro com e-mail já usado", () => {
-  it("responde 409 e não cria a conta", async () => {
-    existeEmail.mockResolvedValue(true)
-
-    await expect(usuariosService.cadastrarComprador(cadastro)).rejects.toMatchObject({
-      status: 409,
-      code: "CONFLICT",
-      message: "Já existe uma conta com este e-mail.",
-    })
-    expect(criar).not.toHaveBeenCalled()
-  })
-
-  it("confere o e-mail em minúsculas, então a mesma conta com letras maiúsculas também é recusada", async () => {
-    existeEmail.mockResolvedValue(true)
-
-    await expect(usuariosService.cadastrarComprador(cadastro)).rejects.toMatchObject({ status: 409 })
-    expect(existeEmail).toHaveBeenCalledWith("ana.beatriz@email.com")
-  })
-})
-
-describe("TC23 - Cadastro de comprador com dados válidos", () => {
+describe("TC23 - Criação de conta com dados válidos (HU-001, Cenário 1)", () => {
   beforeEach(() => {
     existeEmail.mockResolvedValue(false)
     criar.mockResolvedValue(usuarioFake())
   })
 
-  it("salva o e-mail em minúsculas e o nome sem espaços nas pontas", async () => {
-    await usuariosService.cadastrarComprador(cadastro)
-
-    expect(criar).toHaveBeenCalledWith(expect.objectContaining({ nome: "Ana Beatriz Souza", email: "ana.beatriz@email.com" }))
-  })
-
-  it("sempre cria a conta com o perfil comprador", async () => {
+  it("cria a conta com o perfil comprador", async () => {
     await usuariosService.cadastrarComprador(cadastro)
 
     expect(criar).toHaveBeenCalledWith(expect.objectContaining({ perfil: "comprador" }))
+  })
+
+  it("salva o e-mail em minúsculas e o nome sem espaços nas pontas", async () => {
+    await usuariosService.cadastrarComprador(cadastro)
+
+    expect(criar).toHaveBeenCalledWith(expect.objectContaining({ nome: "Joana Ferreira", email: "joana.ferreira@exemplo.com" }))
   })
 
   it("guarda a senha como hash, nunca o texto digitado", async () => {
@@ -61,5 +41,25 @@ describe("TC23 - Cadastro de comprador com dados válidos", () => {
 
   it("devolve o usuário criado pelo repository", async () => {
     await expect(usuariosService.cadastrarComprador(cadastro)).resolves.toEqual(usuarioFake())
+  })
+})
+
+describe("TC24 - Criação de conta com e-mail já cadastrado (HU-001, Cenário 2)", () => {
+  it("responde 409 \"Já existe uma conta com este e-mail.\" e não cria a conta", async () => {
+    existeEmail.mockResolvedValue(true)
+
+    await expect(usuariosService.cadastrarComprador({ ...cadastro, email: "ana.beatriz@email.com" })).rejects.toMatchObject({
+      status: 409,
+      code: "CONFLICT",
+      message: "Já existe uma conta com este e-mail.",
+    })
+    expect(criar).not.toHaveBeenCalled()
+  })
+
+  it("confere o e-mail em minúsculas, então o mesmo e-mail com letras maiúsculas também é recusado", async () => {
+    existeEmail.mockResolvedValue(true)
+
+    await expect(usuariosService.cadastrarComprador({ ...cadastro, email: "Ana.Beatriz@Email.com" })).rejects.toMatchObject({ status: 409 })
+    expect(existeEmail).toHaveBeenCalledWith("ana.beatriz@email.com")
   })
 })

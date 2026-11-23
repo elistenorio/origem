@@ -14,18 +14,21 @@ async function avaliar(body: unknown) {
   return { res, next }
 }
 
-describe("TC45 - Avaliação não permitida (validação da API)", () => {
-  it("sem nota responde 400 \"Dê uma nota de 1 a 5 estrelas.\"", async () => {
-    const { next } = await avaliar({ pedidoId: "10500", comentario: "Gostei." })
+describe("TC45 - Avaliação repetida, de pedido não entregue e sem nota (HU-023, Cenários 2, 3 e 4) - validação da API", () => {
+  it("passo 3: só o comentário, sem nota, responde 400 \"Dê uma nota de 1 a 5 estrelas.\"", async () => {
+    const { next } = await avaliar({ pedidoId: "10500", comentario: "Gostei muito." })
 
     esperarAppError(next, 400, "VALIDATION", "Dê uma nota de 1 a 5 estrelas.")
     expect(criar).not.toHaveBeenCalled()
   })
+})
 
+describe("POST /avaliacoes - validação da nota", () => {
   it.each([0, 6, 4.5])("nota %s responde 400", async (nota) => {
     const { next } = await avaliar({ pedidoId: "10500", nota })
 
     esperarAppError(next, 400, "VALIDATION", "Dê uma nota de 1 a 5 estrelas.")
+    expect(criar).not.toHaveBeenCalled()
   })
 
   it("nota válida chama o service e responde 201", async () => {
