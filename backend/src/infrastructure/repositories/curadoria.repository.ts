@@ -69,4 +69,11 @@ export const curadoriaRepository = {
       return true
     })
   },
+
+  async listarDecisoesDoArtesao(artesaoId: string, produtoIds: string[]) {
+    return prisma.analiseCuradoria.findMany({
+      where: { OR: [{ tipo: "artesaos", itemId: artesaoId }, { tipo: "pecas", itemId: { in: produtoIds } }] },
+      orderBy: [{ data: "desc" }, { id: "desc" }],
+    })
+  },
 }

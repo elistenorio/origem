@@ -343,6 +343,24 @@ Números do topo de "Meu catálogo" e "Estoque" do artesão logado.
 - `vendidas`: soma das quantidades das peças do artesão em pedidos que não foram cancelados.
 - `estoque`: conta só as peças publicadas ou indisponíveis; `baixoEstoque` é 1 unidade (`LIMITE_BAIXO_ESTOQUE`).
 
+### `GET /minha-conta/painel`
+
+Tela inicial do artesão logado (só perfil `artesao`).
+
+```json
+{
+  "nome": "Mestre Joãozinho", "status": "publicado",
+  "publicadas": 3, "vendidasSemana": 1, "vendasMes": 167.9, "avaliacaoMedia": 5, "totalAvaliacoes": 1,
+  "notificacoes": [{ "titulo": "Novo pedido recebido", "descricao": "Jarro Tradicional · R$ 167,90", "data": "2026-11-22T22:35:47.276Z" }]
+}
+```
+
+- `vendidasSemana`: unidades das peças dele em pedidos não cancelados dos últimos 7 dias. `vendasMes`: valor dessas peças (sem frete) no mês atual, no horário de Recife.
+- `avaliacaoMedia`: média das notas dos pedidos que têm peças dele (`null` sem avaliações).
+- `notificacoes`: as 5 mais recentes entre pedidos novos, avaliações e decisões da curadoria sobre o perfil e as peças dele.
+- `parecerCuradoria` aparece quando a curadoria pediu ajustes ou recusou o perfil.
+- Erros: `401 UNAUTHORIZED`; `403 FORBIDDEN` para quem não é artesão; `404 NOT_FOUND` sem perfil de artesão.
+
 ### `GET /minha-conta/vendas`
 
 Tela "Pedidos" do artesão logado: os pedidos que têm peças dele, dos mais recentes para os mais antigos. Cada pedido traz **só os itens do artesão** e não traz os dados pessoais do comprador (só a cidade de entrega).

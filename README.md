@@ -118,7 +118,7 @@ Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie par
 
 ## Funcionalidades implementadas
 
-Os dados vêm do backend. Ainda tem dados escritos à mão o início do painel do artesão.
+Todos os dados das telas vêm do backend.
 
 **Comprador**
 - Vitrine (home) com peças e artesãos em destaque

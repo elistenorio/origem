@@ -1,6 +1,6 @@
 import type { AnaliseCuradoria, DecisaoCuradoria, TipoCuradoria } from "@prisma/client"
 import { AppError } from "../../shared/AppError"
-import { arredondar } from "../../shared/dinheiro"
+import { formatarReais } from "../../shared/dinheiro"
 import type { TokenPayload } from "../../shared/jwt"
 import type { ComprovacoesArtesao } from "../../shared/types/artesao"
 import type { DecidirCuradoriaInput, ItemCuradoria } from "../../shared/types/curadoria"
@@ -25,7 +25,6 @@ const NOME_ITEM: Record<TipoCuradoria, { artigo: string; contracao: string; nome
   pecas: { artigo: "a peça", contracao: "na peça", nome: "Esta peça", naoEncontrado: "Peça não encontrada." },
 }
 
-const formatarPreco = (valor: number) => `R$ ${arredondar(valor).toFixed(2).replace(".", ",")}`
 
 function descreverAtividade(tipo: TipoCuradoria, decisao: DecisaoCuradoria, nome: string): string {
   const item = NOME_ITEM[tipo]
@@ -84,7 +83,7 @@ export const curadoriaService = {
       enviadoEm: p.criadoEm,
       imagemUrl: p.imagemUrl,
       fotos: p.imagens.length > 0 ? p.imagens : [p.imagemUrl],
-      descricao: [p.descricao, p.medidas, formatarPreco(p.preco)].filter(Boolean).join(" · "),
+      descricao: [p.descricao, p.medidas, formatarReais(p.preco)].filter(Boolean).join(" · "),
       documentos: [],
       historico: historico({ titulo: "Peça enviada para análise", data: p.criadoEm }, analises, p.id),
     }))

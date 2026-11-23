@@ -100,3 +100,17 @@ export type CadastroArtesaoInput = {
     links: string[]
   }
 }
+
+export type NotificacaoArtesao = { titulo: string; descricao: string; data: string }
+
+export type PainelArtesao = {
+  nome: string
+  status: StatusArtesao
+  parecerCuradoria?: string
+  publicadas: number
+  vendidasSemana: number
+  vendasMes: number
+  avaliacaoMedia: number | null
+  totalAvaliacoes: number
+  notificacoes: NotificacaoArtesao[]
+}
