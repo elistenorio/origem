@@ -5,7 +5,9 @@ import { SimpleGrid, Stack, Tabs } from "@chakra-ui/react"
 import { SectionCard } from "@/components/common/SectionCard"
 import { StatCard } from "@/components/common/StatCard"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
-import { indicadoresExemplo } from "@/dados-exemplo/admin"
+import { DataState } from "@/components/feedback/DataState"
+import { useApi } from "@/hooks/useApi"
+import { adminService } from "@/services/admin.service"
 import { formatCompact, formatCurrency, formatCurrencyCompact } from "@/utils/formatCurrency"
 import type { PeriodoIndicadores } from "@/types/admin"
 import { AdminShell } from "./AdminShell"
@@ -14,10 +16,10 @@ import { HBarChart } from "./charts/HBarChart"
 
 const variacao = (v: number) => `${v >= 0 ? "▲" : "▼"} ${Math.abs(v)}% vs. período anterior`
 
-// Indicadores (Tela 06 admin): filtro de período, números e gráficos. Por enquanto com dados de exemplo.
+// Indicadores (Tela 06 admin): filtro de período, números e gráficos.
 export function IndicatorsView() {
   const [periodo, setPeriodo] = useState<PeriodoIndicadores>("30d")
-  const data = indicadoresExemplo(periodo)
+  const { data, loading, error, recarregar } = useApi(() => adminService.indicadores(periodo), [periodo])
 
   return (
     <AdminShell ativo="indicadores">
@@ -29,6 +31,8 @@ export function IndicatorsView() {
           <Tabs.Trigger value="12m">12 meses</Tabs.Trigger>
         </Tabs.List>
       </Tabs.Root>
+      <DataState loading={loading && !data} error={error} onRetry={recarregar}>
+      {data && (
       <Stack gap="8">
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="4">
           <StatCard title="FATURAMENTO" subtitle={variacao(data.variacoes.faturamento)} value={formatCurrencyCompact(data.faturamento)} />
@@ -38,7 +42,6 @@ export function IndicatorsView() {
           <StatCard title="ARTESÃOS ATIVOS" subtitle="Com perfil publicado" value={data.artesaosAtivos} />
           <StatCard title="CLIENTES" subtitle="Cadastrados na plataforma" value={formatCompact(data.clientes)} />
           <StatCard title="PEÇAS PUBLICADAS" subtitle="Na vitrine" value={formatCompact(data.produtosPublicados)} />
-          <StatCard title="VISUALIZAÇÕES" subtitle="Páginas de peças vistas" value={formatCompact(data.visualizacoes)} />
         </SimpleGrid>
         <SimpleGrid columns={{ base: 1, xl: 2 }} gap="6">
           <SectionCard title="Faturamento mensal" description="Últimos 12 meses x 12 meses anteriores">
@@ -60,6 +63,8 @@ export function IndicatorsView() {
           </SectionCard>
         </SimpleGrid>
       </Stack>
+      )}
+      </DataState>
     </AdminShell>
   )
 }
