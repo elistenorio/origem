@@ -204,6 +204,59 @@ export const openapi = {
     // ---------- Minha conta ----------
     "/minha-conta": {
       get: { tags: ["Minha conta"], summary: "Dados do usuário logado", security: comLogin, responses: { 200: json("MinhaConta"), 401: semLogin } },
+      patch: {
+        tags: ["Minha conta"],
+        summary: "Salvar nome, telefone e CPF (guardado mascarado)",
+        security: comLogin,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { nome: { type: "string" }, telefone: { type: "string" }, cpf: { type: "string" } } } } } },
+        responses: { 200: json("MinhaConta"), 400: invalido, 401: semLogin },
+      },
+      delete: {
+        tags: ["Minha conta"],
+        summary: "Excluir a conta de comprador (pede a senha)",
+        security: comLogin,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { senha: { type: "string" } } } } } },
+        responses: { 204: { description: "Conta excluída" }, 400: invalido, 401: semLogin, 409: conflito },
+      },
+    },
+    "/minha-conta/endereco": {
+      put: { tags: ["Minha conta"], summary: "Salvar o endereço de entrega", security: comLogin, requestBody: corpo("Endereco"), responses: { 200: json("MinhaConta"), 400: invalido, 401: semLogin } },
+    },
+    "/minha-conta/senha": {
+      put: {
+        tags: ["Minha conta"],
+        summary: "Trocar a senha",
+        security: comLogin,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { senhaAtual: { type: "string" }, novaSenha: { type: "string" } } } } } },
+        responses: { 204: { description: "Senha trocada" }, 400: invalido, 401: semLogin },
+      },
+    },
+    "/minha-conta/preferencias": {
+      put: {
+        tags: ["Minha conta"],
+        summary: "Salvar as preferências",
+        security: comLogin,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { newsletter: { type: "boolean" }, novidadesArtesaos: { type: "boolean" }, whatsapp: { type: "boolean" } } } } } },
+        responses: { 200: json("MinhaConta"), 400: invalido, 401: semLogin },
+      },
+    },
+    "/minha-conta/formas-pagamento": {
+      post: {
+        tags: ["Minha conta"],
+        summary: "Guardar um cartão (só bandeira e 4 últimos números)",
+        security: comLogin,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { bandeira: { type: "string", enum: ["Visa", "Mastercard", "Elo", "American Express", "Hipercard"] }, ultimosDigitos: { type: "string", example: "4242" } } } } } },
+        responses: { 201: json("MinhaConta"), 400: invalido, 401: semLogin, 409: conflito },
+      },
+    },
+    "/minha-conta/formas-pagamento/{indice}": {
+      delete: {
+        tags: ["Minha conta"],
+        summary: "Remover uma forma de pagamento pela posição",
+        security: comLogin,
+        parameters: [{ name: "indice", in: "path", required: true, schema: { type: "integer" }, example: 0 }],
+        responses: { 200: json("MinhaConta"), 401: semLogin, 404: naoEncontrado },
+      },
     },
     "/minha-conta/pedidos": {
       get: { tags: ["Minha conta"], summary: "Meus pedidos", security: comLogin, responses: { 200: lista("Pedido"), 401: semLogin } },

@@ -2,7 +2,8 @@ import { api } from "./api"
 import type { PainelArtesao, PerfilArtesao, PerfilArtesaoInput, ResumoPainelArtesao } from "@/types/artesao"
 import type { Pedido, VendaArtesao } from "@/types/pedido"
 import type { AtualizarEstoqueInput, Produto, ProdutoInput } from "@/types/produto"
-import type { MinhaConta } from "@/types/usuario"
+import type { Endereco } from "@/types/pedido"
+import type { CartaoInput, DadosPessoaisInput, MinhaConta, Preferencias } from "@/types/usuario"
 
 // Dados do usuário logado: o backend identifica o usuário pelo login (cookie).
 export const minhaContaService = {
@@ -10,6 +11,39 @@ export const minhaContaService = {
   async buscar() {
     const response = await api.get<MinhaConta>("/minha-conta")
     return response.data
+  },
+
+  async atualizarDados(input: DadosPessoaisInput) {
+    const response = await api.patch<MinhaConta>("/minha-conta", input)
+    return response.data
+  },
+
+  async salvarEndereco(endereco: Endereco) {
+    const response = await api.put<MinhaConta>("/minha-conta/endereco", endereco)
+    return response.data
+  },
+
+  async alterarSenha(senhaAtual: string, novaSenha: string) {
+    await api.put("/minha-conta/senha", { senhaAtual, novaSenha })
+  },
+
+  async salvarPreferencias(preferencias: Preferencias) {
+    const response = await api.put<MinhaConta>("/minha-conta/preferencias", preferencias)
+    return response.data
+  },
+
+  async adicionarCartao(cartao: CartaoInput) {
+    const response = await api.post<MinhaConta>("/minha-conta/formas-pagamento", cartao)
+    return response.data
+  },
+
+  async removerCartao(indice: number) {
+    const response = await api.delete<MinhaConta>(`/minha-conta/formas-pagamento/${indice}`)
+    return response.data
+  },
+
+  async excluirConta(senha: string) {
+    await api.delete("/minha-conta", { data: { senha } })
   },
 
   /** GET /minha-conta/pedidos: "Meus pedidos". */
