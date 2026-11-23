@@ -36,6 +36,7 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - Autenticação com JWT (`jsonwebtoken`) em cookie httpOnly, senhas com `bcryptjs`
 - `cors` e `cookie-parser`
 - Cache com [Redis](https://redis.io) (`redis`) em `GET /produtos` e `GET /produtos/:id`: Docker no ambiente local; Key Value do Render em produção
+- Testes unitários com [Jest](https://jestjs.io) e `ts-jest`
 
 ## Como executar localmente
 
@@ -95,6 +96,9 @@ Outros comandos (dentro de `backend/`):
 | `npm run prisma:deploy` | Aplica as migrations em produção |
 | `npm run prisma:seed` | Apaga os dados e recarrega o seed |
 | `npm run prisma:studio` | Interface para ver o banco |
+| `npm test` | Testes unitários (Jest), sem precisar do banco: lista cada caso do plano de testes com ✓ ou ✕ |
+| `npm run test:coverage` | Os mesmos testes, com a cobertura por arquivo (relatório em `backend/coverage/`) |
+| `npm run test:acesso` | Teste do ADR-003 (controle de acesso), contra a API ligada e com o seed aplicado |
 
 ## Variáveis de ambiente
 
@@ -148,4 +152,5 @@ Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo
 
 ## Evidências
 - Declaração de uso de IA: [`docs/uso-de-ia.md`](docs/uso-de-ia.md)
+- Testes unitários do backend (`npm test`, 23/11/2026): 102 testes, 100 passando. Os 2 que falham são defeitos já registrados no plano de testes: estoque 1000 aceito (TC09, HU-030) e senha sem caractere especial aceita (TC25, HU-001). Cobertura de ramificações do `pedidos.service.ts`: 82%.
 - Prints e vídeo do fluxo no ambiente publicado: _a incluir após o deploy_
