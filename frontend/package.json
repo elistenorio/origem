@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --experimental-strip-types \"src/**/*.test.ts\"",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "typegen": "npx @chakra-ui/cli typegen ./src/theme/system.ts"
   },
   "dependencies": {
@@ -28,12 +29,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "jest": "^30.5.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
