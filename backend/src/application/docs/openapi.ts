@@ -261,6 +261,14 @@ export const openapi = {
         responses: { 200: json("ResumoPainelArtesao"), 401: semLogin, 403: perfilErrado },
       },
     },
+    "/minha-conta/painel": {
+      get: {
+        tags: ["Artesão"],
+        summary: "Tela inicial do artesão: números, avaliação média e notificações",
+        security: comLogin,
+        responses: { 200: { description: "Painel do artesão", content: { "application/json": { schema: { type: "object" } } } }, 401: semLogin, 403: perfilErrado, 404: naoEncontrado },
+      },
+    },
     "/minha-conta/vendas": {
       get: {
         tags: ["Artesão"],

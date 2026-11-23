@@ -97,3 +97,17 @@ export type CadastroArtesaoInput = {
   gostaDeFazer: string
   comprovacoes: ComprovacoesArtesao
 }
+
+export type NotificacaoArtesao = { titulo: string; descricao: string; data: Date }
+
+export type PainelArtesao = {
+  nome: string
+  status: StatusArtesao
+  parecerCuradoria?: string
+  publicadas: number
+  vendidasSemana: number
+  vendasMes: number
+  avaliacaoMedia: number | null
+  totalAvaliacoes: number
+  notificacoes: NotificacaoArtesao[]
+}

@@ -21,5 +21,6 @@ minhaContaRouter.put("/produtos/:id", soArtesao, minhaContaController.editarProd
 minhaContaRouter.delete("/produtos/:id", soArtesao, minhaContaController.excluirProduto)
 minhaContaRouter.get("/resumo", soArtesao, minhaContaController.resumo)
 minhaContaRouter.get("/vendas", soArtesao, minhaContaController.vendas)
+minhaContaRouter.get("/painel", soArtesao, minhaContaController.painel)
 minhaContaRouter.get("/perfil", soArtesao, minhaContaController.perfil)
 minhaContaRouter.put("/perfil", soArtesao, minhaContaController.atualizarPerfil)

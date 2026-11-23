@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { minhaContaService } from "../../infrastructure/services/minhaConta.service"
+import { painelArtesaoService } from "../../infrastructure/services/painelArtesao.service"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
 import { AppError } from "../../shared/AppError"
 import { FAIXAS_TEMPO_ATUACAO, type AtualizarEstoqueInput, type PerfilArtesaoInput } from "../../shared/types/artesao"
@@ -134,6 +135,14 @@ export const minhaContaController = {
   async resumo(req: Request, res: Response, next: NextFunction) {
     try {
       return res.status(200).json(await minhaContaService.resumo(usuarioLogado(req).id))
+    } catch (err) {
+      return next(err)
+    }
+  },
+
+  async painel(req: Request, res: Response, next: NextFunction) {
+    try {
+      return res.status(200).json(await painelArtesaoService.painel(usuarioLogado(req).id))
     } catch (err) {
       return next(err)
     }
