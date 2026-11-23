@@ -271,6 +271,22 @@ Dados do usuário logado (qualquer perfil; sem login → `401`): os campos de `U
 }
 ```
 
+### Ações de Minha conta
+
+Todas exigem login (qualquer perfil; sem login → `401`). As que devolvem a conta respondem `200` com o `MinhaConta` atualizado, que agora traz também `preferencias: { newsletter, novidadesArtesaos, whatsapp }` (padrão `true`, `true`, `false`).
+
+| Rota | Corpo | O que faz | Erros `400 VALIDATION` |
+|---|---|---|---|
+| `PATCH /minha-conta` | `{ nome, telefone, cpf? }` | salva nome e telefone; `cpf` (11 números) é guardado mascarado (`***.456.789-**`); sem `cpf`, mantém o atual | nome vazio, telefone sem DDD, CPF sem 11 números |
+| `PUT /minha-conta/endereco` | `Endereco` | salva o endereço de entrega e a cidade do usuário (`Recife/PE`) | CEP sem 8 números, rua, número, bairro ou cidade vazios, estado sem 2 letras |
+| `PUT /minha-conta/senha` | `{ senhaAtual, novaSenha }` | troca a senha; resposta `204` | senha atual errada, nova senha com menos de 8 caracteres |
+| `PUT /minha-conta/preferencias` | `{ newsletter, novidadesArtesaos, whatsapp }` | salva as preferências (os três como `true`/`false`) | algum campo que não é `true`/`false` |
+| `POST /minha-conta/formas-pagamento` | `{ bandeira, ultimosDigitos }` | guarda `{ titulo: "Cartão Visa", detalhe: "final 4242" }`; resposta `201`. **Nunca recebe nem guarda o número completo nem o CVV** | bandeira fora de Visa, Mastercard, Elo, American Express e Hipercard; `ultimosDigitos` sem exatamente 4 números |
+| `DELETE /minha-conta/formas-pagamento/{indice}` | — | remove a forma de pagamento nessa posição da lista | — (`404` se a posição não existe) |
+| `DELETE /minha-conta` | `{ senha }` | exclui a conta de **comprador** e apaga o cookie; resposta `204`. Os pedidos ficam guardados, sem ligação com a conta | senha errada |
+
+Outros erros: `409 CONFLICT` ao guardar mais de 5 formas de pagamento, e ao tentar excluir conta de artesão ou de admin (encerradas pelo suporte).
+
 ### `GET /minha-conta/pedidos`
 
 "Meus pedidos": lista de `Pedido` **ligados à conta logada** (feitos com login), do mais recente para o mais antigo. Sem paginação. Pedidos feitos como visitante com o mesmo e-mail não entram. Erro: `401 UNAUTHORIZED` sem login.

@@ -3,7 +3,7 @@ import { arredondar } from "../../shared/dinheiro"
 import type { AtualizarEstoqueInput, PerfilArtesao, PerfilArtesaoInput, ResumoPainelArtesao } from "../../shared/types/artesao"
 import type { Endereco, Pedido, VendaArtesao } from "../../shared/types/pedido"
 import type { Produto, ProdutoInput } from "../../shared/types/produto"
-import type { FormaPagamentoSalva, MinhaConta } from "../../shared/types/usuario"
+import { PREFERENCIAS_PADRAO, type FormaPagamentoSalva, type MinhaConta, type Preferencias } from "../../shared/types/usuario"
 import { produtosCache } from "../cache/produtos.cache"
 import { artesaosRepository } from "../repositories/artesaos.repository"
 import { filtrosRepository } from "../repositories/filtros.repository"
@@ -104,6 +104,7 @@ export const minhaContaService = {
       telefone: u.telefone ?? "",
       endereco: { ...ENDERECO_VAZIO, ...((u.endereco as Partial<Endereco> | null) ?? {}) },
       formasPagamento: (u.formasPagamento as FormaPagamentoSalva[] | null) ?? [],
+      preferencias: { ...PREFERENCIAS_PADRAO, ...((u.preferencias as Partial<Preferencias> | null) ?? {}) },
     }
   },
 

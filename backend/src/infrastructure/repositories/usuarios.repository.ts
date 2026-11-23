@@ -39,7 +39,7 @@ export const usuariosRepository = {
   buscarContaPorId(id: string) {
     return prisma.usuario.findUnique({
       where: { id },
-      select: { ...selectUsuarioPublico, cpf: true, telefone: true, endereco: true, formasPagamento: true },
+      select: { ...selectUsuarioPublico, cpf: true, telefone: true, endereco: true, formasPagamento: true, preferencias: true },
     })
   },
 
@@ -89,5 +89,17 @@ export const usuariosRepository = {
   async alterarStatus(id: string, de: StatusUsuario, para: StatusUsuario): Promise<boolean> {
     const { count } = await prisma.usuario.updateMany({ where: { id, perfil: "comprador", status: de }, data: { status: para } })
     return count > 0
+  },
+
+  async atualizarConta(id: string, dados: Prisma.UsuarioUpdateInput): Promise<void> {
+    await prisma.usuario.update({ where: { id }, data: dados })
+  },
+
+  async buscarSenhaHash(id: string) {
+    return prisma.usuario.findUnique({ where: { id }, select: { senhaHash: true, perfil: true } })
+  },
+
+  async excluir(id: string): Promise<void> {
+    await prisma.usuario.delete({ where: { id } })
   },
 }

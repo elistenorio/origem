@@ -39,6 +39,7 @@ model Usuario {
   telefone        String?
   endereco        Json? // Endereco
   formasPagamento Json? // { titulo, detalhe }[]
+  preferencias    Json?
 
   artesao Artesao?
   pedidos Pedido[]
