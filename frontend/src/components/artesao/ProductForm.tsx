@@ -26,10 +26,11 @@ type ProductFormProps = {
   onSalvar: (dados: ProdutoInput) => Promise<void> // grava na API; se der erro, o formulário mostra a mensagem
   lateral?: React.ReactNode   // painéis extras na coluna lateral (tela de edição)
   textoEnviar?: string
+  permitirRascunho?: boolean  // false esconde "Salvar rascunho" (peça que já está publicada)
 }
 
 // Formulário de peça do artesão, usado em "Adicionar peça" e "Editar peça".
-export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar para análise" }: ProductFormProps) {
+export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar para análise", permitirRascunho = true }: ProductFormProps) {
   const [dados, setDados] = useState<ProdutoInput>(inicial)
   const [erros, setErros] = useState<ReturnType<typeof validarFormularioProduto>>({})
   const [fotos, setFotos] = useState<File[]>([])
@@ -116,7 +117,7 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
       {Object.keys(erros).length > 0 && <Alert.Root status="warning"><Alert.Indicator /><Alert.Title>Revise os campos destacados.</Alert.Title></Alert.Root>}
       {erroApi && <Alert.Root status="error"><Alert.Indicator /><Alert.Title>{erroApi}</Alert.Title></Alert.Root>}
       <Flex gap="3" justify="flex-end" wrap="wrap">
-        <Button variant="claro" onClick={() => salvar(false)} loading={salvando === "rascunho"} disabled={salvando !== null}>Salvar rascunho</Button>
+        {permitirRascunho && <Button variant="claro" onClick={() => salvar(false)} loading={salvando === "rascunho"} disabled={salvando !== null}>Salvar rascunho</Button>}
         <Button variant="origem" onClick={() => salvar(true)} loading={salvando === "enviar"} disabled={salvando !== null}>{textoEnviar}</Button>
       </Flex>
     </Stack>

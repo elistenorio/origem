@@ -43,7 +43,7 @@ export const minhaContaService = {
     return response.data
   },
 
-  /** PUT /minha-conta/produtos/{id}: salva as mudanças da peça (volta para a curadoria ou para rascunho). */
+  /** PUT /minha-conta/produtos/{id}: salva as mudanças da peça (publicada continua publicada; rascunho e em análise seguem o botão). */
   async editarProduto(id: string, input: ProdutoInput) {
     const response = await api.put<Produto>(`/minha-conta/produtos/${id}`, input)
     return response.data

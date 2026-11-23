@@ -394,10 +394,11 @@ Erros:
 
 O artesão salva as mudanças de uma peça dele ("Editar peça"). Corpo e validações iguais aos do `POST`. Resposta `200` com o `Produto` atualizado.
 
-- **Toda edição volta para a curadoria** (`emAnalise`) ou para `rascunho`, conforme `enviarParaAnalise`: o admin confere de novo antes de a peça voltar para a vitrine.
+- **Peça publicada ou escondida (`publicado`/`indisponivel`) continua como está**: editar não a tira da vitrine, porque só peça nova passa pela curadoria. Ela também não pode voltar a ser rascunho: com `enviarParaAnalise: false` a resposta é `400 VALIDATION`.
+- Peça em `rascunho` ou `emAnalise` segue `enviarParaAnalise`: vai para a curadoria (`emAnalise`) ou fica como `rascunho`.
 - Fotos, região e relevância continuam como estavam.
 
-Erros: os do `POST`, mais `404 NOT_FOUND` (a peça não existe ou não é do artesão logado) e `409 CONFLICT` (peça com status `vendida`).
+Erros: os do `POST`, mais `400 VALIDATION` (peça publicada salva como rascunho), `404 NOT_FOUND` (a peça não existe ou não é do artesão logado) e `409 CONFLICT` (peça com status `vendida`).
 
 ### `DELETE /minha-conta/produtos/{id}`
 

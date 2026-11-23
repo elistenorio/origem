@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 }
 
 // PUT /api/minha-conta/produtos/{id}: o artesão salva as mudanças de uma peça dele.
-// Toda edição volta para a curadoria (ou para rascunho), como no backend.
+// Peça publicada ou escondida continua como está; rascunho e em análise seguem o botão, como no backend.
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const input = (await request.json().catch(() => null)) as ProdutoInput | null
@@ -47,7 +47,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   if (!peca) return fail(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
   if (peca.status === "vendida") return fail(409, "CONFLICT", "Esta peça já foi vendida e não pode ser editada.")
 
+  // Peça que já passou pela curadoria continua como está (mesma regra do backend).
+  const jaAprovada = peca.status === "publicado" || peca.status === "indisponivel"
+  if (jaAprovada && !input.enviarParaAnalise) {
+    return fail(400, "VALIDATION", 'Esta peça já está publicada e não pode voltar a ser rascunho. Use "Salvar alterações".')
+  }
+  const statusAtual = peca.status
   Object.assign(peca, camposDaPeca(input))
+  if (jaAprovada) peca.status = statusAtual
   return ok(peca)
 }
 

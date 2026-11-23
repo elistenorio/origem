@@ -221,7 +221,7 @@ export const openapi = {
       put: {
         tags: ["Artesão"],
         summary: "Editar peça",
-        description: "Toda edição volta para a curadoria (ou para rascunho).",
+        description: "Peça publicada ou escondida continua como está (não volta para a curadoria nem para rascunho). Peça em rascunho ou em análise segue `enviarParaAnalise`.",
         security: comLogin,
         parameters: [idNoCaminho("p1")],
         requestBody: corpo("ProdutoInput"),

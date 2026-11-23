@@ -47,7 +47,7 @@ export type DadosPeca = {
   preco: number
   estoque: number
   pecaUnica: boolean
-  status: "rascunho" | "emAnalise"
+  status: "rascunho" | "emAnalise" | "publicado" | "indisponivel"
   descricao: string
   cuidados: string
   peso: string | null

@@ -151,8 +151,10 @@ export const minhaContaService = {
 
   /**
    * PUT /minha-conta/produtos/:id: troca os dados da peça.
-   * Toda edição volta para a curadoria (ou para rascunho): o admin confere de novo antes de
-   * a peça aparecer na vitrine. Peça de outro artesão responde 404.
+   * Peça que já passou pela curadoria (publicada ou escondida) continua como está: só peça nova
+   * passa pela curadoria. Ela também não pode virar rascunho, para não sumir da vitrine.
+   * Peça em rascunho ou em análise segue o botão: rascunho ou envio para a curadoria.
+   * Peça de outro artesão responde 404.
    */
   async editarProduto(usuarioId: string, produtoId: string, input: ProdutoInput): Promise<Produto> {
     const artesaoId = await artesaoDoUsuario(usuarioId)
@@ -160,7 +162,14 @@ export const minhaContaService = {
     if (!peca) throw new AppError(404, "NOT_FOUND", "Peça não encontrada no seu catálogo.")
     if (peca.status === "vendida") throw new AppError(409, "CONFLICT", "Esta peça já foi vendida e não pode ser editada.")
 
-    const editada = await produtosRepository.editar(produtoId, await montarDadosPeca(input))
+    const jaAprovada = peca.status === "publicado" || peca.status === "indisponivel"
+    if (jaAprovada && !input.enviarParaAnalise) {
+      throw new AppError(400, "VALIDATION", "Esta peça já está publicada e não pode voltar a ser rascunho. Use \"Salvar alterações\".")
+    }
+
+    const dados = await montarDadosPeca(input)
+    if (jaAprovada) dados.status = peca.status
+    const editada = await produtosRepository.editar(produtoId, dados)
     await produtosCache.invalidar()
     return editada
   },

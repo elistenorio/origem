@@ -15,12 +15,17 @@ import { minhaContaService } from "@/services/minhaConta.service"
 import { ApiError } from "@/services/api"
 import { produtoParaFormulario } from "@/utils/productForm"
 import { formatDate } from "@/utils/formatDate"
+import type { Produto } from "@/types/produto"
 import { ArtisanShell } from "./ArtisanShell"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { ProductForm } from "./ProductForm"
 
 // Editar peça existente no catálogo (Tela 06.1 - edição). A peça vem de GET /minha-conta/produtos.
 // Salvar usa PUT /minha-conta/produtos/{id}; excluir, DELETE (peça já vendida não pode ser excluída).
+// Peça publicada continua publicada ao editar; só peça nova (rascunho ou em análise) passa pela curadoria.
+// Peça que já passou pela curadoria (publicada ou escondida): editar não a tira da vitrine.
+const jaAprovada = (p: Produto) => p.status === "publicado" || p.status === "indisponivel"
+
 export function EditProductView({ id }: { id: string }) {
   const router = useRouter()
   const { data: pecas, loading, error, recarregar } = useApi(() => minhaContaService.produtos(), [])
@@ -56,7 +61,12 @@ export function EditProductView({ id }: { id: string }) {
         <EmptyMessage titulo="Peça não encontrada" />
       ) : (
           <>
-            <PanelPageHeader titulo="Editar peça" descricao="Mudanças em fotos, nome, descrição ou preço passam por uma nova análise rápida da curadoria.">
+            <PanelPageHeader
+              titulo="Editar peça"
+              descricao={jaAprovada(produto)
+                ? "Sua peça continua na vitrine: as mudanças aparecem assim que você salvar."
+                : "Quando você salvar, a peça vai para a curadoria do Origem antes de aparecer na vitrine."}
+            >
               <Button asChild variant="claro">
                 <NextLink href={`/produtos/${produto.id}`}><BiShow /> Visualizar peça</NextLink>
               </Button>
@@ -64,7 +74,8 @@ export function EditProductView({ id }: { id: string }) {
             <ProductForm
               key={produto.id}
               inicial={produtoParaFormulario(produto)}
-              textoEnviar="Salvar alterações"
+              textoEnviar={jaAprovada(produto) ? "Salvar alterações" : "Enviar para análise"}
+              permitirRascunho={!jaAprovada(produto)}
               onSalvar={async (dados) => {
                 await minhaContaService.editarProduto(produto.id, dados)
                 router.push("/artesao/catalogo")
