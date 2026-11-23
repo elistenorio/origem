@@ -2,6 +2,7 @@ import type { AnaliseCuradoria, DecisaoCuradoria, TipoCuradoria } from "@prisma/
 import { AppError } from "../../shared/AppError"
 import { arredondar } from "../../shared/dinheiro"
 import type { TokenPayload } from "../../shared/jwt"
+import type { ComprovacoesArtesao } from "../../shared/types/artesao"
 import type { DecidirCuradoriaInput, ItemCuradoria } from "../../shared/types/curadoria"
 import { produtosCache } from "../cache/produtos.cache"
 import { curadoriaRepository } from "../repositories/curadoria.repository"
@@ -40,6 +41,18 @@ function historico(enviado: { titulo: string; data: Date }, analises: AnaliseCur
   return [enviado, ...doItem]
 }
 
+function linhasDeComprovacao(json: unknown): ItemCuradoria["comprovacoes"] {
+  if (!json || typeof json !== "object") return undefined
+  const c = json as Partial<ComprovacoesArtesao>
+  const simNao = (valor?: boolean) => (valor ? "Sim" : "Não")
+  return [
+    { rotulo: "Possui registro ou certificação", valor: simNao(c.possuiRegistro) },
+    { rotulo: "Já participou de feiras ou exposições", valor: simNao(c.participouFeiras) },
+    { rotulo: "Associação ou coletivo", valor: c.pertenceAssociacao ? c.associacao || "Sim" : "Não" },
+    ...(c.links ?? []).map((link) => ({ rotulo: "Link", valor: link })),
+  ]
+}
+
 export const curadoriaService = {
   async listar(tipo: TipoCuradoria): Promise<ItemCuradoria[]> {
     if (tipo === "artesaos") {
@@ -56,6 +69,7 @@ export const curadoriaService = {
         descricao: a.bio,
         trajetoria: a.historia,
         documentos: [],
+        comprovacoes: linhasDeComprovacao(a.comprovacoes),
         historico: historico({ titulo: "Cadastro concluído", data: a.criadoEm }, analises, a.id),
       }))
     }

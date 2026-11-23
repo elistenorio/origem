@@ -1,4 +1,5 @@
 import { api } from "./api"
+import type { CadastroArtesaoInput } from "@/types/artesao"
 import type { CadastroCompradorInput, Usuario } from "@/types/usuario"
 
 // Login e cadastro.
@@ -25,6 +26,11 @@ export const authService = {
   /** POST /usuarios: cadastro de comprador. Não faz login sozinho. */
   async cadastrar(dados: CadastroCompradorInput) {
     const response = await api.post<Usuario>("/usuarios", dados)
+    return response.data
+  },
+
+  async cadastrarArtesao(dados: CadastroArtesaoInput) {
+    const response = await api.post<Usuario>("/usuarios/artesao", dados)
     return response.data
   },
 }

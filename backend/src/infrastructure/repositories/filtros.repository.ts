@@ -33,4 +33,8 @@ export const filtrosRepository = {
   async buscarMaterial(id: string) {
     return prisma.material.findUnique({ where: { id } })
   },
+
+  async buscarRegiao(id: string) {
+    return prisma.regiao.findUnique({ where: { id } })
+  },
 }

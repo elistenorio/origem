@@ -81,6 +81,14 @@ export const openapi = {
         responses: { 201: json("Usuario", "Conta criada (não faz login)"), 400: invalido, 409: erro("E-mail já cadastrado (CONFLICT)") },
       },
     },
+    "/usuarios/artesao": {
+      post: {
+        tags: ["Autenticação e cadastro"],
+        summary: "Cadastro de artesão (entra em análise na curadoria)",
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", description: "CadastroArtesaoInput (ver docs/api.md)" } } } },
+        responses: { 201: json("Usuario", "Conta criada (não faz login)"), 400: invalido, 409: erro("E-mail já cadastrado (CONFLICT)") },
+      },
+    },
     "/auth/login": {
       post: {
         tags: ["Autenticação e cadastro"],
@@ -670,6 +678,7 @@ export const openapi = {
           descricao: { type: "string" },
           trajetoria: { type: "string", description: "Só para artesãos" },
           documentos: { type: "array", items: { type: "object", properties: { nome: { type: "string" }, tamanho: { type: "string" } } } },
+          comprovacoes: { type: "array", items: { type: "object", properties: { rotulo: { type: "string" }, valor: { type: "string" } } } },
           historico: { type: "array", items: { type: "object", properties: { titulo: { type: "string" }, data: { type: "string", format: "date-time" } } } },
         },
       },

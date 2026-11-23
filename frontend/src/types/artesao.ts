@@ -73,3 +73,30 @@ export type ResumoPainelArtesao = {
     esgotadas: number
   }
 }
+
+export type CadastroArtesaoInput = {
+  aceitouTermos: boolean
+  nome: string
+  email: string
+  senha: string
+  telefone: string
+  nomeArtistico: string
+  oficio: string
+  tempoAtuacao: string
+  categoria: string
+  tecnicas: string[]
+  cidade: string
+  estado: string
+  regiao: string
+  historia: string
+  trabalho: string
+  origemTrabalho: string
+  gostaDeFazer: string
+  comprovacoes: {
+    possuiRegistro: boolean
+    participouFeiras: boolean
+    pertenceAssociacao: boolean
+    associacao: string
+    links: string[]
+  }
+}

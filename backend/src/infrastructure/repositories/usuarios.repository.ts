@@ -51,4 +51,17 @@ export const usuariosRepository = {
   criar(data: CriarUsuarioData): Promise<UsuarioPublico> {
     return prisma.usuario.create({ data, select: selectUsuarioPublico })
   },
+
+  async criarArtesao(dados: {
+    usuario: CriarUsuarioData & { cidade: string; telefone: string | null }
+    artesao: Omit<Prisma.ArtesaoUncheckedCreateInput, "usuarioId">
+    notificacao: { titulo: string; descricao: string }
+  }): Promise<UsuarioPublico> {
+    return prisma.$transaction(async (tx) => {
+      const usuario = await tx.usuario.create({ data: dados.usuario, select: selectUsuarioPublico })
+      await tx.artesao.create({ data: { ...dados.artesao, usuarioId: usuario.id } })
+      await tx.notificacao.create({ data: dados.notificacao })
+      return usuario
+    })
+  },
 }

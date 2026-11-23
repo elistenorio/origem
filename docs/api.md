@@ -606,6 +606,24 @@ Erros:
 - `400 VALIDATION`: sem nome, e-mail inválido ou senha com menos de 8 caracteres.
 - `409 CONFLICT`: já existe uma conta com o e-mail.
 
+### `POST /usuarios/artesao`
+
+Cadastro de artesão (tela `/cadastro/artesao`). Numa transação, cria o `Usuario` (perfil `artesao`), o perfil de artesão com status `emAnalise` (vai para a fila de `GET /admin/curadoria`) e uma notificação "Novo artesão cadastrado" no painel do admin. Não faz login. Corpo (`CadastroArtesaoInput`):
+
+```json
+{
+  "aceitouTermos": true, "nome": "Rosa Maria", "email": "rosa@email.com", "senha": "minhasenha", "telefone": "(81) 98888-0000",
+  "nomeArtistico": "Rosa do Barro", "oficio": "Ceramista", "tempoAtuacao": "3-10", "categoria": "ceramica-barro",
+  "tecnicas": ["Modelagem manual"], "cidade": "Tracunhaém", "estado": "PE", "regiao": "zona-da-mata",
+  "historia": "Aprendi com minha mãe.", "trabalho": "", "origemTrabalho": "", "gostaDeFazer": "",
+  "comprovacoes": { "possuiRegistro": true, "participouFeiras": false, "pertenceAssociacao": true, "associacao": "Associação X", "links": ["https://..."] }
+}
+```
+
+- Resposta `201` com o `Usuario` criado. O nome público é `nomeArtistico` (ou `nome`, se vazio); a `bio` vem de `trabalho` (ou do começo de `historia`); a foto começa com uma imagem padrão (o envio de fotos ainda não existe).
+- As `comprovacoes` aparecem no detalhe da curadoria.
+- Erros: `400 VALIDATION` (termos não aceitos, nome, e-mail, senha com menos de 8 caracteres, telefone sem DDD, ofício, área, cidade, estado, região ou história faltando, área ou região inexistente, mais de 3 links ou link sem `http(s)://`); `409 CONFLICT` (e-mail já cadastrado).
+
 ### `POST /auth/login`
 
 ```json
