@@ -33,3 +33,17 @@ export function adicionarDiasUteis(inicio: Date, dias: number): Date {
 export function diasDesde(data: Date, agora = new Date()): number {
   return Math.floor((agora.getTime() - data.getTime()) / (24 * 60 * 60 * 1000))
 }
+
+export function anoMesEmRecife(data: Date): { ano: number; mes: number } {
+  const local = emRecife(data)
+  return { ano: local.getUTCFullYear(), mes: local.getUTCMonth() }
+}
+
+export function inicioDoMesEm(ano: number, mes: number): Date {
+  return new Date(Date.UTC(ano, mes, 1, -FUSO_RECIFE_HORAS))
+}
+
+export function diaMesEmRecife(data: Date): string {
+  const local = emRecife(data)
+  return `${String(local.getUTCDate()).padStart(2, "0")}/${String(local.getUTCMonth() + 1).padStart(2, "0")}`
+}

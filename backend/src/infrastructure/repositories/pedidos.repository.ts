@@ -78,8 +78,12 @@ export const pedidosRepository = {
     return registro ? { pedido: paraPedido(registro), usuarioId: registro.usuarioId } : null
   },
 
-  async listar(filtros: { status?: StatusPedido }, paginacao: { skip: number; take: number }): Promise<{ itens: Pedido[]; total: number }> {
-    const where: Prisma.PedidoWhereInput = { status: filtros.status }
+  async listar(filtros: { status?: StatusPedido; busca?: string }, paginacao: { skip: number; take: number }): Promise<{ itens: Pedido[]; total: number }> {
+    const busca = filtros.busca?.replace(/^#/, "")
+    const where: Prisma.PedidoWhereInput = {
+      status: filtros.status,
+      OR: busca ? [{ id: { contains: busca } }, { comprador: { path: ["nome"], string_contains: busca } }] : undefined,
+    }
     const [total, registros] = await prisma.$transaction([
       prisma.pedido.count({ where }),
       prisma.pedido.findMany({

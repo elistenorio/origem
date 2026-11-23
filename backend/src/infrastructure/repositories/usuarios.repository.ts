@@ -1,4 +1,4 @@
-import type { PerfilUsuario, Prisma } from "@prisma/client"
+import type { PerfilUsuario, Prisma, StatusUsuario } from "@prisma/client"
 import { prisma } from "../prisma/client"
 
 // Campos do usuário que podem sair na resposta da API (tipo Usuario do frontend). Nunca inclui senhaHash.
@@ -63,5 +63,31 @@ export const usuariosRepository = {
       await tx.notificacao.create({ data: dados.notificacao })
       return usuario
     })
+  },
+
+  async buscarStatus(id: string) {
+    return prisma.usuario.findUnique({ where: { id }, select: { status: true, perfil: true, nome: true, email: true } })
+  },
+
+  async listarClientes(
+    filtros: { busca?: string; status?: StatusUsuario },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: UsuarioPublico[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.UsuarioWhereInput = {
+      perfil: "comprador",
+      status: filtros.status,
+      OR: contem ? [{ nome: contem }, { email: contem }, { cidade: contem }] : undefined,
+    }
+    const [total, itens] = await prisma.$transaction([
+      prisma.usuario.count({ where }),
+      prisma.usuario.findMany({ where, select: selectUsuarioPublico, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens, total }
+  },
+
+  async alterarStatus(id: string, de: StatusUsuario, para: StatusUsuario): Promise<boolean> {
+    const { count } = await prisma.usuario.updateMany({ where: { id, perfil: "comprador", status: de }, data: { status: para } })
+    return count > 0
   },
 }
