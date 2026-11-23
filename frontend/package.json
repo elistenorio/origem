@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test --experimental-strip-types \"src/**/*.test.ts\"",
     "typegen": "npx @chakra-ui/cli typegen ./src/theme/system.ts"
   },
   "dependencies": {
