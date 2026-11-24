@@ -2,14 +2,14 @@ import type { NextFunction, Request, Response } from "express"
 import { minhaContaService } from "../../infrastructure/services/minhaConta.service"
 import { painelArtesaoService } from "../../infrastructure/services/painelArtesao.service"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import { FAIXAS_TEMPO_ATUACAO, type AtualizarEstoqueInput, type PerfilArtesaoInput } from "../../shared/types/artesao"
 import { EMBALAGENS, PRAZOS_POSTAGEM, type ProdutoInput } from "../../shared/types/produto"
 import { ehObjeto, texto, textoPreenchido } from "../../shared/validacao"
 
 // Todas as rotas de /minha-conta passam pelo authMiddleware; isto é só para o TypeScript saber que há usuário.
 function usuarioLogado(req: Request) {
-  if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+  if (!req.user) throw naoAutenticado()
   return req.user
 }
 

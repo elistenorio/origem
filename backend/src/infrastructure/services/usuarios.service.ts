@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs"
 import { Prisma } from "@prisma/client"
 import { AppError } from "../../shared/AppError"
 import type { CadastroArtesaoInput } from "../../shared/types/artesao"
+import { normalizarEmail } from "../../shared/validacao"
 import { filtrosRepository } from "../repositories/filtros.repository"
 import { usuariosRepository, type UsuarioPublico } from "../repositories/usuarios.repository"
 
@@ -16,11 +17,6 @@ const FOTO_PADRAO_ARTESAO = "https://picsum.photos/seed/origem-artesao-novo/600/
 const TAMANHO_BIO = 160
 
 const emailEmUso = () => new AppError(409, "CONFLICT", "Já existe uma conta com este e-mail.")
-
-// E-mail é comparado sem diferenciar maiúsculas e sem espaços nas pontas.
-export function normalizarEmail(email: string): string {
-  return email.trim().toLowerCase()
-}
 
 function emailDuplicado(erro: unknown): boolean {
   return erro instanceof Prisma.PrismaClientKnownRequestError && erro.code === "P2002"

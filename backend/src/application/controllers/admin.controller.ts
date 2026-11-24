@@ -4,7 +4,7 @@ import { adminService } from "../../infrastructure/services/admin.service"
 import { curadoriaService } from "../../infrastructure/services/curadoria.service"
 import { indicadoresService } from "../../infrastructure/services/indicadores.service"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import { readPagination } from "../../shared/pagination"
 import { PERIODOS_INDICADORES, type PeriodoIndicadores } from "../../shared/types/admin"
 import { ehObjeto, texto, textoDaQuery } from "../../shared/validacao"
@@ -67,7 +67,7 @@ export const adminController = {
 
   async decidirCuradoria(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+      if (!req.user) throw naoAutenticado()
       const tipo = lerTipoCuradoria(req.params.tipo)
       const b = ehObjeto(req.body) ? req.body : {}
 

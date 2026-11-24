@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import { AppError } from "../shared/AppError"
+import { AppError, naoAutenticado } from "../shared/AppError"
 import { NOME_COOKIE_TOKEN } from "../shared/cookie"
 import { verificarToken } from "../shared/jwt"
 import { usuariosRepository } from "../infrastructure/repositories/usuarios.repository"
@@ -10,7 +10,7 @@ export async function authMiddleware(req: Request, _res: Response, next: NextFun
   const token: unknown = req.cookies?.[NOME_COOKIE_TOKEN]
 
   if (typeof token !== "string" || !token) {
-    return next(new AppError(401, "UNAUTHORIZED", "Faça login para continuar."))
+    return next(naoAutenticado())
   }
 
   let usuario

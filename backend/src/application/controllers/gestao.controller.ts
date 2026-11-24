@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express"
 import { StatusArtesao, StatusProduto, StatusUsuario } from "@prisma/client"
 import { gestaoService } from "../../infrastructure/services/gestao.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import { readPagination } from "../../shared/pagination"
 import { ehObjeto, textoDaQuery } from "../../shared/validacao"
 
@@ -11,7 +11,7 @@ function lerFiltros<S extends string>(query: Request["query"], validos: readonly
 }
 
 function usuarioLogado(req: Request) {
-  if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+  if (!req.user) throw naoAutenticado()
   return req.user
 }
 

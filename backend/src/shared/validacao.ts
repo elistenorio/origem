@@ -1,4 +1,5 @@
-// Validações simples usadas pelos controllers (o corpo da requisição chega como unknown).
+// Validações e normalizações simples da entrada, usadas pelos controllers e services
+// (o corpo da requisição chega como unknown).
 
 export function textoPreenchido(valor: unknown): valor is string {
   return typeof valor === "string" && valor.trim().length > 0
@@ -6,6 +7,11 @@ export function textoPreenchido(valor: unknown): valor is string {
 
 export function emailValido(valor: unknown): valor is string {
   return typeof valor === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor.trim())
+}
+
+// E-mail é comparado sem diferenciar maiúsculas e sem espaços nas pontas.
+export function normalizarEmail(email: string): string {
+  return email.trim().toLowerCase()
 }
 
 // Objeto JSON comum (não array, não null).

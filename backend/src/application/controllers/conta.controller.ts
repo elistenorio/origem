@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { contaService } from "../../infrastructure/services/conta.service"
-import { AppError } from "../../shared/AppError"
+import { AppError, naoAutenticado } from "../../shared/AppError"
 import { NOME_COOKIE_TOKEN, opcoesCookieToken } from "../../shared/cookie"
 import type { Endereco } from "../../shared/types/pedido"
 import { BANDEIRAS_CARTAO, type CartaoInput } from "../../shared/types/usuario"
@@ -10,7 +10,7 @@ const erro = (mensagem: string) => new AppError(400, "VALIDATION", mensagem)
 const digitos = (valor: string) => valor.replace(/\D/g, "")
 
 function usuarioLogado(req: Request) {
-  if (!req.user) throw new AppError(401, "UNAUTHORIZED", "Faça login para continuar.")
+  if (!req.user) throw naoAutenticado()
   return req.user
 }
 
