@@ -13,6 +13,7 @@ const config = defineConfig({
       colors: {
         origem: {
           laranja: { value: "#A8522A" }, // terracota: botões principais, links e destaques
+          laranjaEscuro: { value: "#8A4320" }, // hover de botões e chips terracota
           marrom: { value: "#6B5549" }, // preços e textos de apoio fortes
           fundo: { value: "#FBF8F4" }, // fundo das páginas
           texto: { value: "#2E1E19" },

@@ -5,11 +5,28 @@ import { CATEGORIAS } from "@/constants/categorias"
 // Atalhos de categoria (levam ao catálogo já filtrado).
 export function CategoryChips({ ativa }: { ativa?: string }) {
   return (
-    <HStack as="nav" aria-label="Categorias" gap="2" wrap="wrap" justify="center" py="4" borderYWidth="1px" borderColor="origem.laranja/30">
+    <HStack as="nav" aria-label="Categorias" gap="3" wrap="wrap" justify="center" py="6" borderYWidth="1px" borderColor="origem.linha">
       {CATEGORIAS.map((c) => (
-        <Link key={c.value} asChild _hover={{ textDecoration: "none", opacity: 0.8 }}>
+        <Link
+          key={c.value}
+          asChild
+          borderRadius="full"
+          _hover={{ textDecoration: "none" }}
+          _focusVisible={{ outline: "3px solid", outlineColor: "origem.texto", outlineOffset: "2px" }}
+          css={{ "&:hover > span": { bg: "origem.laranja", color: "white" } }}
+        >
           <NextLink href={`/catalogo?categoria=${c.value}`}>
-            <Badge variant={c.value === ativa ? "origem" : "neutro"} textTransform="none" letterSpacing="normal" px="3" py="1">
+            <Badge
+              variant={c.value === ativa ? "origem" : "neutro"}
+              textTransform="none"
+              letterSpacing="normal"
+              fontSize="lg"
+              fontWeight="bold"
+              px="5"
+              minH="48px"
+              borderRadius="full"
+              transition="background 0.15s, color 0.15s"
+            >
               {c.label}
             </Badge>
           </NextLink>

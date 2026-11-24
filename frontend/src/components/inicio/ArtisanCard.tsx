@@ -7,10 +7,10 @@ export function ArtisanCard({ artesao }: { artesao: Artesao }) {
   const { id, nome, cidade, estado, bio, fotoUrl, tecnicas } = artesao
 
   return (
-    <Box borderWidth="1px" borderColor="origem.laranja" borderRadius="2xl" overflow="hidden">
+    <Box borderWidth="1px" borderColor="origem.laranja" borderRadius="2xl" overflow="hidden" h="full" display="flex" flexDirection="column">
       <Image src={fotoUrl} alt={nome} w="full" h="220px" objectFit="cover" />
 
-      <Stack gap="2" p="4">
+      <Stack gap="2" p="4" flex="1">
         <Heading as="h3" variant="titulo" size="xl">
           {nome}
         </Heading>
@@ -24,11 +24,11 @@ export function ArtisanCard({ artesao }: { artesao: Artesao }) {
           ))}
         </HStack>
 
-        <Text fontSize="sm" color="origem.texto" lineClamp={3}>
+        <Text fontSize="sm" color="origem.texto" lineClamp={3} mb="2">
           {bio}
         </Text>
 
-        <Button asChild variant="origem" mt="2">
+        <Button asChild variant="origem" mt="auto">
           <NextLink href={`/artesaos/${id}`}>Conheça o artesão →</NextLink>
         </Button>
       </Stack>

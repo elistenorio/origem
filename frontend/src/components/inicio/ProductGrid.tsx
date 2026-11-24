@@ -13,7 +13,7 @@ export function ProductGrid({ produtos, colunas = { base: 1, sm: 2, lg: 4 } }: P
   return (
     <SimpleGrid columns={colunas} gap="6">
       {produtos.map((produto) => (
-        <LinkBox key={produto.id}>
+        <LinkBox key={produto.id} h="full" className="group">
           <ProductCard produto={produto} />
           <LinkOverlay asChild>
             <NextLink href={`/produtos/${produto.id}`}>

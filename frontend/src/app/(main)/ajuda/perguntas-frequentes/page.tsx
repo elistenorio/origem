@@ -104,7 +104,7 @@ const PAGINAS_RELACIONADAS = [
   { label: "Entregas e frete", href: "/ajuda/entregas-e-frete" },
   { label: "Trocas e devoluções", href: "/ajuda/trocas-e-devolucoes" },
   { label: "Formas de pagamento", href: "/ajuda/formas-de-pagamento" },
-  { label: "Política de privacidade", href: "/politica-de-privacidade" },
+  { label: "Política de privacidade", href: "/institucional/politica-de-privacidade" },
 ]
 
 export default function PerguntasFrequentesPage() {

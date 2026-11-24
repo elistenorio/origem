@@ -1,7 +1,8 @@
 import { defineRecipe } from "@chakra-ui/react"
 
 export const buttonRecipe = defineRecipe({
-  base: { fontWeight: "bold", fontSize: "md" },
+  // Foco pelo teclado (Tab) sempre visível, em todos os botões.
+  base: { fontWeight: "bold", fontSize: "md", _focusVisible: { outline: "3px solid", outlineColor: "origem.texto", outlineOffset: "2px" } },
   variants: {
     variant: {
       origem: {
@@ -10,7 +11,7 @@ export const buttonRecipe = defineRecipe({
         borderRadius: "full",
         minH: "52px",
         px: "8",
-        _hover: { opacity: 0.9 },
+        _hover: { bg: "origem.laranjaEscuro" },
       },
       tracejado: {
         bg: "transparent",
@@ -72,7 +73,7 @@ export const buttonRecipe = defineRecipe({
         fontSize: "md",
         minH: "44px",
         px: "5",
-        _hover: { bg: "origem.busca" },
+        _hover: { bg: "origem.passoInativo", color: "origem.laranja", outline: "2px solid", outlineColor: "origem.laranja", outlineOffset: "-2px" },
       },
       chipSelecionado: {
         bg: "origem.laranja",
@@ -82,7 +83,7 @@ export const buttonRecipe = defineRecipe({
         fontSize: "md",
         minH: "44px",
         px: "5",
-        _hover: { opacity: 0.9 },
+        _hover: { bg: "origem.laranjaEscuro" },
       },
     },
   },
