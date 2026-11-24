@@ -3,24 +3,30 @@
 import { useState } from "react"
 import { Card, chakra, Flex, HStack, Image, Stack, Tabs } from "@chakra-ui/react"
 import { DataState } from "@/components/feedback/DataState"
-import { filaCuradoria } from "@/dados-exemplo/consultas"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
+import { useApi } from "@/hooks/useApi"
+import { adminService } from "@/services/admin.service"
 import { formatDate } from "@/utils/formatDate"
 import type { TipoCuradoria } from "@/types/admin"
 import { AdminShell } from "./AdminShell"
 import { CurationDetail } from "./CurationDetail"
 
 function Fila({ tipo }: { tipo: TipoCuradoria }) {
-  // Por enquanto a fila é de exemplo; decidir só tira o item da lista local
-  const [data, setData] = useState(() => filaCuradoria(tipo))
+  const { data, loading, error, recarregar } = useApi(() => adminService.curadoria(tipo), [tipo])
   const [selecionadoId, setSelecionadoId] = useState<string>()
-  const selecionado = data.find((i) => i.id === selecionadoId) ?? data[0]
+  const itens = data ?? []
+  const selecionado = itens.find((i) => i.id === selecionadoId) ?? itens[0]
+
+  function handleDecidido() {
+    setSelecionadoId(undefined)
+    recarregar()
+  }
 
   return (
-    <DataState loading={false} vazio={data.length === 0} mensagemVazio="Nenhum item aguardando análise" descricaoVazio="A fila está em dia.">
+    <DataState loading={loading} error={error} onRetry={recarregar} vazio={data ? data.length === 0 : undefined} mensagemVazio="Nenhum item aguardando análise" descricaoVazio="A fila está em dia.">
       <Flex gap="6" direction={{ base: "column", lg: "row" }} align="flex-start">
         <Stack w={{ base: "full", lg: "320px" }} gap="3" flexShrink={0} as="ul" aria-label="Aguardando análise">
-          {data.map((item) => (
+          {itens.map((item) => (
             <chakra.li key={item.id} listStyleType="none">
               <chakra.button type="button" w="full" textAlign="left" onClick={() => setSelecionadoId(item.id)} aria-pressed={item.id === selecionado?.id}>
                 <Card.Root variant={item.id === selecionado?.id ? "destaque" : "item"}>
@@ -39,7 +45,7 @@ function Fila({ tipo }: { tipo: TipoCuradoria }) {
             </chakra.li>
           ))}
         </Stack>
-        {selecionado && <CurationDetail key={selecionado.id} item={selecionado} onDecidido={() => { setSelecionadoId(undefined); setData((fila) => fila.filter((i) => i.id !== selecionado.id)) }} />}
+        {selecionado && <CurationDetail key={selecionado.id} item={selecionado} onDecidido={handleDecidido} />}
       </Flex>
     </DataState>
   )

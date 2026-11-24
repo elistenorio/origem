@@ -1,7 +1,7 @@
 // Contrato de artesão: perfil PÚBLICO (o que o comprador vê).
 // O formulário de cadastro fica em types/artisan-registration.ts.
 
-export type StatusArtesao = "publicado" | "emAnalise" | "ajustesSolicitados" | "indisponivel"
+export type StatusArtesao = "publicado" | "emAnalise" | "ajustesSolicitados" | "indisponivel" | "recusado"
 
 export type Artesao = {
   id: string
@@ -27,6 +27,28 @@ export type Artesao = {
   criadoEm: string      // ISO 8601
 }
 
+// Perfil do artesão logado (GET /minha-conta/perfil): o público mais o que só ele vê.
+export type PerfilArtesao = Artesao & {
+  telefone: string
+  tempoAtuacao: string  // "menos-1" | "1-3" | "3-10" | "mais-10", ou "" se ainda não preencheu
+  parecerCuradoria?: string
+}
+
+// O que o artesão envia ao salvar o próprio perfil (PUT /minha-conta/perfil). O e-mail não muda por aqui.
+export type PerfilArtesaoInput = {
+  nome: string
+  cidade: string
+  estado: string        // UF, ex.: "PE"
+  telefone: string
+  historia: string
+  trabalho: string
+  origemTrabalho: string
+  gostaDeFazer: string
+  tempoAtuacao: string
+  categorias: string[]  // ids de constants/categorias.ts ("Área de atuação")
+  tecnicas: string[]    // rótulos, ex.: ["Modelagem manual"]
+}
+
 // Filtros da lista de artesãos (GET /artesaos). Todos opcionais.
 export type FiltrosArtesao = {
   busca?: string
@@ -50,4 +72,45 @@ export type ResumoPainelArtesao = {
     baixoEstoque: number   // 1 unidade ou menos
     esgotadas: number
   }
+}
+
+export type CadastroArtesaoInput = {
+  aceitouTermos: boolean
+  nome: string
+  email: string
+  senha: string
+  telefone: string
+  nomeArtistico: string
+  oficio: string
+  tempoAtuacao: string
+  categoria: string
+  tecnicas: string[]
+  cidade: string
+  estado: string
+  regiao: string
+  historia: string
+  trabalho: string
+  origemTrabalho: string
+  gostaDeFazer: string
+  comprovacoes: {
+    possuiRegistro: boolean
+    participouFeiras: boolean
+    pertenceAssociacao: boolean
+    associacao: string
+    links: string[]
+  }
+}
+
+export type NotificacaoArtesao = { titulo: string; descricao: string; data: string }
+
+export type PainelArtesao = {
+  nome: string
+  status: StatusArtesao
+  parecerCuradoria?: string
+  publicadas: number
+  vendidasSemana: number
+  vendasMes: number
+  avaliacaoMedia: number | null
+  totalAvaliacoes: number
+  notificacoes: NotificacaoArtesao[]
 }

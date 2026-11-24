@@ -7,8 +7,9 @@ import { PRODUTO_VAZIO } from "@/utils/productForm"
 import { ArtisanShell } from "./ArtisanShell"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
 import { ProductForm } from "./ProductForm"
+import { minhaContaService } from "@/services/minhaConta.service"
 
-// Adicionar peça ao catálogo (Tela 06.1). Por enquanto salvar só volta para o catálogo (sem API).
+// Adicionar peça ao catálogo (Tela 06.1). Salva com POST /minha-conta/produtos e volta para o catálogo.
 export function NewProductView() {
   const router = useRouter()
 
@@ -20,7 +21,10 @@ export function NewProductView() {
       <PanelPageHeader titulo="Adicionar peça" descricao="Preencha as informações da sua peça. Depois de enviada, ela passa pela curadoria do Origem antes de aparecer na vitrine." />
       <ProductForm
         inicial={PRODUTO_VAZIO}
-        onSalvar={() => router.push("/artesao/catalogo")}
+        onSalvar={async (dados) => {
+          await minhaContaService.criarProduto(dados)
+          router.push("/artesao/catalogo")
+        }}
       />
     </ArtisanShell>
   )

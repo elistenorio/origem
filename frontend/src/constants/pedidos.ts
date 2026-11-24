@@ -1,4 +1,20 @@
 import type { OpcaoFiltro } from "./categorias"
+import type { StatusAvanco, StatusPedido } from "@/types/pedido"
+
+export const PROXIMO_PASSO: Partial<Record<StatusPedido, { status: StatusAvanco; acao: string }>> = {
+  processando: { status: "emSeparacao", acao: "Marcar como separado" },
+  emSeparacao: { status: "enviado", acao: "Marcar como enviado" },
+  enviado: { status: "entregue", acao: "Marcar como entregue" },
+}
+
+export const FILTROS_STATUS_PEDIDO: OpcaoFiltro[] = [
+  { value: "", label: "Todos os status" },
+  { value: "processando", label: "Processando" },
+  { value: "emSeparacao", label: "Em separação" },
+  { value: "enviado", label: "Enviado" },
+  { value: "entregue", label: "Entregue" },
+  { value: "cancelado", label: "Cancelado" },
+]
 
 export const MOTIVOS_CANCELAMENTO: OpcaoFiltro[] = [
   { value: "engano", label: "Comprei por engano" },

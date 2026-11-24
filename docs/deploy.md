@@ -4,6 +4,7 @@
 |---|---|---|
 | Banco PostgreSQL | Supabase | migrations em `backend/prisma/migrations/` |
 | Backend (API) | Render | `render.yaml` (raiz) e o script `render-build` de `backend/package.json` |
+| Cache (Redis) | Render (Key Value `origem-cache`) | `render.yaml`; o backend recebe a `REDIS_URL` sozinho |
 | Frontend | Vercel | pasta `frontend/`, variável `NEXT_PUBLIC_API_URL` |
 
 Os três usam Node 22 (`"engines"` nos `package.json`). Com Node 24, o `typegen` do Chakra falha e o build do front quebra.
@@ -64,6 +65,12 @@ npm run prisma:seed
 - Login com `ana.beatriz@email.com` / `Origem@123`, recarregar a página e continuar logada, ver "Meus pedidos", sair.
 - Testar também no **Safari** (ou no iPhone). O site e a API ficam em domínios diferentes (`vercel.app` e `onrender.com`), e o Safari pode bloquear o cookie do login. Se isso acontecer, a saída é fazer a Vercel repassar `/api` para o Render (rewrite no `next.config.ts`), para o navegador ver um único domínio.
 
+### Cache (Redis)
+
+O `render.yaml` também cria o **`origem-cache`** (Key Value, o Redis do Render, plano gratuito) e liga a `REDIS_URL` do backend a ele. Se o Blueprint já existia antes do cache, abra o Blueprint no Render e clique em **Sync** (ou espere o sync automático depois do merge na `main`) para ele criar o cache.
+
+Para conferir: abra `https://<backend>/api/produtos` duas vezes e veja, nas ferramentas do navegador (aba Network/Rede), o cabeçalho `X-Cache`: `MISS` na primeira vez, `HIT` na segunda.
+
 ## Problemas comuns
 
 | Sintoma | Causa provável |
@@ -74,3 +81,4 @@ npm run prisma:seed
 | Erro de CORS no navegador | `FRONTEND_URL` diferente do endereço do site (`/` no fim, `http` em vez de `https`, URL de preview da Vercel) |
 | Login funciona, mas ao recarregar a página sai da conta | cookie bloqueado pelo navegador (ver Safari, acima) |
 | Site mostra "Não foi possível conectar ao servidor." | backend dormindo ou fora do ar; abra o endereço do backend e espere acordar |
+| `X-Cache` sempre `MISS` | `REDIS_URL` vazia (falta o Sync do Blueprint) ou `origem-cache` fora do ar; o site funciona, só sem cache |

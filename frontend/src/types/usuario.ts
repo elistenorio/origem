@@ -14,14 +14,20 @@ export type Usuario = {
   criadoEm: string
 }
 
+export type Preferencias = { newsletter: boolean; novidadesArtesaos: boolean; whatsapp: boolean }
+
 // "Minha conta" (GET /minha-conta): o usuário logado com os dados que só ele vê.
-// Na Avaliação 1 é sempre a compradora de demonstração; na Avaliação 2 vem do login (JWT).
 export type MinhaConta = Usuario & {
   cpf: string           // mascarado, ex.: "***.456.789-**"
   telefone: string
   endereco: Endereco
   formasPagamento: { titulo: string; detalhe: string }[]
+  preferencias: Preferencias
 }
+
+export type DadosPessoaisInput = { nome: string; telefone: string; cpf?: string }
+
+export type CartaoInput = { bandeira: string; ultimosDigitos: string }
 
 // O que o front ENVIA em POST /usuarios (cadastro do comprador).
 // Na Avaliação 1 o cadastro é simulado; autenticação real vem na Avaliação 2.

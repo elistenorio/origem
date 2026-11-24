@@ -3,7 +3,7 @@ import type { FormaPagamento } from "@prisma/client"
 import { pedidosService } from "../../infrastructure/services/pedidos.service"
 import { AppError, naoAutenticado } from "../../shared/AppError"
 import type { ModalidadeFrete } from "../../shared/types/frete"
-import type { Comprador, CriarPedidoInput, Endereco } from "../../shared/types/pedido"
+import { STATUS_AVANCO, type Comprador, type CriarPedidoInput, type Endereco, type StatusAvanco } from "../../shared/types/pedido"
 import { ehObjeto, emailValido, normalizarEmail, texto } from "../../shared/validacao"
 
 const MODALIDADES: ModalidadeFrete[] = ["pac", "sedex"]
@@ -13,7 +13,6 @@ const MAX_PARCELAS = 12
 const erro = (message: string) => new AppError(400, "VALIDATION", message)
 
 // Valida o corpo de POST /pedidos e monta o input do service (só com os campos conhecidos).
-// Mesmas mensagens da Fake API, mais as checagens que um backend real precisa.
 function lerPedido(body: unknown): CriarPedidoInput {
   const b = ehObjeto(body) ? body : {}
 
@@ -73,17 +72,24 @@ export const pedidosController = {
     }
   },
 
-  // PATCH /pedidos/:id — por enquanto, só cancelar. Corpo: { status: "cancelado", motivo, observacao? }
+  // PATCH /pedidos/:id — corpo: { status: "cancelado", motivo, observacao? } ou { status: "emSeparacao" | "enviado" | "entregue", codigoRastreio? }
   async atualizar(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) throw naoAutenticado()
       const b = ehObjeto(req.body) ? req.body : {}
 
-      if (b.status !== "cancelado") throw erro("Só é possível cancelar o pedido.")
-      const motivo = texto(b.motivo)
-      if (!motivo) throw erro("Escolha o motivo do cancelamento.")
+      if (b.status === "cancelado") {
+        const motivo = texto(b.motivo)
+        if (!motivo) throw erro("Escolha o motivo do cancelamento.")
+        return res.status(200).json(await pedidosService.cancelar(req.params.id, motivo, req.user))
+      }
 
-      const pedido = await pedidosService.cancelar(req.params.id, motivo, req.user)
+      if (!STATUS_AVANCO.includes(b.status as StatusAvanco)) throw erro("Status inválido.")
+      const status = b.status as StatusAvanco
+      const codigoRastreio = status === "enviado" ? texto(b.codigoRastreio) : undefined
+      if (status === "enviado" && !codigoRastreio) throw erro("Informe o código de rastreio.")
+
+      const pedido = await pedidosService.avancar(req.params.id, { status, codigoRastreio }, req.user)
       return res.status(200).json(pedido)
     } catch (err) {
       return next(err)

@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma, StatusProduto } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import { escaparLike } from "../../shared/validacao"
 import type { FiltrosProduto, OrdenacaoProduto, Produto } from "../../shared/types/produto"
@@ -33,10 +33,33 @@ function paraProduto(p: ProdutoComArtesao): Produto {
     descricao: p.descricao,
     cuidados: p.cuidados,
     criadoEm: p.criadoEm,
+    peso: p.peso ?? undefined,
+    prazoPostagem: p.prazoPostagem ?? undefined,
+    embalagem: p.embalagem ?? undefined,
+    parecerCuradoria: p.parecerCuradoria ?? undefined,
   }
 }
 
-// Empates sempre desempatam pela relevância, como a ordem do db.json na Fake API.
+// Campos que o artesão grava ao criar ou editar uma peça, já montados pelo service.
+export type DadosPeca = {
+  titulo: string
+  tags: string[]
+  medidas: string
+  preco: number
+  estoque: number
+  pecaUnica: boolean
+  status: "rascunho" | "emAnalise"
+  descricao: string
+  cuidados: string
+  peso: string | null
+  prazoPostagem: string
+  embalagem: string
+  categoriaId: string
+  tecnicaId: string
+  materialId: string
+}
+
+// Empates sempre desempatam pela relevância.
 const ORDEM: Record<OrdenacaoProduto, Prisma.ProdutoOrderByWithRelationInput[]> = {
   relevancia: [{ relevancia: "desc" }, { criadoEm: "desc" }],
   menor_preco: [{ preco: "asc" }, { relevancia: "desc" }],
@@ -44,7 +67,7 @@ const ORDEM: Record<OrdenacaoProduto, Prisma.ProdutoOrderByWithRelationInput[]> 
   recentes: [{ criadoEm: "desc" }, { relevancia: "desc" }],
 }
 
-const SO_PUBLICADOS = { status: "publicado" } satisfies Prisma.ProdutoWhereInput
+const SO_PUBLICADOS = { status: "publicado", artesao: { status: "publicado" } } satisfies Prisma.ProdutoWhereInput
 
 export const produtosRepository = {
   /**
@@ -64,6 +87,7 @@ export const produtosRepository = {
       JOIN "Tecnica" t ON t."id" = p."tecnicaId"
       JOIN "Material" m ON m."id" = p."materialId"
       WHERE p."status" = 'publicado'
+        AND a."status" = 'publicado'
         AND unaccent(lower(concat_ws(' ',
               p."titulo", a."nome", a."cidade",
               c."id", c."label", t."id", t."label", m."id", m."label",
@@ -157,6 +181,40 @@ export const produtosRepository = {
     return paraProduto(registro)
   },
 
+  /** Nova peça do artesão. A região é a dele; as fotos começam com a imagem padrão. */
+  async criar(dados: DadosPeca & { artesaoId: string; regiaoId: string; imagemUrl: string }): Promise<Produto> {
+    const registro = await prisma.produto.create({
+      data: { ...dados, imagens: [dados.imagemUrl] },
+      include: incluirArtesao,
+    })
+    return paraProduto(registro)
+  },
+
+  /** Edita os dados da peça. Fotos, região e relevância continuam como estavam. */
+  async editar(id: string, dados: DadosPeca): Promise<Produto> {
+    const registro = await prisma.produto.update({ where: { id }, data: dados, include: incluirArtesao })
+    return paraProduto(registro)
+  },
+
+  /** Quantas vezes a peça aparece em pedidos (de qualquer status). */
+  async contarItensPedido(id: string): Promise<number> {
+    return prisma.itemPedido.count({ where: { produtoId: id } })
+  },
+
+  async excluir(id: string): Promise<void> {
+    await prisma.produto.delete({ where: { id } })
+  },
+
+  async listarEmAnalise(take: number): Promise<Produto[]> {
+    const registros = await prisma.produto.findMany({
+      where: { status: "emAnalise" },
+      include: incluirArtesao,
+      orderBy: [{ criadoEm: "desc" }, { id: "desc" }],
+      take,
+    })
+    return registros.map(paraProduto)
+  },
+
   /** Soma das quantidades das peças do artesão em pedidos que não foram cancelados. */
   async contarVendidasDoArtesao(artesaoId: string): Promise<number> {
     const resultado = await prisma.itemPedido.aggregate({
@@ -164,5 +222,21 @@ export const produtosRepository = {
       where: { produto: { artesaoId }, pedido: { status: { not: "cancelado" } } },
     })
     return resultado._sum.quantidade ?? 0
+  },
+
+  async listarTodos(
+    filtros: { busca?: string; status?: StatusProduto },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: Produto[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.ProdutoWhereInput = {
+      status: filtros.status,
+      OR: contem ? [{ titulo: contem }, { artesao: { nome: contem } }] : undefined,
+    }
+    const [total, registros] = await prisma.$transaction([
+      prisma.produto.count({ where }),
+      prisma.produto.findMany({ where, include: incluirArtesao, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens: registros.map(paraProduto), total }
   },
 }

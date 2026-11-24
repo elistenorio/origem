@@ -13,6 +13,7 @@ import { TECNICAS } from "@/constants/tecnicas"
 import { MATERIAIS } from "@/constants/materiais"
 import { validarFormularioProduto } from "@/utils/productForm"
 import { formatCurrency } from "@/utils/formatCurrency"
+import { ApiError } from "@/services/api"
 import type { ProdutoInput } from "@/types/produto"
 
 const TAXA_ORIGEM = 0.12
@@ -22,7 +23,7 @@ const selecione = (opcoes: { value: string; label: string }[]) => [{ value: "", 
 
 type ProductFormProps = {
   inicial: ProdutoInput
-  onSalvar: (dados: ProdutoInput) => void
+  onSalvar: (dados: ProdutoInput) => Promise<void> // grava na API; se der erro, o formulário mostra a mensagem
   lateral?: React.ReactNode   // painéis extras na coluna lateral (tela de edição)
   textoEnviar?: string
 }
@@ -32,17 +33,29 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
   const [dados, setDados] = useState<ProdutoInput>(inicial)
   const [erros, setErros] = useState<ReturnType<typeof validarFormularioProduto>>({})
   const [fotos, setFotos] = useState<File[]>([])
+  const [salvando, setSalvando] = useState<"rascunho" | "enviar" | null>(null)
+  const [erroApi, setErroApi] = useState<string>()
 
   const alterar = <K extends keyof ProdutoInput>(campo: K, valor: ProdutoInput[K]) => setDados((d) => ({ ...d, [campo]: valor }))
   const texto = (campo: "titulo" | "altura" | "largura" | "profundidade" | "peso") => ({
     value: dados[campo], onChange: (e: React.ChangeEvent<HTMLInputElement>) => alterar(campo, e.target.value), error: erros[campo],
   })
 
-  function salvar(enviarParaAnalise: boolean) {
+  async function salvar(enviarParaAnalise: boolean) {
     const final = { ...dados, enviarParaAnalise }
     const encontrados = validarFormularioProduto(final)
     setErros(encontrados)
-    if (Object.keys(encontrados).length === 0) onSalvar(final)
+    if (Object.keys(encontrados).length > 0) return
+
+    setSalvando(enviarParaAnalise ? "enviar" : "rascunho")
+    setErroApi(undefined)
+    try {
+      await onSalvar(final)
+    } catch (e) {
+      setErroApi(e instanceof ApiError ? e.message : "Não foi possível salvar a peça. Tente de novo.")
+    } finally {
+      setSalvando(null)
+    }
   }
 
   return (
@@ -51,6 +64,7 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
         <Stack w={{ base: "full", lg: "380px" }} gap="6" flexShrink={0}>
           <SectionCard title="Fotos da peça" description="Adicione de 3 a 8 fotos com boa iluminação. A primeira será a capa.">
             <FileField label="Fotos da peça" value={fotos} onChange={setFotos} multiple />
+            <Text textStyle="apoio">Por enquanto as fotos ainda não são enviadas: a peça é salva com uma foto de exemplo.</Text>
             <Text textStyle="apoio">Dica: mostre a peça de frente, de lado, os detalhes da técnica e uma foto em uso para dar noção de tamanho.</Text>
           </SectionCard>
           {lateral}
@@ -61,10 +75,10 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
             <FormField label="Nome da peça" placeholder="Ex.: Jarro Tradicional" {...texto("titulo")} />
             <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
               <SelectField label="Categoria" options={selecione(CATEGORIAS)} value={dados.categoria} onChange={(v) => alterar("categoria", v)} error={erros.categoria} />
-              <SelectField label="Técnica" options={selecione(TECNICAS)} value={dados.tecnica} onChange={(v) => alterar("tecnica", v)} />
+              <SelectField label="Técnica" options={selecione(TECNICAS)} value={dados.tecnica} onChange={(v) => alterar("tecnica", v)} error={erros.tecnica} />
             </SimpleGrid>
             <TextareaField label="Descrição" placeholder="Conte a história da peça, como ela foi feita e o que a torna especial." value={dados.descricao} onChange={(e) => alterar("descricao", e.target.value)} error={erros.descricao} rows={5} />
-            <SelectField label="Material principal" options={selecione(MATERIAIS)} value={dados.material} onChange={(v) => alterar("material", v)} />
+            <SelectField label="Material principal" options={selecione(MATERIAIS)} value={dados.material} onChange={(v) => alterar("material", v)} error={erros.material} />
           </SectionCard>
 
           <SectionCard title="Medidas e peso" description="Informe as medidas da peça pronta, sem a embalagem.">
@@ -100,9 +114,10 @@ export function ProductForm({ inicial, onSalvar, lateral, textoEnviar = "Enviar 
       </Flex>
 
       {Object.keys(erros).length > 0 && <Alert.Root status="warning"><Alert.Indicator /><Alert.Title>Revise os campos destacados.</Alert.Title></Alert.Root>}
+      {erroApi && <Alert.Root status="error"><Alert.Indicator /><Alert.Title>{erroApi}</Alert.Title></Alert.Root>}
       <Flex gap="3" justify="flex-end" wrap="wrap">
-        <Button variant="claro" onClick={() => salvar(false)}>Salvar rascunho</Button>
-        <Button variant="origem" onClick={() => salvar(true)}>{textoEnviar}</Button>
+        <Button variant="claro" onClick={() => salvar(false)} loading={salvando === "rascunho"} disabled={salvando !== null}>Salvar rascunho</Button>
+        <Button variant="origem" onClick={() => salvar(true)} loading={salvando === "enviar"} disabled={salvando !== null}>{textoEnviar}</Button>
       </Flex>
     </Stack>
   )

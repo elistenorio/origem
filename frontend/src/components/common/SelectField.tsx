@@ -8,9 +8,10 @@ type SelectFieldProps = {
   value: string
   onChange: (value: string) => void // recebe só o valor, não o evento
   error?: string
+  hint?: string // dica curta de como preencher, mostrada embaixo do campo
 }
 
-export function SelectField({ label, options, value, onChange, error }: SelectFieldProps) {
+export function SelectField({ label, options, value, onChange, error, hint }: SelectFieldProps) {
   return (
     <Field.Root invalid={!!error} w="full">
   <Field.Label>{label}</Field.Label>
@@ -22,6 +23,7 @@ export function SelectField({ label, options, value, onChange, error }: SelectFi
     </NativeSelect.Field>
     <NativeSelect.Indicator />
   </NativeSelect.Root>
+  {hint && !error && <Field.HelperText>{hint}</Field.HelperText>}
   <Field.ErrorText>{error}</Field.ErrorText>
 </Field.Root>
   )

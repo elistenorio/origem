@@ -46,7 +46,7 @@ export function StepStory({ data, onChange, onNext }: StepProps) {
   return (
     <StepForm onSubmit={onNext}>
       {PERGUNTAS.map(({ campo, inicio, destaque, placeholder }) => (
-        <Field.Root key={campo}>
+        <Field.Root key={campo} required={campo === "historia"}>
           <Field.Label>
             <span style={{ fontWeight: "normal" }}>{inicio}</span>
             {destaque}
