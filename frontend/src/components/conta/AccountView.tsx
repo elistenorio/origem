@@ -175,7 +175,7 @@ export function AccountView() {
                       Ao excluir sua conta, seus dados pessoais, endereço e formas de pagamento serão apagados. Essa ação não poderá ser desfeita.
                     </Text>
                     <HStack gap={4}>
-                      <Button variant="secundario" onClick={() => setJanela("excluir")}>Excluir a minha conta</Button>
+                      <Button variant="perigo" onClick={() => setJanela("excluir")}>Excluir a minha conta</Button>
                       <LogoutLink color="origem.perigo" fontWeight="medium" />
                     </HStack>
                   </Box>

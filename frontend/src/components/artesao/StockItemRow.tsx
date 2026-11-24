@@ -30,7 +30,7 @@ export function StockItemRow({
 }: StockItemRowProps) {
   return (
     <HStack gap="4" py="3" borderBottomWidth="1px" borderColor="origem.passoFundo" wrap={{ base: "wrap", md: "nowrap" }}>
-      <Image src={imageUrl} alt={title} boxSize="48px" borderRadius="md" objectFit="cover" flexShrink={0} />
+      <Image src={imageUrl} alt={title} boxSize="56px" borderRadius="md" objectFit="cover" flexShrink={0} />
 
       <Box flex="1" minW={{ base: "160px", md: "0" }}>
         <Text fontWeight="bold" fontSize="sm" color="origem.texto" truncate>{title}</Text>
@@ -48,14 +48,14 @@ export function StockItemRow({
 
       <StatusBadge status={status} />
 
-      <Button variant="tracejado" size="sm" onClick={onEditQuantity}>
-        Editar qtd.
+      <Button variant="outline" onClick={onEditQuantity}>
+        Mudar quantidade
       </Button>
 
-      <IconButton aria-label="Marcar como indisponível" variant="ghost" size="sm" onClick={onRemove}>
+      <IconButton aria-label="Marcar como indisponível" variant="ghost" size="lg" color="origem.texto" onClick={onRemove}>
         <BiX />
       </IconButton>
-      <IconButton aria-label="Visualizar peça" variant="ghost" size="sm" onClick={onView}>
+      <IconButton aria-label="Visualizar peça" variant="ghost" size="lg" color="origem.texto" onClick={onView}>
         <BiShow />
       </IconButton>
     </HStack>

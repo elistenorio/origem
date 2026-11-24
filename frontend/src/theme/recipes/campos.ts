@@ -2,11 +2,14 @@ import { defineRecipe, defineStyle } from "@chakra-ui/react"
 
 // Visual comum a input e textarea
 export const campoOrigem = defineStyle({
-  bg: "origem.busca",
-  borderWidth: "0",
-  borderRadius: "lg",
+  bg: "white",
+  borderWidth: "1.5px",
+  borderColor: "origem.borda",
+  borderRadius: "xl",
   color: "origem.texto",
-  minH: "50px",
+  fontSize: "md",
+  minH: "56px",
+  px: "4",
   _placeholder: { color: "origem.textoSuave" },
   // Ao trocar de variante, o anel de foco padrão do Chakra sai junto.
   // Sem isto, quem navega pelo teclado não vê qual campo está ativo.

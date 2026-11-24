@@ -16,7 +16,7 @@ const items = [
 // Moldura das telas do administrador: menu lateral + conteúdo.
 export function AdminShell({ ativo, children }: { ativo: ItemMenuAdmin; children: React.ReactNode }) {
   return (
-    <Flex>
+    <Flex direction={{ base: "column", md: "row" }}>
       <SideMenu items={items} ativo={ativo} rotulo="Menu do administrador" />
       <Box flex="1" minW="0" px={{ base: 4, md: 10 }} py={{ base: 6, md: 8 }}>
         {children}
