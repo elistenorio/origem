@@ -15,6 +15,8 @@ export const env = {
   DATABASE_URL: obrigatoria("DATABASE_URL"),
   JWT_SECRET: obrigatoria("JWT_SECRET"),
   FRONTEND_URL: obrigatoria("FRONTEND_URL"),
+  // Opcional: sem ela (ou com o Redis fora do ar) a API funciona normalmente, só sem cache.
+  REDIS_URL: process.env.REDIS_URL || undefined,
 }
 
 export const isProduction = env.NODE_ENV === "production"

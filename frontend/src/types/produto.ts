@@ -1,10 +1,10 @@
 import type { OpcaoFiltro } from "@/constants/categorias"
 
-// Contrato de produto: o formato que a Fake API devolve agora e o backend devolverá na Avaliação 2.
+// Contrato de produto: o formato que o backend devolve.
 
 // Situação da peça no catálogo do artesão (as chaves batem com o StatusBadge).
 // Só "publicado" aparece para o comprador.
-export type StatusProduto = "publicado" | "emAnalise" | "rascunho" | "indisponivel" | "vendida"
+export type StatusProduto = "publicado" | "emAnalise" | "rascunho" | "indisponivel" | "vendida" | "ajustesSolicitados" | "recusado"
 
 // Peça do catálogo. O mesmo formato serve para o card (que usa só alguns campos) e para a página de detalhe.
 export type Produto = {
@@ -28,6 +28,11 @@ export type Produto = {
   descricao: string
   cuidados: string
   criadoEm: string      // ISO 8601
+  parecerCuradoria?: string
+  // Dados de envio do formulário de peça (só nas peças cadastradas pelo formulário).
+  peso?: string           // em kg, ex.: "1,2"
+  prazoPostagem?: string  // dias úteis: "1", "3" ou "7"
+  embalagem?: string      // "caixa", "envelope" ou "tubo"
 }
 
 export type OrdenacaoProduto = "relevancia" | "menor_preco" | "maior_preco" | "recentes"

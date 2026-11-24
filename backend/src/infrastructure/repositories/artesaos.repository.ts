@@ -1,7 +1,7 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma, StatusArtesao } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import { escaparLike } from "../../shared/validacao"
-import type { Artesao, FiltrosArtesao } from "../../shared/types/artesao"
+import type { Artesao, FiltrosArtesao, PerfilArtesao, PerfilArtesaoInput } from "../../shared/types/artesao"
 
 // Junto com o artesão: o e-mail do usuário dele e quantas peças publicadas ele tem.
 const incluirExtras = {
@@ -12,7 +12,7 @@ const incluirExtras = {
 type ArtesaoComExtras = Prisma.ArtesaoGetPayload<{ include: typeof incluirExtras }>
 
 // Converte o registro do banco no formato do contrato (frontend/src/types/artesao.ts).
-// Campos opcionais nulos viram undefined e somem do JSON, como na Fake API.
+// Campos opcionais nulos viram undefined e somem do JSON.
 function paraArtesao(a: ArtesaoComExtras): Artesao {
   return {
     id: a.id,
@@ -83,8 +83,81 @@ export const artesaosRepository = {
     return registro?.id ?? null
   },
 
+  /** Perfil do artesão ligado ao usuário logado, em qualquer status, com telefone e tempo de atuação. */
+  async buscarPerfilDoUsuario(usuarioId: string): Promise<PerfilArtesao | null> {
+    const registro = await prisma.artesao.findUnique({
+      where: { usuarioId },
+      include: { ...incluirExtras, usuario: { select: { email: true, telefone: true } } },
+    })
+    if (!registro) return null
+    return {
+      ...paraArtesao(registro),
+      telefone: registro.usuario.telefone ?? "",
+      tempoAtuacao: registro.tempoAtuacao ?? "",
+      parecerCuradoria: registro.parecerCuradoria ?? undefined,
+    }
+  },
+
+  /**
+   * Salva o perfil do artesão. O telefone fica no usuário; o resto, no artesão.
+   * As duas gravações vão na mesma transação: ou salva tudo, ou nada.
+   * Textos opcionais vazios viram null (a seção some do perfil público).
+   */
+  async atualizarPerfil(usuarioId: string, dados: PerfilArtesaoInput, status?: "emAnalise"): Promise<void> {
+    const ouNulo = (texto: string) => texto || null
+    await prisma.$transaction([
+      prisma.usuario.update({ where: { id: usuarioId }, data: { telefone: ouNulo(dados.telefone) } }),
+      prisma.artesao.update({
+        where: { usuarioId },
+        data: {
+          nome: dados.nome,
+          cidade: dados.cidade,
+          estado: dados.estado,
+          historia: dados.historia,
+          trabalho: ouNulo(dados.trabalho),
+          origemTrabalho: ouNulo(dados.origemTrabalho),
+          gostaDeFazer: ouNulo(dados.gostaDeFazer),
+          tempoAtuacao: ouNulo(dados.tempoAtuacao),
+          categorias: dados.categorias,
+          tecnicas: dados.tecnicas,
+          status,
+        },
+      }),
+    ])
+  },
+
   async buscarPublicadoPorId(id: string): Promise<Artesao | null> {
     const registro = await prisma.artesao.findFirst({ where: { id, ...SO_PUBLICADOS }, include: incluirExtras })
     return registro ? paraArtesao(registro) : null
+  },
+
+  async listarRecentes(take: number): Promise<Artesao[]> {
+    const registros = await prisma.artesao.findMany({ include: incluirExtras, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], take })
+    return registros.map(paraArtesao)
+  },
+
+  async listarTodos(
+    filtros: { busca?: string; status?: StatusArtesao },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: Artesao[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.ArtesaoWhereInput = {
+      status: filtros.status,
+      OR: contem ? [{ nome: contem }, { cidade: contem }, { usuario: { email: contem } }] : undefined,
+    }
+    const [total, registros] = await prisma.$transaction([
+      prisma.artesao.count({ where }),
+      prisma.artesao.findMany({ where, include: incluirExtras, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens: registros.map(paraArtesao), total }
+  },
+
+  async buscarNomeEStatus(id: string) {
+    return prisma.artesao.findUnique({ where: { id }, select: { nome: true, status: true } })
+  },
+
+  async alterarStatus(id: string, de: StatusArtesao, para: StatusArtesao): Promise<boolean> {
+    const { count } = await prisma.artesao.updateMany({ where: { id, status: de }, data: { status: para } })
+    return count > 0
   },
 }

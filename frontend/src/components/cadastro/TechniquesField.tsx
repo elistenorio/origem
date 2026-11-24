@@ -1,11 +1,6 @@
 import { Fieldset, Grid, HStack, Input } from "@chakra-ui/react"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
-
-const TECNICAS = [
-  "Modelagem manual", "Torneamento", "Bordado", "Tecelagem", "Entalhe", "Cestaria",
-  "Xilogravura", "Pintura à Mão", "Ourivesaria", "Filigrana",
-]
-const OUTRA = "outra"
+import { OUTRA_TECNICA, TECNICAS_DO_CAMPO } from "@/constants/artesao"
 
 type TechniquesFieldProps = {
   selected: string[]
@@ -19,7 +14,7 @@ export function TechniquesField({ selected, onChange, other, onOtherChange }: Te
     onChange(checked ? [...selected, tecnica] : selected.filter((t) => t !== tecnica))
   }
 
-  const outraMarcada = selected.includes(OUTRA)
+  const outraMarcada = selected.includes(OUTRA_TECNICA)
 
   return (
     <Fieldset.Root>
@@ -31,7 +26,7 @@ export function TechniquesField({ selected, onChange, other, onOtherChange }: Te
       {/* preenche por coluna: 6 itens na primeira, o resto na segunda */}
       <Grid gridAutoFlow="column" gridTemplateRows="repeat(6, auto)"
             columnGap="8" rowGap="2" justifyContent="start">
-        {TECNICAS.map((tecnica) => (
+        {TECNICAS_DO_CAMPO.map((tecnica) => (
           <AppCheckbox
             key={tecnica}
             checked={selected.includes(tecnica)}
@@ -44,7 +39,7 @@ export function TechniquesField({ selected, onChange, other, onOtherChange }: Te
         <HStack gap="2">
           <AppCheckbox
             checked={outraMarcada}
-            onCheckedChange={(e) => toggle(OUTRA, e.checked === true)}
+            onCheckedChange={(e) => toggle(OUTRA_TECNICA, e.checked === true)}
           >
             Outra:
           </AppCheckbox>

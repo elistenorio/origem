@@ -13,6 +13,7 @@ import { useUrlFilters } from "@/hooks/useUrlFilters"
 import { ApiError } from "@/services/api"
 import { minhaContaService } from "@/services/minhaConta.service"
 import { normalizeText } from "@/utils/normalizeText"
+import { getOptionLabel } from "@/utils/getOptionLabel"
 import { CATEGORIAS } from "@/constants/categorias"
 import { ORDENACOES } from "@/constants/pedidos"
 import { formatDate } from "@/utils/formatDate"
@@ -26,8 +27,8 @@ const CHAVES = ["busca", "status", "categoria", "ordenar"] as const
 const STATUS = [
   { value: "", label: "Todos" }, { value: "publicado", label: "Publicado" }, { value: "emAnalise", label: "Em análise" },
   { value: "rascunho", label: "Rascunho" }, { value: "indisponivel", label: "Indisponível" },
+  { value: "ajustesSolicitados", label: "Ajustes solicitados" }, { value: "recusado", label: "Recusada" },
 ]
-const rotuloCategoria = (valor: string) => CATEGORIAS.find((c) => c.value === valor)?.label ?? valor
 
 // Meu catálogo (Tela 06 do artesão): resumo, busca, filtros e as peças com ações.
 // Peças: GET /minha-conta/produtos · resumo: GET /minha-conta/resumo · esconder/mostrar: PATCH /minha-conta/produtos/{id}.
@@ -94,13 +95,14 @@ export function ArtisanCatalogView() {
                 key={p.id}
                 title={p.titulo}
                 imageUrl={p.imagemUrl}
-                category={rotuloCategoria(p.categoria)}
+                category={getOptionLabel(CATEGORIAS, p.categoria)}
                 stock={p.estoque}
                 updatedAt={formatDate(p.criadoEm)}
                 price={p.preco}
                 status={p.status}
+                parecer={p.parecerCuradoria}
                 visible={p.status !== "indisponivel"}
-                onEdit={() => router.push(`/artesao/catalogo/${p.id}`)}
+                onEdit={p.status === "recusado" ? undefined : () => router.push(`/artesao/catalogo/${p.id}`)}
                 onView={() => router.push(`/produtos/${p.id}`)}
                 onToggleVisibility={() => alternarVisibilidade(p.id, p.status)}
               />

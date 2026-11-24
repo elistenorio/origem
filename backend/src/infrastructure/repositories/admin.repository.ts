@@ -15,7 +15,7 @@ export const adminRepository = {
         }),
         prisma.usuario.count({ where: { perfil: "comprador" } }),
         prisma.artesao.count({ where: { status: "publicado" } }),
-        prisma.produto.count({ where: { status: "publicado" } }),
+        prisma.produto.count({ where: { status: "publicado", artesao: { status: "publicado" } } }),
         prisma.artesao.count({ where: { status: "emAnalise" } }),
         prisma.produto.count({ where: { status: "emAnalise" } }),
         prisma.pedido.count({ where: { status: { in: ["processando", "emSeparacao"] } } }),
@@ -46,6 +46,30 @@ export const adminRepository = {
       select: { id: true, autor: true, descricao: true, data: true },
       orderBy: { data: "desc" },
       take: LIMITE_LISTAS,
+    })
+  },
+
+  async criarAtividade(autor: string, descricao: string): Promise<void> {
+    await prisma.atividade.create({ data: { autor, descricao } })
+  },
+
+  async contarAtivos() {
+    const [artesaosAtivos, clientes, produtosPublicados] = await prisma.$transaction([
+      prisma.artesao.count({ where: { status: "publicado" } }),
+      prisma.usuario.count({ where: { perfil: "comprador" } }),
+      prisma.produto.count({ where: { status: "publicado", artesao: { status: "publicado" } } }),
+    ])
+    return { artesaosAtivos, clientes, produtosPublicados }
+  },
+
+  async listarPedidosParaIndicadores(desde: Date) {
+    return prisma.pedido.findMany({
+      where: { criadoEm: { gte: desde }, status: { not: "cancelado" } },
+      select: {
+        criadoEm: true,
+        total: true,
+        itens: { select: { quantidade: true, produto: { select: { categoria: { select: { label: true } } } } } },
+      },
     })
   },
 }

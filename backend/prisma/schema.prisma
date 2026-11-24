@@ -39,6 +39,7 @@ model Usuario {
   telefone        String?
   endereco        Json? // Endereco
   formasPagamento Json? // { titulo, detalhe }[]
+  preferencias    Json?
 
   artesao Artesao?
   pedidos Pedido[]
@@ -82,28 +83,32 @@ enum StatusArtesao {
   emAnalise
   ajustesSolicitados
   indisponivel
+  recusado
 }
 
 // Perfil público do artesão. O login é feito pelo Usuario ligado a ele (o e-mail vem de lá).
 model Artesao {
-  id             String        @id @default(cuid())
-  nome           String
-  oficio         String
-  cidade         String
-  estado         String
-  bio            String
-  historia       String
-  citacao        String
-  trabalho       String?
-  origemTrabalho String?
-  citacaoOrigem  String?
-  gostaDeFazer   String?
-  fotoUrl        String
-  tecnicas       String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
-  categorias     String[] // ids de Categoria
-  status         StatusArtesao @default(emAnalise)
-  relevancia     Int           @default(0) // quanto maior, antes aparece na ordem padrão
-  criadoEm       DateTime      @default(now())
+  id               String        @id @default(cuid())
+  nome             String
+  oficio           String
+  cidade           String
+  estado           String
+  bio              String
+  historia         String
+  citacao          String
+  trabalho         String?
+  origemTrabalho   String?
+  citacaoOrigem    String?
+  gostaDeFazer     String?
+  fotoUrl          String
+  tempoAtuacao     String? // faixa do formulário de perfil: "menos-1", "1-3", "3-10" ou "mais-10"
+  comprovacoes     Json?
+  tecnicas         String[] // rótulos, ex.: ["Cerâmica", "Modelagem manual"]
+  categorias       String[] // ids de Categoria
+  status           StatusArtesao @default(emAnalise)
+  parecerCuradoria String?
+  relevancia       Int           @default(0) // quanto maior, antes aparece na ordem padrão
+  criadoEm         DateTime      @default(now())
 
   regiaoId  String
   regiao    Regiao    @relation(fields: [regiaoId], references: [id])
@@ -120,24 +125,32 @@ enum StatusProduto {
   rascunho
   indisponivel
   vendida
+  ajustesSolicitados
+  recusado
 }
 
 // artesaoNome e cidade da resposta da API vêm do Artesao (não são guardados aqui).
 model Produto {
-  id         String        @id @default(cuid())
-  titulo     String
-  tags       String[]
-  medidas    String
-  preco      Float
-  imagemUrl  String
-  imagens    String[]
-  estoque    Int           @default(0)
-  pecaUnica  Boolean       @default(false)
-  status     StatusProduto @default(rascunho)
-  relevancia Int           @default(0) // quanto maior, antes aparece em ordenar=relevancia
-  descricao  String
-  cuidados   String
-  criadoEm   DateTime      @default(now())
+  id               String        @id @default(cuid())
+  titulo           String
+  tags             String[]
+  medidas          String
+  preco            Float
+  imagemUrl        String
+  imagens          String[]
+  estoque          Int           @default(0)
+  pecaUnica        Boolean       @default(false)
+  status           StatusProduto @default(rascunho)
+  parecerCuradoria String?
+  relevancia       Int           @default(0) // quanto maior, antes aparece em ordenar=relevancia
+  descricao        String
+  cuidados         String
+  criadoEm         DateTime      @default(now())
+
+  // Dados de envio do formulário de peça. Opcionais: as peças do seed não têm.
+  peso          String? // em kg, como o artesão digitou (ex.: "1,2")
+  prazoPostagem String? // dias úteis para postar: "1", "3" ou "7"
+  embalagem     String? // "caixa", "envelope" ou "tubo"
 
   artesaoId   String
   artesao     Artesao   @relation(fields: [artesaoId], references: [id])
@@ -250,4 +263,27 @@ model Atividade {
   autor     String
   descricao String
   data      DateTime @default(now())
+}
+
+enum TipoCuradoria {
+  artesaos
+  pecas
+}
+
+enum DecisaoCuradoria {
+  aprovar
+  ajustes
+  recusar
+}
+
+model AnaliseCuradoria {
+  id      String           @id @default(cuid())
+  tipo    TipoCuradoria
+  itemId  String
+  decisao DecisaoCuradoria
+  parecer String
+  autor   String
+  data    DateTime         @default(now())
+
+  @@index([tipo, itemId])
 }

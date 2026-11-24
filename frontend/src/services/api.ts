@@ -16,12 +16,10 @@ export class ApiError extends Error {
 
 /**
  * Instância do axios usada por todos os services (o services/api.ts da aula 05).
- * Avaliação 1: Fake API deste mesmo site ("/api").
- * Avaliação 2: basta definir NEXT_PUBLIC_API_URL com o endereço do backend; os services não mudam.
+ * Aponta para o backend: NEXT_PUBLIC_API_URL ou, sem ela, o backend local.
  */
 export const api = axios.create({
-  // "||" (e não "??"): se a variável existir mas estiver vazia (como no .env.example), usa "/api" também.
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api",
   // 60 s: no plano gratuito do Render o backend "dorme" sem uso e leva até 1 minuto para acordar.
   timeout: 60000,
   // Envia e recebe o cookie httpOnly do login (JWT) mesmo com o backend em outro domínio.

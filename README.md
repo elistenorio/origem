@@ -5,7 +5,7 @@
 
 Projeto Integrador 2026.2 (CESAR School), disciplina de Desenvolvimento Web. Branch principal: `main`.
 
-**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL) substituindo a Fake API da Avaliação 1, com autenticação JWT em cookie. Em construção: já existem a estrutura base, o banco (schema e seed), o login/cadastro, a vitrine, os pedidos e Minha conta.
+**Fase atual — Avaliação 2:** backend real (Node.js + Express + Prisma + PostgreSQL), com autenticação JWT em cookie, cache com Redis e Swagger. O frontend busca todos os dados nele: login e cadastro, vitrine, pedidos (com o andamento pelo admin), Minha conta, área do artesão e curadoria.
 
 ## Problema de Negócio
 
@@ -28,6 +28,7 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - [Zustand](https://zustand.docs.pmnd.rs): estado global no navegador (ex.: preferências de cookies)
 - React Icons
 - ESLint
+- Testes unitários com [Jest](https://jestjs.io), configurado pelo `next/jest`
 - Tailwind CSS (instalado pela stack da disciplina; os estilos das telas são feitos com Chakra UI)
 
 **Backend (Avaliação 2, em `backend/`)**
@@ -35,6 +36,8 @@ Artesãos e produtores criativos têm pouca visibilidade digital, dependem de in
 - [Prisma](https://www.prisma.io) com PostgreSQL (Docker no ambiente local; Supabase em produção)
 - Autenticação com JWT (`jsonwebtoken`) em cookie httpOnly, senhas com `bcryptjs`
 - `cors` e `cookie-parser`
+- Cache com [Redis](https://redis.io) (`redis`) em `GET /produtos` e `GET /produtos/:id`: Docker no ambiente local; Key Value do Render em produção
+- Testes unitários com [Jest](https://jestjs.io) e `ts-jest`
 
 ## Como executar localmente
 
@@ -47,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Acesse http://localhost:3000.
+Acesse http://localhost:3000. O site busca tudo no backend: suba o backend antes (seção [Backend](#backend), abaixo).
 
 Outros comandos (dentro de `frontend/`):
 
@@ -57,6 +60,8 @@ Outros comandos (dentro de `frontend/`):
 | `npm run build` | Build de produção (gera os tipos do tema antes, via `prebuild`) |
 | `npm run start` | Roda o build de produção |
 | `npm run lint` | Verifica o código com ESLint |
+| `npm test` | Testes unitários (Jest) do carrinho e das validações dos formulários, sem precisar do backend |
+| `npm run test:coverage` | Os mesmos testes, com a cobertura por arquivo (relatório em `frontend/coverage/`) |
 | `npm run typegen` | Regenera os tipos do tema do Chakra (rodar depois de mudar `src/theme/`) |
 
 ### Backend
@@ -67,13 +72,13 @@ Pré-requisitos: Node.js e [Docker](https://www.docker.com) (para o PostgreSQL l
 cd origem/backend
 npm install
 cp .env.example .env          # preencha (veja "Variáveis de ambiente")
-docker compose up -d          # PostgreSQL na porta 5434
+docker compose up -d          # PostgreSQL (porta 5434) e Redis (porta 6380)
 npm run prisma:migrate        # cria as tabelas
 npm run prisma:seed           # carrega os dados de exemplo
 npm run dev                   # API em http://localhost:3001/api
 ```
 
-Para o frontend usar o backend, defina `NEXT_PUBLIC_API_URL=http://localhost:3001/api` em `frontend/.env.local`.
+O frontend usa `http://localhost:3001/api` por padrão. Para outro endereço, defina `NEXT_PUBLIC_API_URL` em `frontend/.env.local`.
 
 Contas criadas pelo seed (senha de todas: `Origem@123`, só para desenvolvimento):
 
@@ -94,12 +99,15 @@ Outros comandos (dentro de `backend/`):
 | `npm run prisma:deploy` | Aplica as migrations em produção |
 | `npm run prisma:seed` | Apaga os dados e recarrega o seed |
 | `npm run prisma:studio` | Interface para ver o banco |
+| `npm test` | Testes unitários (Jest), sem precisar do banco: lista cada caso do plano de testes com ✓ ou ✕ |
+| `npm run test:coverage` | Os mesmos testes, com a cobertura por arquivo (relatório em `backend/coverage/`) |
+| `npm run test:acesso` | Teste do ADR-003 (controle de acesso), contra a API ligada e com o seed aplicado |
 
 ## Variáveis de ambiente
 
 | Variável | Obrigatória | Descrição |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | Não | Endereço base da API. Se não for definida, o frontend usa `/api` (a Fake API do próprio Next). Na Avaliação 2 aponta para o backend real. |
+| `NEXT_PUBLIC_API_URL` | Na Vercel, sim | Endereço do backend + `/api`. Sem ela, o frontend usa o backend local (`http://localhost:3001/api`). |
 
 Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie para `frontend/.env.local`. Nunca coloque credenciais reais no `.env.example`.
 
@@ -113,10 +121,11 @@ Modelo em [`frontend/.env.example`](frontend/.env.example). Para usar, copie par
 | `FRONTEND_URL` | Sim | Endereço exato do frontend, liberado no CORS (local: `http://localhost:3000`) |
 | `PORT` | Não | Porta da API (padrão 3001) |
 | `NODE_ENV` | Não | `production` no Render: o cookie passa a ir com `secure` e `sameSite=none` |
+| `REDIS_URL` | Não | Redis do cache (local: `redis://localhost:6380`). Vazia = API sem cache |
 
 ## Funcionalidades implementadas
 
-Telas implementadas com dados de exemplo; a integração com a Fake API está em andamento.
+Todos os dados das telas vêm do backend.
 
 **Comprador**
 - Vitrine (home) com peças e artesãos em destaque
@@ -127,7 +136,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Login e cadastro de comprador ligados ao backend (JWT em cookie): o cabeçalho mostra quem está logado, "Sair" encerra a sessão e as áreas do comprador (`/minha-conta`, `/pedidos`), do artesão (`/artesao/*`) e do admin (`/admin/*`) pedem login com o perfil certo. O cadastro de artesão ainda é só a tela, sem API
 
 **Artesão**
-- Dashboard, meu perfil, meu catálogo (adicionar, editar e ocultar peças) e estoque
+- Dashboard, meu perfil, meu catálogo (adicionar, editar e ocultar peças, com o parecer da curadoria), estoque e pedidos com as peças dele
 
 **Administrador**
 - Início, gestão da plataforma, curadoria, acompanhamento, indicadores e visão geral
@@ -136,7 +145,7 @@ Telas implementadas com dados de exemplo; a integração com a Fake API está em
 - Sobre, newsletter, páginas de ajuda (como comprar, entregas e frete, formas de pagamento, trocas e devoluções, perguntas frequentes), termos de uso, política de privacidade e política de cookies
 
 ## Rotas da API
-Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). A Fake API (Route Handlers do Next em `frontend/src/app/api`) é substituída aos poucos pelo backend em `backend/`, com as mesmas rotas; no backend já existem cadastro (`POST /usuarios`), autenticação (`/auth/login`, `/auth/logout`, `/auth/me`) as rotas da vitrine (`/produtos`, `/produtos/{id}`, `/produtos/{id}/relacionados`, `/filtros`, `/artesaos`, `/artesaos/{id}` e `/frete`), de pedidos (`POST /pedidos`, `PATCH /pedidos/{id}`, `POST /avaliacoes`) de Minha conta (`/minha-conta` e sub-rotas) e o painel do admin (`GET /admin/painel`): todas as rotas da Fake API já existem no backend.
+Endpoints, métodos, parâmetros, exemplos de resposta e erros em [`docs/api.md`](docs/api.md). Com o backend rodando, a documentação interativa (Swagger) fica em `/api/docs`.
 
 ## Deploy
 Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo a passo em [`docs/deploy.md`](docs/deploy.md).
@@ -146,4 +155,6 @@ Banco no Supabase, backend no Render (`render.yaml`) e frontend na Vercel. Passo
 
 ## Evidências
 - Declaração de uso de IA: [`docs/uso-de-ia.md`](docs/uso-de-ia.md)
+- Testes unitários do backend (`npm test`, 23/11/2026): 106 testes, 104 passando. Os 2 que falham são defeitos já registrados no plano de testes: estoque 1000 aceito (TC09, HU-030) e senha sem caractere especial aceita (TC25, HU-001). Cobertura de ramificações do `pedidos.service.ts`: 82%.
+- Testes unitários do frontend (`npm test`, 23/11/2026): 42 testes, todos passando, com os casos TC36, TC37, TC38, TC40 (passo 1) e TC48 do plano de testes. Cobertura de linhas de 100% no `cartStore.ts` e nos utils testados.
 - Prints e vídeo do fluxo no ambiente publicado: _a incluir após o deploy_

@@ -1,4 +1,4 @@
-import type { PerfilUsuario, Prisma } from "@prisma/client"
+import type { PerfilUsuario, Prisma, StatusUsuario } from "@prisma/client"
 import { prisma } from "../prisma/client"
 
 // Campos do usuário que podem sair na resposta da API (tipo Usuario do frontend). Nunca inclui senhaHash.
@@ -39,7 +39,7 @@ export const usuariosRepository = {
   buscarContaPorId(id: string) {
     return prisma.usuario.findUnique({
       where: { id },
-      select: { ...selectUsuarioPublico, cpf: true, telefone: true, endereco: true, formasPagamento: true },
+      select: { ...selectUsuarioPublico, cpf: true, telefone: true, endereco: true, formasPagamento: true, preferencias: true },
     })
   },
 
@@ -50,5 +50,56 @@ export const usuariosRepository = {
 
   criar(data: CriarUsuarioData): Promise<UsuarioPublico> {
     return prisma.usuario.create({ data, select: selectUsuarioPublico })
+  },
+
+  async criarArtesao(dados: {
+    usuario: CriarUsuarioData & { cidade: string; telefone: string | null }
+    artesao: Omit<Prisma.ArtesaoUncheckedCreateInput, "usuarioId">
+    notificacao: { titulo: string; descricao: string }
+  }): Promise<UsuarioPublico> {
+    return prisma.$transaction(async (tx) => {
+      const usuario = await tx.usuario.create({ data: dados.usuario, select: selectUsuarioPublico })
+      await tx.artesao.create({ data: { ...dados.artesao, usuarioId: usuario.id } })
+      await tx.notificacao.create({ data: dados.notificacao })
+      return usuario
+    })
+  },
+
+  async buscarStatus(id: string) {
+    return prisma.usuario.findUnique({ where: { id }, select: { status: true, perfil: true, nome: true, email: true } })
+  },
+
+  async listarClientes(
+    filtros: { busca?: string; status?: StatusUsuario },
+    paginacao: { skip: number; take: number },
+  ): Promise<{ itens: UsuarioPublico[]; total: number }> {
+    const contem = filtros.busca ? { contains: filtros.busca, mode: "insensitive" as const } : undefined
+    const where: Prisma.UsuarioWhereInput = {
+      perfil: "comprador",
+      status: filtros.status,
+      OR: contem ? [{ nome: contem }, { email: contem }, { cidade: contem }] : undefined,
+    }
+    const [total, itens] = await prisma.$transaction([
+      prisma.usuario.count({ where }),
+      prisma.usuario.findMany({ where, select: selectUsuarioPublico, orderBy: [{ criadoEm: "desc" }, { id: "desc" }], skip: paginacao.skip, take: paginacao.take }),
+    ])
+    return { itens, total }
+  },
+
+  async alterarStatus(id: string, de: StatusUsuario, para: StatusUsuario): Promise<boolean> {
+    const { count } = await prisma.usuario.updateMany({ where: { id, perfil: "comprador", status: de }, data: { status: para } })
+    return count > 0
+  },
+
+  async atualizarConta(id: string, dados: Prisma.UsuarioUpdateInput): Promise<void> {
+    await prisma.usuario.update({ where: { id }, data: dados })
+  },
+
+  async buscarSenhaHash(id: string) {
+    return prisma.usuario.findUnique({ where: { id }, select: { senhaHash: true, perfil: true } })
+  },
+
+  async excluir(id: string): Promise<void> {
+    await prisma.usuario.delete({ where: { id } })
   },
 }

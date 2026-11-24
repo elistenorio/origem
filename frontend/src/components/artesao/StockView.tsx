@@ -14,6 +14,7 @@ import { useUrlFilters } from "@/hooks/useUrlFilters"
 import { ApiError } from "@/services/api"
 import { minhaContaService } from "@/services/minhaConta.service"
 import { normalizeText } from "@/utils/normalizeText"
+import { getOptionLabel } from "@/utils/getOptionLabel"
 import { CATEGORIAS } from "@/constants/categorias"
 import { LIMITE_BAIXO_ESTOQUE } from "@/constants/pedidos"
 import type { StatusKey } from "@/components/common/StatusBadge"
@@ -25,7 +26,6 @@ import { StockItemRow } from "./StockItemRow"
 import { EditStockDialog } from "./EditStockDialog"
 
 const CHAVES = ["busca", "categoria"] as const
-const rotuloCategoria = (valor: string) => CATEGORIAS.find((c) => c.value === valor)?.label ?? valor
 
 // Situação de estoque a partir da quantidade (e do status da peça).
 function statusEstoque(p: Produto): StatusKey {
@@ -110,7 +110,7 @@ export function StockView() {
                   key={p.id}
                   title={p.titulo}
                   code={`ORG-${p.id.replace(/\D/g, "").padStart(4, "0")}`}
-                  category={rotuloCategoria(p.categoria)}
+                  category={getOptionLabel(CATEGORIAS, p.categoria)}
                   imageUrl={p.imagemUrl}
                   quantity={p.estoque}
                   minQuantity={LIMITE_BAIXO_ESTOQUE}

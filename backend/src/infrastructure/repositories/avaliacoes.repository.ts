@@ -28,4 +28,12 @@ export const avaliacoesRepository = {
       }
     })
   },
+
+  async listarDoArtesao(artesaoId: string) {
+    return prisma.avaliacao.findMany({
+      where: { pedido: { itens: { some: { produto: { artesaoId } } } } },
+      select: { nota: true, criadoEm: true, pedidoId: true },
+      orderBy: { criadoEm: "desc" },
+    })
+  },
 }

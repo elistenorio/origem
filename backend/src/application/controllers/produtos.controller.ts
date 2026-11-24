@@ -4,7 +4,7 @@ import { readPagination } from "../../shared/pagination"
 import { ORDENACOES_PRODUTO, type FiltrosProduto, type OrdenacaoProduto } from "../../shared/types/produto"
 import { numeroDaQuery, textoDaQuery } from "../../shared/validacao"
 
-// Lê os filtros da query string. Valores inválidos são ignorados (como na Fake API), não dão erro.
+// Lê os filtros da query string. Valores inválidos são ignorados, não dão erro.
 function lerFiltros(query: Request["query"]): FiltrosProduto {
   const ordenar = textoDaQuery(query.ordenar)
   return {
@@ -14,7 +14,7 @@ function lerFiltros(query: Request["query"]): FiltrosProduto {
     material: textoDaQuery(query.material),
     regiao: textoDaQuery(query.regiao),
     artesaoId: textoDaQuery(query.artesaoId),
-    // "|| undefined": 0 ou valor inválido = sem limite, como na Fake API.
+    // "|| undefined": 0 ou valor inválido = sem limite.
     precoMin: numeroDaQuery(query.precoMin) || undefined,
     precoMax: numeroDaQuery(query.precoMax) || undefined,
     disponivel: textoDaQuery(query.disponivel) === "sim",
@@ -26,8 +26,9 @@ export const produtosController = {
   // GET /produtos — vitrine com busca, filtros, ordenação e paginação.
   async listar(req: Request, res: Response, next: NextFunction) {
     try {
-      const resultado = await produtosService.listar(lerFiltros(req.query), readPagination(req.query))
-      return res.status(200).json(resultado)
+      const { dados, cache } = await produtosService.listar(lerFiltros(req.query), readPagination(req.query))
+      res.setHeader("X-Cache", cache) // HIT = veio do Redis; MISS = veio do banco
+      return res.status(200).json(dados)
     } catch (err) {
       return next(err)
     }
@@ -36,8 +37,9 @@ export const produtosController = {
   // GET /produtos/:id
   async buscarPorId(req: Request, res: Response, next: NextFunction) {
     try {
-      const produto = await produtosService.buscarPorId(req.params.id)
-      return res.status(200).json(produto)
+      const { dados, cache } = await produtosService.buscarPorId(req.params.id)
+      res.setHeader("X-Cache", cache)
+      return res.status(200).json(dados)
     } catch (err) {
       return next(err)
     }

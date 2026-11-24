@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import NextLink from "next/link"
-import { Button, Card, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react"
+import { Alert, Button, Card, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react"
 import { BiShow, BiTrash } from "react-icons/bi"
 import { SectionCard } from "@/components/common/SectionCard"
 import { StatusBadge } from "@/components/common/StatusBadge"
@@ -12,19 +12,40 @@ import { EmptyMessage } from "@/components/feedback/EmptyMessage"
 import { DataState } from "@/components/feedback/DataState"
 import { useApi } from "@/hooks/useApi"
 import { minhaContaService } from "@/services/minhaConta.service"
+import { ApiError } from "@/services/api"
 import { produtoParaFormulario } from "@/utils/productForm"
 import { formatDate } from "@/utils/formatDate"
 import { ArtisanShell } from "./ArtisanShell"
 import { PanelPageHeader } from "@/components/layout/PanelPageHeader"
+import { CurationNotice } from "./CurationNotice"
 import { ProductForm } from "./ProductForm"
 
 // Editar peça existente no catálogo (Tela 06.1 - edição). A peça vem de GET /minha-conta/produtos.
-// Salvar e excluir ainda não gravam na API (criar/editar peça fica para depois).
+// Salvar usa PUT /minha-conta/produtos/{id}; excluir, DELETE (peça já vendida não pode ser excluída).
 export function EditProductView({ id }: { id: string }) {
   const router = useRouter()
   const { data: pecas, loading, error, recarregar } = useApi(() => minhaContaService.produtos(), [])
   const produto = pecas?.find((p) => p.id === id)
   const [confirmarExclusao, setConfirmarExclusao] = useState(false)
+  const [excluindo, setExcluindo] = useState(false)
+  const [erroExclusao, setErroExclusao] = useState<string>()
+
+  async function excluir() {
+    setExcluindo(true)
+    setErroExclusao(undefined)
+    try {
+      await minhaContaService.excluirProduto(id)
+      router.push("/artesao/catalogo")
+    } catch (e) {
+      setErroExclusao(e instanceof ApiError ? e.message : "Não foi possível excluir a peça.")
+      setExcluindo(false)
+    }
+  }
+
+  function fecharExclusao() {
+    setConfirmarExclusao(false)
+    setErroExclusao(undefined)
+  }
 
   return (
     <ArtisanShell ativo="catalogo">
@@ -45,7 +66,10 @@ export function EditProductView({ id }: { id: string }) {
               key={produto.id}
               inicial={produtoParaFormulario(produto)}
               textoEnviar="Salvar alterações"
-              onSalvar={() => router.push("/artesao/catalogo")}
+              onSalvar={async (dados) => {
+                await minhaContaService.editarProduto(produto.id, dados)
+                router.push("/artesao/catalogo")
+              }}
               lateral={
                 <>
                   <SectionCard title="Status da peça">
@@ -53,6 +77,7 @@ export function EditProductView({ id }: { id: string }) {
                       <StatusBadge status={produto.status} />
                       <Text textStyle="apoio">Cadastrada em {formatDate(produto.criadoEm)}</Text>
                     </HStack>
+                    <CurationNotice status={produto.status} parecer={produto.parecerCuradoria} item="peca" />
                   </SectionCard>
                   <SectionCard title="Vendas e estoque">
                     <SimpleGrid columns={2} gap="3">
@@ -76,17 +101,19 @@ export function EditProductView({ id }: { id: string }) {
             />
             <OrigemDialog
               open={confirmarExclusao}
-              onClose={() => setConfirmarExclusao(false)}
+              onClose={fecharExclusao}
               titulo="Excluir peça?"
               descricao={`"${produto.titulo}" sairá do seu catálogo. Essa ação não pode ser desfeita.`}
               size="sm"
               rodape={
                 <>
-                  <Button variant="claro" onClick={() => setConfirmarExclusao(false)}>Voltar</Button>
-                  <Button variant="perigo" onClick={() => router.push("/artesao/catalogo")}>Excluir</Button>
+                  <Button variant="claro" onClick={fecharExclusao}>Voltar</Button>
+                  <Button variant="perigo" onClick={excluir} loading={excluindo}>Excluir</Button>
                 </>
               }
-            />
+            >
+              {erroExclusao && <Alert.Root status="error"><Alert.Indicator /><Alert.Title>{erroExclusao}</Alert.Title></Alert.Root>}
+            </OrigemDialog>
           </>
       )}
       </DataState>
