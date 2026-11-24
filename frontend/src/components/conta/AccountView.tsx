@@ -80,7 +80,7 @@ export function AccountView() {
               <Stack flex="1" gap={6} align="stretch" minW={0}>
                 {acoes.erro && <Text color="origem.perigo" fontSize="sm" role="alert">{acoes.erro}</Text>}
 
-                <SectionCard title="Dados pessoais" action={<Button variant="ghost" size="sm" color="origem.laranja" onClick={() => setJanela("dados")}><BiPencil /> Editar dados</Button>}>
+                <SectionCard title="Dados pessoais" id="dados-pessoais" scrollMarginTop="6" action={<Button variant="ghost" size="sm" color="origem.laranja" onClick={() => setJanela("dados")}><BiPencil /> Editar dados</Button>}>
                   <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
                     <FormField label="Nome completo" value={usuario.nome} readOnly />
                     <FormField label="CPF" value={usuario.cpf} readOnly />
@@ -93,7 +93,7 @@ export function AccountView() {
                   </HStack>
                 </SectionCard>
 
-                <SectionCard title="Endereço de entrega" action={
+                <SectionCard title="Endereço de entrega" id="endereco" scrollMarginTop="6" action={
                   <Button variant="ghost" size="sm" color="origem.laranja" onClick={() => setJanela("endereco")}>
                     {temEndereco ? <><BiPencil /> Editar endereço</> : <><BiPlus /> Adicionar endereço</>}
                   </Button>
@@ -110,7 +110,7 @@ export function AccountView() {
                   )}
                 </SectionCard>
 
-                <SectionCard title="Pedidos recentes" action={<Link asChild color="origem.laranja" fontSize="sm" fontWeight="medium"><NextLink href="/pedidos">Ver todos →</NextLink></Link>}>
+                <SectionCard title="Pedidos recentes" id="pedidos" scrollMarginTop="6" action={<Link asChild color="origem.laranja" fontSize="sm" fontWeight="medium"><NextLink href="/pedidos">Ver todos →</NextLink></Link>}>
                   {pedidos && pedidos.length === 0 && <Text textStyle="apoio">Você ainda não fez nenhum pedido.</Text>}
                   <Stack gap={4}>
                     {(pedidos ?? []).slice(0, 2).map((pedido) => (
@@ -132,7 +132,7 @@ export function AccountView() {
                   </Stack>
                 </SectionCard>
 
-                <SectionCard title="Dados de pagamento" action={<Button variant="ghost" size="sm" color="origem.laranja" onClick={() => setJanela("cartao")}><BiPlus /> Adicionar cartão</Button>}>
+                <SectionCard title="Dados de pagamento" id="pagamento" scrollMarginTop="6" action={<Button variant="ghost" size="sm" color="origem.laranja" onClick={() => setJanela("cartao")}><BiPlus /> Adicionar cartão</Button>}>
                   {usuario.formasPagamento.length === 0 && <Text textStyle="apoio">Nenhuma forma de pagamento salva.</Text>}
                   <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
                     {usuario.formasPagamento.map((forma, indice) => (
@@ -150,7 +150,7 @@ export function AccountView() {
                   </Grid>
                 </SectionCard>
 
-                <SectionCard title="Preferências">
+                <SectionCard title="Preferências" id="preferencias" scrollMarginTop="6">
                   <Stack gap={3}>
                     {PREFERENCIAS.map(({ campo, texto }) => (
                       <AppCheckbox key={campo} checked={usuario.preferencias[campo]} disabled={acoes.enviando} onCheckedChange={(e) => alternarPreferencia(campo, e.checked === true)}>
@@ -160,7 +160,7 @@ export function AccountView() {
                   </Stack>
                 </SectionCard>
 
-                <SectionCard title="Privacidade" action={
+                <SectionCard title="Privacidade" id="privacidade" scrollMarginTop="6" action={
                   <Button variant="ghost" size="sm" color="origem.laranja" onClick={() => baixarJson("meus-dados-origem.json", { conta: usuario, pedidos: pedidos ?? [] })}>
                     <BiFile /> Baixar meus dados
                   </Button>

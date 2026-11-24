@@ -19,14 +19,15 @@ interface AccountSidebarProps {
 
 const items: { id: AccountItem; label: string; icon: typeof BiUser; href: string }[] = [
   { id: "dados-pessoais", label: "Dados pessoais", icon: BiUser, href: "/minha-conta" },
-  { id: "endereco", label: "Endereço", icon: BiMap, href: "/minha-conta/endereco" },
-  { id: "pedidos", label: "Meus pedidos", icon: BiPackage, href: "/minha-conta/pedidos" },
-  { id: "pagamento", label: "Pagamento", icon: BiCreditCard, href: "/minha-conta/pagamento" },
-  { id: "preferencias", label: "Preferências", icon: BiSliderAlt, href: "/minha-conta/preferencias" },
-  { id: "privacidade", label: "Privacidade", icon: BiLockAlt, href: "/minha-conta/privacidade" },
+  { id: "endereco", label: "Endereço", icon: BiMap, href: "/minha-conta#endereco" },
+  { id: "pedidos", label: "Meus pedidos", icon: BiPackage, href: "/pedidos" },
+  { id: "pagamento", label: "Pagamento", icon: BiCreditCard, href: "/minha-conta#pagamento" },
+  { id: "preferencias", label: "Preferências", icon: BiSliderAlt, href: "/minha-conta#preferencias" },
+  { id: "privacidade", label: "Privacidade", icon: BiLockAlt, href: "/minha-conta#privacidade" },
 ]
 
-// Menu lateral da Minha Conta. Estilo na recipe "sideMenu" (variante "lista").
+// Menu lateral da Minha Conta. Cada item rola até a seção dele na própria página (#endereco...);
+// "Meus pedidos" abre a página de pedidos. Estilo na recipe "sideMenu" (variante "lista").
 export function AccountSidebar({ activeItem = "dados-pessoais" }: AccountSidebarProps) {
   const styles = useSlotRecipe({ key: "sideMenu" })({ variant: "lista" })
   return (

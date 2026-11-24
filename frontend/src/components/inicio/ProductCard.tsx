@@ -12,11 +12,16 @@ export function ProductCard({ produto }: { produto: Produto }) {
       borderColor="origem.laranja"
       borderRadius="2xl"
       overflow="hidden"
+      h="full"
+      display="flex"
+      flexDirection="column"
+      transition="box-shadow 0.15s"
+      _groupHover={{ boxShadow: "md" }}
     >
       <Image src={imagemUrl} alt={titulo} w="full" h="260px" objectFit="cover" />
 
-      <Stack gap="1" p="4">
-        <HStack gap="2">
+      <Stack gap="1" p="4" flex="1">
+        <HStack gap="2" wrap="wrap">
           {tags.map((tag) => (
             <Badge key={tag}>{tag}</Badge>
           ))}
@@ -33,7 +38,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
           {medidas}
         </Text>
 
-        <Price valor={preco} textAlign="right" fontSize="lg" mt="2" />
+        <Price valor={preco} textAlign="right" fontSize="lg" mt="auto" pt="2" />
       </Stack>
     </Box>
   )
