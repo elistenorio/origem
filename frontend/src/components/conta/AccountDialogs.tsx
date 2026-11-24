@@ -11,6 +11,7 @@ import { minhaContaService } from "@/services/minhaConta.service"
 import type { Endereco } from "@/types/pedido"
 import type { MinhaConta } from "@/types/usuario"
 import { AccountFormDialog } from "./AccountFormDialog"
+import { problemaDaSenha } from "@/utils/validation"
 
 type DialogProps = { open: boolean; onClose: () => void }
 type ComConta = DialogProps & { conta: MinhaConta; onSalvo: (conta: MinhaConta) => void }
@@ -73,6 +74,11 @@ export function PasswordDialog({ open, onClose }: DialogProps) {
   const { enviando, erro, setErro, enviar } = useEnvio("Não foi possível trocar a senha.")
 
   async function salvar() {
+    const problema = problemaDaSenha(nova, "A nova senha")
+    if (problema) {
+      setErro(problema)
+      return
+    }
     if (nova !== confirmacao) {
       setErro("As senhas novas não conferem.")
       return
@@ -88,7 +94,7 @@ export function PasswordDialog({ open, onClose }: DialogProps) {
       ) : (
         <>
           <FormField label="Senha atual" type="password" value={atual} onChange={(e) => setAtual(e.target.value)} />
-          <FormField label="Nova senha" type="password" hint="Pelo menos 8 caracteres." value={nova} onChange={(e) => setNova(e.target.value)} />
+          <FormField label="Nova senha" type="password" hint="Pelo menos 8 caracteres, com um caractere especial (ex.: @, #, !)." value={nova} onChange={(e) => setNova(e.target.value)} />
           <FormField label="Confirme a nova senha" type="password" value={confirmacao} onChange={(e) => setConfirmacao(e.target.value)} />
         </>
       )}

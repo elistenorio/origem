@@ -9,7 +9,7 @@ import { PasswordHints } from "@/components/cadastro/PasswordHints"
 import { INICIO_POR_PERFIL } from "@/constants/perfis"
 import { useSessao } from "@/hooks/useSessao"
 import { ApiError } from "@/services/api"
-import { SENHA_TAMANHO_MINIMO, emailValido } from "@/utils/validation"
+import { emailValido, problemaDaSenha } from "@/utils/validation"
 import type { CadastroCompradorInput } from "@/types/usuario"
 
 const vazio: CadastroCompradorInput = { nome: "", email: "", senha: "" }
@@ -32,7 +32,8 @@ export function BuyerRegisterForm() {
     const novos: typeof erros = {}
     if (!dados.nome.trim()) novos.nome = "Informe seu nome completo."
     if (!emailValido(dados.email)) novos.email = "Informe um e-mail válido."
-    if (dados.senha.length < SENHA_TAMANHO_MINIMO) novos.senha = `A senha precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`
+    const problemaSenha = problemaDaSenha(dados.senha)
+    if (problemaSenha) novos.senha = problemaSenha
     setErros(novos)
     if (Object.keys(novos).length > 0) return
 

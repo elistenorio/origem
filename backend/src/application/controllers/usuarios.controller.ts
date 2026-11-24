@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express"
 import { usuariosService } from "../../infrastructure/services/usuarios.service"
 import { AppError } from "../../shared/AppError"
 import { FAIXAS_TEMPO_ATUACAO, type CadastroArtesaoInput } from "../../shared/types/artesao"
-import { SENHA_TAMANHO_MINIMO, ehObjeto, emailValido, texto, textoPreenchido } from "../../shared/validacao"
+import { ehObjeto, validarSenha, emailValido, texto, textoPreenchido } from "../../shared/validacao"
 
 const MAX_LINKS = 3
 const erro = (mensagem: string) => new AppError(400, "VALIDATION", mensagem)
@@ -17,9 +17,7 @@ function lerCadastroArtesao(body: unknown): CadastroArtesaoInput {
   if (b.aceitouTermos !== true) throw erro("Aceite os termos de uso para continuar.")
   if (!textoPreenchido(b.nome)) throw erro("Informe seu nome completo.")
   if (!emailValido(b.email)) throw erro("Informe um e-mail válido.")
-  if (typeof b.senha !== "string" || b.senha.length < SENHA_TAMANHO_MINIMO) {
-    throw erro(`A senha precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`)
-  }
+  validarSenha(b.senha)
 
   const telefone = texto(b.telefone)
   if (telefone && telefone.replace(/\D/g, "").length < 10) throw erro("Informe o telefone com DDD.")
@@ -80,9 +78,7 @@ export const usuariosController = {
       if (!emailValido(email)) {
         throw new AppError(400, "VALIDATION", "Informe um e-mail válido.")
       }
-      if (typeof senha !== "string" || senha.length < SENHA_TAMANHO_MINIMO) {
-        throw new AppError(400, "VALIDATION", `A senha precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`)
-      }
+      validarSenha(senha)
 
       const usuario = await usuariosService.cadastrarComprador({ nome, email, senha })
       return res.status(201).json(usuario)

@@ -4,15 +4,18 @@ import { SimpleGrid } from "@chakra-ui/react"
 import { FormField } from "@/components/common/FormField"
 import { AppCheckbox } from "@/components/common/AppCheckbox"
 import type { StepProps } from "@/types/artisan-registration"
+import { problemaDaSenha } from "@/utils/validation"
 import { PasswordHints } from "../PasswordHints"
 import { StepForm } from "../StepForm"
 
 export function StepIdentification({ data, onChange, onNext }: StepProps) {
   const senhasDiferentes =
     data.confirmarSenha !== "" && data.senha !== data.confirmarSenha
+  // Só mostra o problema da senha depois que a pessoa começa a digitar.
+  const problemaSenha = data.senha ? problemaDaSenha(data.senha) : undefined
 
   return (
-    <StepForm onSubmit={onNext} disabled={!data.aceitouTermos || senhasDiferentes}>
+    <StepForm onSubmit={onNext} disabled={!data.aceitouTermos || senhasDiferentes || !!problemaDaSenha(data.senha)}>
       <FormField label="Nome completo" placeholder="Nome Sobrenome" required
         value={data.nome} onChange={(e) => onChange("nome", e.target.value)} />
       <FormField label="Email" hint="Você vai usar este email para entrar no site." type="email" placeholder="email@exemplo.com" required
@@ -20,7 +23,7 @@ export function StepIdentification({ data, onChange, onNext }: StepProps) {
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
         <FormField label="Senha" type="password" placeholder="******" required minLength={8}
-          value={data.senha} onChange={(e) => onChange("senha", e.target.value)} />
+          value={data.senha} onChange={(e) => onChange("senha", e.target.value)} error={problemaSenha} />
         <FormField label="Confirme a senha" type="password" placeholder="******" required
           value={data.confirmarSenha}
           onChange={(e) => onChange("confirmarSenha", e.target.value)}
