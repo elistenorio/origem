@@ -24,7 +24,7 @@ export default function ProdutoDetailPage() {
   const { data: artesao } = useApi(async () => (artesaoId ? artesaosService.buscarPorId(artesaoId) : undefined), [artesaoId])
 
   return (
-    <Box maxW="container.xl" mx="auto" p={{ base: 4, md: 8 }} mt={4}>
+    <Box maxW="7xl" mx="auto" p={{ base: 4, md: 8 }} mt={4}>
       {/* 404 não tem "tentar de novo": a peça não existe ou não está publicada */}
       <DataState loading={loading} error={error} onRetry={error?.status === 404 ? undefined : recarregar}>
         {produto && (

@@ -11,11 +11,19 @@ type ProductGalleryProps = {
 }
 
 // Galeria da página de detalhe: foto quadrada em destaque e miniaturas à esquerda (no celular, embaixo).
-// Clicar numa miniatura troca a foto em destaque; a lupa abre a foto em tamanho grande numa aba nova.
+// Clicar numa miniatura troca a foto em destaque; passar o mouse sobre a foto amplia a área embaixo do cursor;
+// a lupa abre a foto em tamanho grande numa aba nova (no celular, que não tem mouse, é o jeito de ampliar).
 // minW="0" deixa a galeria encolher: sem ele, uma foto larga empurra a galeria por cima do painel de compra.
 export function ProductGallery({ titulo, imagemUrl, imagens }: ProductGalleryProps) {
   const [selecionada, setSelecionada] = useState(0)
+  // Ponto do mouse sobre a foto, em % (null = mouse fora): a foto amplia em volta desse ponto.
+  const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null)
   const fotoAtual = imagens[selecionada] ?? imagemUrl
+
+  function moverZoom(e: React.MouseEvent<HTMLDivElement>) {
+    const area = e.currentTarget.getBoundingClientRect()
+    setZoom({ x: ((e.clientX - area.left) / area.width) * 100, y: ((e.clientY - area.top) / area.height) * 100 })
+  }
 
   return (
     <Flex gap={4} flex="1" minW="0" align="flex-start" direction={{ base: "column-reverse", md: "row" }}>
@@ -50,8 +58,31 @@ export function ProductGallery({ titulo, imagemUrl, imagens }: ProductGalleryPro
           })}
         </Flex>
       )}
-      <Box flex="1" minW="0" w="full" maxW={{ md: "600px" }} aspectRatio="1" borderRadius="2xl" overflow="hidden" position="relative" bg="origem.busca">
-        <Image src={fotoAtual} alt={`${titulo}, foto ${selecionada + 1}`} w="full" h="full" objectFit="cover" />
+      <Box
+        flex="1"
+        minW="0"
+        w="full"
+        maxW={{ md: "660px" }}
+        aspectRatio="1"
+        borderRadius="2xl"
+        overflow="hidden"
+        position="relative"
+        bg="origem.busca"
+        cursor="zoom-in"
+        onMouseMove={moverZoom}
+        onMouseLeave={() => setZoom(null)}
+      >
+        <Image
+          src={fotoAtual}
+          alt={`${titulo}, foto ${selecionada + 1}`}
+          w="full"
+          h="full"
+          objectFit="cover"
+          transform={zoom ? "scale(2.2)" : "scale(1)"}
+          transformOrigin={zoom ? `${zoom.x}% ${zoom.y}%` : "center"}
+          transition="transform 0.2s ease-out"
+          pointerEvents="none"
+        />
         <Link
           href={fotoAtual}
           target="_blank"

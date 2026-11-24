@@ -22,7 +22,7 @@ export default function PublicArtisanPage() {
         {artesao && (
           <>
             {/* Top Section: Hero & Biography */}
-            <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} mb={16}>
+            <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} mb={16}>
               <Flex flexDir={{ base: "column", lg: "row" }} gap={12} alignItems="stretch">
 
                 {/* Artisan Photo */}
@@ -72,7 +72,7 @@ export default function PublicArtisanPage() {
 
             {/* Middle Section: Detailed Info Strip */}
             <Box bg="origem.laranja" color="origem.fundo" py={16}>
-              <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }}>
+              <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }}>
                 <VStack align="stretch" gap={10}>
 
                   {/* As três seções abaixo só aparecem para quem tem o texto */}
@@ -135,7 +135,7 @@ export default function PublicArtisanPage() {
             </Box>
 
             {/* Bottom Section: Catalog Grid */}
-            <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={16}>
+            <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} py={16}>
               <Text fontWeight="bold" fontSize="lg" mb={8} textTransform="uppercase" color="origem.texto">
                 MEU CATÁLOGO DE PEÇAS
               </Text>
