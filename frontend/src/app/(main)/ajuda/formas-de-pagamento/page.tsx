@@ -50,7 +50,7 @@ const PRAZOS_CONFIRMACAO = [
 
 export default function FormasDePagamentoPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <PageBreadcrumb
         items={[
           { label: "Home", href: "/" },

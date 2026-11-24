@@ -33,7 +33,7 @@ export default function SobrePage() {
           filter="brightness(0.45)"
         />
         <Box position="absolute" inset={0} display="flex" alignItems="center">
-          <Stack maxW="container.xl" mx="auto" w="full" px={{ base: 4, md: 8 }} gap={2} color="white">
+          <Stack maxW="7xl" mx="auto" w="full" px={{ base: 4, md: 8 }} gap={2} color="white">
             <Text fontWeight="bold" textTransform="uppercase" fontSize="sm" letterSpacing="wide">
               Sobre nós
             </Text>
@@ -48,7 +48,7 @@ export default function SobrePage() {
         </Box>
       </Box>
 
-      <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }}>
+      <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }}>
         {/* Nossa história */}
         <Grid templateColumns={{ base: "1fr", md: "1.1fr 1fr" }} gap={10} py={16} alignItems="center">
           <Stack gap={4}>

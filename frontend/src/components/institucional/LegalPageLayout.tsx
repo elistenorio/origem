@@ -22,7 +22,7 @@ type LegalPageLayoutProps = {
 // lateral com destaque de leitura e as seções numeradas.
 export function LegalPageLayout({ breadcrumbAtual, titulo, atualizadoEm, intro, secoes }: LegalPageLayoutProps) {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <PageBreadcrumb
         items={[{ label: "Home", href: "/" }, { label: "Institucional" }, { label: breadcrumbAtual }]}
       />

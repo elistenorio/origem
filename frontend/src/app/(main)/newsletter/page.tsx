@@ -12,7 +12,7 @@ const BENEFICIOS = [
 
 export default function NewsletterPage() {
   return (
-    <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Nossa Newsletter" }]} />
 
       <Grid templateColumns={{ base: "1fr", lg: "1.4fr 1fr" }} gap={10} mt={6}>
