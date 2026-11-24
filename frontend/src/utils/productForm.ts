@@ -1,4 +1,5 @@
 import type { Produto, ProdutoInput } from "@/types/produto"
+import { ESTOQUE_MAXIMO } from "@/utils/validation"
 
 export const PRODUTO_VAZIO: ProdutoInput = {
   titulo: "", categoria: "", descricao: "", material: "", tecnica: "",
@@ -35,6 +36,7 @@ export function validarFormularioProduto(dados: ProdutoInput): Partial<Record<ke
   for (const campo of CAMPOS_MEDIDA) {
     if (dados[campo] && !MEDIDA.test(dados[campo])) erros[campo] = "Use só números (ex.: 15 ou 1,5)."
   }
+  if (dados.estoque > ESTOQUE_MAXIMO) erros.estoque = `A quantidade pode ser no máximo ${ESTOQUE_MAXIMO} unidades.`
   if (dados.enviarParaAnalise) {
     if (!dados.descricao.trim()) erros.descricao = "Escreva a descrição da peça."
     if (!(dados.preco > 0)) erros.preco = "Informe um preço maior que zero."

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button, Text } from "@chakra-ui/react"
 import { OrigemDialog } from "@/components/common/OrigemDialog"
 import { QuantityStepper } from "@/components/common/QuantityStepper"
+import { ESTOQUE_MAXIMO } from "@/utils/validation"
 import type { Produto } from "@/types/produto"
 
 type EditStockDialogProps = {
@@ -31,7 +32,7 @@ export function EditStockDialog({ produto, onClose, onSalvar }: EditStockDialogP
     >
       <Text textStyle="rotulo">Quantidade disponível</Text>
       <Text textStyle="apoio">Toque em + quando fizer mais peças e em – quando vender fora do site.</Text>
-      <QuantityStepper value={quantidade} onChange={(v) => setQuantidade(Math.max(0, v))} />
+      <QuantityStepper value={quantidade} max={ESTOQUE_MAXIMO} onChange={(v) => setQuantidade(Math.max(0, v))} />
     </OrigemDialog>
   )
 }

@@ -4,7 +4,7 @@ import { AppError, naoAutenticado } from "../../shared/AppError"
 import { NOME_COOKIE_TOKEN, opcoesCookieToken } from "../../shared/cookie"
 import type { Endereco } from "../../shared/types/pedido"
 import { BANDEIRAS_CARTAO, type CartaoInput } from "../../shared/types/usuario"
-import { SENHA_TAMANHO_MINIMO, ehObjeto, texto, textoPreenchido } from "../../shared/validacao"
+import { ehObjeto, validarSenha, texto, textoPreenchido } from "../../shared/validacao"
 
 const erro = (mensagem: string) => new AppError(400, "VALIDATION", mensagem)
 const digitos = (valor: string) => valor.replace(/\D/g, "")
@@ -64,9 +64,7 @@ export const contaController = {
     try {
       const b = corpo(req)
       if (typeof b.senhaAtual !== "string" || !b.senhaAtual) throw erro("Informe a senha atual.")
-      if (typeof b.novaSenha !== "string" || b.novaSenha.length < SENHA_TAMANHO_MINIMO) {
-        throw erro(`A nova senha precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`)
-      }
+      validarSenha(b.novaSenha, "A nova senha")
       await contaService.alterarSenha(usuarioLogado(req).id, b.senhaAtual, b.novaSenha)
       return res.status(204).send()
     } catch (err) {

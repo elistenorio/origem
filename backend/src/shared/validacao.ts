@@ -1,3 +1,5 @@
+import { AppError } from "./AppError"
+
 // Validações e normalizações simples da entrada, usadas pelos controllers e services
 // (o corpo da requisição chega como unknown).
 
@@ -44,5 +46,25 @@ export function escaparLike(texto: string): string {
   return texto.replace(/[\\%_]/g, (c) => `\\${c}`)
 }
 
-// Mesma regra do formulário de cadastro do frontend (BuyerRegisterForm).
+// Mesmas regras de frontend/src/utils/validation.ts (formulários de cadastro e troca de senha).
 export const SENHA_TAMANHO_MINIMO = 8
+
+// Caractere especial: qualquer coisa que não seja letra, número ou espaço (ex.: @, #, $, !, &).
+const CARACTERE_ESPECIAL = /[^\p{L}\p{N}\s]/u
+
+/**
+ * Confere as regras da senha e lança 400 VALIDATION com a mensagem do problema.
+ * Depois da chamada, o TypeScript sabe que `senha` é texto.
+ * `rotulo` muda o começo da mensagem (ex.: "A nova senha" na troca de senha).
+ */
+export function validarSenha(senha: unknown, rotulo = "A senha"): asserts senha is string {
+  if (typeof senha !== "string" || senha.length < SENHA_TAMANHO_MINIMO) {
+    throw new AppError(400, "VALIDATION", `${rotulo} precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`)
+  }
+  if (!CARACTERE_ESPECIAL.test(senha)) {
+    throw new AppError(400, "VALIDATION", `${rotulo} precisa ter pelo menos um caractere especial (ex.: @, #, $, !, &).`)
+  }
+}
+
+// Maior quantidade em estoque que uma peça pode ter (plano de testes, HU-030).
+export const ESTOQUE_MAXIMO = 999

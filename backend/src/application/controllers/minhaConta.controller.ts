@@ -5,7 +5,7 @@ import { pedidosService } from "../../infrastructure/services/pedidos.service"
 import { AppError, naoAutenticado } from "../../shared/AppError"
 import { FAIXAS_TEMPO_ATUACAO, type AtualizarEstoqueInput, type PerfilArtesaoInput } from "../../shared/types/artesao"
 import { EMBALAGENS, PRAZOS_POSTAGEM, type ProdutoInput } from "../../shared/types/produto"
-import { ehObjeto, texto, textoPreenchido } from "../../shared/validacao"
+import { ESTOQUE_MAXIMO, ehObjeto, texto, textoPreenchido } from "../../shared/validacao"
 
 // Todas as rotas de /minha-conta passam pelo authMiddleware; isto é só para o TypeScript saber que há usuário.
 function usuarioLogado(req: Request) {
@@ -54,6 +54,7 @@ function lerProdutoInput(body: unknown): ProdutoInput {
   }
   if (!Number.isFinite(input.preco) || input.preco < 0) throw erro("O preço precisa ser um número, zero ou maior.")
   if (!Number.isInteger(input.estoque) || input.estoque < 0) throw erro("A quantidade precisa ser um número inteiro, zero ou maior.")
+  if (input.estoque > ESTOQUE_MAXIMO) throw erro(`A quantidade pode ser no máximo ${ESTOQUE_MAXIMO} unidades.`)
   if (!(PRAZOS_POSTAGEM as readonly string[]).includes(input.prazoPostagem)) throw erro("Prazo para postagem inválido.")
   if (!(EMBALAGENS as readonly string[]).includes(input.embalagem)) throw erro("Tipo de embalagem inválido.")
 
@@ -167,6 +168,9 @@ export const minhaContaController = {
       }
       if (b.estoque !== undefined && (typeof b.estoque !== "number" || !Number.isInteger(b.estoque) || b.estoque < 0)) {
         throw new AppError(400, "VALIDATION", "O estoque precisa ser um número inteiro, zero ou maior.")
+      }
+      if (b.estoque !== undefined && b.estoque > ESTOQUE_MAXIMO) {
+        throw new AppError(400, "VALIDATION", `O estoque pode ser no máximo ${ESTOQUE_MAXIMO} unidades.`)
       }
       if (b.status !== undefined && b.status !== "publicado" && b.status !== "indisponivel") {
         throw new AppError(400, "VALIDATION", "Status inválido.")

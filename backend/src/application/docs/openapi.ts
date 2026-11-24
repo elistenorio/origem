@@ -482,7 +482,7 @@ export const openapi = {
       CadastroCompradorInput: {
         type: "object",
         required: ["nome", "email", "senha"],
-        properties: { nome: { type: "string", example: "Ana Beatriz Souza" }, email: { type: "string", example: "nova@email.com" }, senha: { type: "string", minLength: 8, example: "minhasenha" } },
+        properties: { nome: { type: "string", example: "Ana Beatriz Souza" }, email: { type: "string", example: "nova@email.com" }, senha: { type: "string", minLength: 8, example: "Senha#2026", description: "Pelo menos 8 caracteres e um caractere especial" } },
       },
       LoginInput: {
         type: "object",
@@ -532,7 +532,7 @@ export const openapi = {
           profundidade: { type: "string", example: "12" },
           peso: { type: "string", example: "1,2" },
           pecaUnica: { type: "boolean", example: false },
-          estoque: { type: "integer", example: 3 },
+          estoque: { type: "integer", minimum: 0, maximum: 999, example: 3 },
           preco: { type: "number", example: 89.9 },
           prazoPostagem: { type: "string", enum: ["1", "3", "7"], example: "3" },
           embalagem: { type: "string", enum: ["caixa", "envelope", "tubo"], example: "caixa" },
@@ -542,7 +542,7 @@ export const openapi = {
       },
       AtualizarEstoqueInput: {
         type: "object",
-        properties: { estoque: { type: "integer", example: 5 }, status: { type: "string", enum: ["publicado", "indisponivel"] } },
+        properties: { estoque: { type: "integer", minimum: 0, maximum: 999, example: 5 }, status: { type: "string", enum: ["publicado", "indisponivel"] } },
       },
       OpcaoFiltro: { type: "object", properties: { value: { type: "string" }, label: { type: "string" } } },
       OpcoesFiltro: {

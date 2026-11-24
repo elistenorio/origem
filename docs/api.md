@@ -279,7 +279,7 @@ Todas exigem login (qualquer perfil; sem login → `401`). As que devolvem a con
 |---|---|---|---|
 | `PATCH /minha-conta` | `{ nome, telefone, cpf? }` | salva nome e telefone; `cpf` (11 números) é guardado mascarado (`***.456.789-**`); sem `cpf`, mantém o atual | nome vazio, telefone sem DDD, CPF sem 11 números |
 | `PUT /minha-conta/endereco` | `Endereco` | salva o endereço de entrega e a cidade do usuário (`Recife/PE`) | CEP sem 8 números, rua, número, bairro ou cidade vazios, estado sem 2 letras |
-| `PUT /minha-conta/senha` | `{ senhaAtual, novaSenha }` | troca a senha; resposta `204` | senha atual errada, nova senha com menos de 8 caracteres |
+| `PUT /minha-conta/senha` | `{ senhaAtual, novaSenha }` | troca a senha; resposta `204` | senha atual errada, nova senha com menos de 8 caracteres ou sem caractere especial |
 | `PUT /minha-conta/preferencias` | `{ newsletter, novidadesArtesaos, whatsapp }` | salva as preferências (os três como `true`/`false`) | algum campo que não é `true`/`false` |
 | `POST /minha-conta/formas-pagamento` | `{ bandeira, ultimosDigitos }` | guarda `{ titulo: "Cartão Visa", detalhe: "final 4242" }`; resposta `201`. **Nunca recebe nem guarda o número completo nem o CVV** | bandeira fora de Visa, Mastercard, Elo, American Express e Hipercard; `ultimosDigitos` sem exatamente 4 números |
 | `DELETE /minha-conta/formas-pagamento/{indice}` | — | remove a forma de pagamento nessa posição da lista | — (`404` se a posição não existe) |
@@ -416,7 +416,7 @@ O artesão logado atualiza o estoque de uma peça dele e/ou a esconde (`indispon
 Resposta `200` com o `Produto` atualizado.
 
 Erros:
-- `400 VALIDATION`: nenhum campo enviado, estoque negativo ou não inteiro, ou status diferente de `publicado`/`indisponivel`.
+- `400 VALIDATION`: nenhum campo enviado, estoque negativo, acima de 999 ou não inteiro, ou status diferente de `publicado`/`indisponivel`.
 - `401 UNAUTHORIZED` / `403 FORBIDDEN`: sem login / perfil diferente de `artesao` (vale também para `GET /minha-conta/produtos` e `/minha-conta/resumo`).
 - `404 NOT_FOUND`: a peça não existe ou não é do artesão logado.
 - `409 CONFLICT`: tentar esconder ou mostrar uma peça que ainda não foi publicada (rascunho ou em análise).
@@ -445,7 +445,7 @@ Resposta `201` com o `Produto` criado:
 - `peso`, `prazoPostagem` e `embalagem` voltam no `Produto` (campos opcionais, só nas peças cadastradas pelo formulário).
 
 Erros:
-- `400 VALIDATION`: falta nome, categoria, técnica ou material; categoria, técnica ou material que não existe; medida ou peso que não é número (aceita vírgula ou ponto); preço ou quantidade negativos; `prazoPostagem` diferente de `1`, `3` ou `7`; `embalagem` diferente de `caixa`, `envelope` ou `tubo`. Para enviar à análise, também são obrigatórios descrição, preço maior que zero e quantidade (se não for peça única). A mensagem é a mesma que o formulário mostra.
+- `400 VALIDATION`: falta nome, categoria, técnica ou material; categoria, técnica ou material que não existe; medida ou peso que não é número (aceita vírgula ou ponto); preço ou quantidade negativos; quantidade acima de 999; `prazoPostagem` diferente de `1`, `3` ou `7`; `embalagem` diferente de `caixa`, `envelope` ou `tubo`. Para enviar à análise, também são obrigatórios descrição, preço maior que zero e quantidade (se não for peça única). A mensagem é a mesma que o formulário mostra.
 - `401 UNAUTHORIZED` / `403 FORBIDDEN`: sem login / perfil diferente de `artesao` (vale para todas as rotas abaixo).
 
 ### `PUT /minha-conta/produtos/{id}`
@@ -691,7 +691,7 @@ Cadastro de comprador (tela `/cadastro/comprador`). Sempre cria o perfil `compra
 Resposta `201` com o `Usuario` criado. O cadastro **não** faz login: a tela chama `POST /auth/login` em seguida, se quiser entrar direto. O e-mail é salvo em minúsculas e sem espaços nas pontas.
 
 Erros:
-- `400 VALIDATION`: sem nome, e-mail inválido ou senha com menos de 8 caracteres.
+- `400 VALIDATION`: sem nome, e-mail inválido ou senha com menos de 8 caracteres ou sem caractere especial (qualquer coisa que não seja letra, número ou espaço, ex.: `@`, `#`, `!`).
 - `409 CONFLICT`: já existe uma conta com o e-mail.
 
 ### `POST /usuarios/artesao`
@@ -710,7 +710,7 @@ Cadastro de artesão (tela `/cadastro/artesao`). Numa transação, cria o `Usuar
 
 - Resposta `201` com o `Usuario` criado. O nome público é `nomeArtistico` (ou `nome`, se vazio); a `bio` vem de `trabalho` (ou do começo de `historia`); a foto começa com uma imagem padrão (o envio de fotos ainda não existe).
 - As `comprovacoes` aparecem no detalhe da curadoria.
-- Erros: `400 VALIDATION` (termos não aceitos, nome, e-mail, senha com menos de 8 caracteres, telefone sem DDD, ofício, área, cidade, estado, região ou história faltando, área ou região inexistente, mais de 3 links ou link sem `http(s)://`); `409 CONFLICT` (e-mail já cadastrado).
+- Erros: `400 VALIDATION` (termos não aceitos, nome, e-mail, senha com menos de 8 caracteres ou sem caractere especial, telefone sem DDD, ofício, área, cidade, estado, região ou história faltando, área ou região inexistente, mais de 3 links ou link sem `http(s)://`); `409 CONFLICT` (e-mail já cadastrado).
 
 ### `POST /auth/login`
 
