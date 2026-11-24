@@ -35,7 +35,7 @@ export function ProductPurchasePanel({ produto }: ProductPurchasePanelProps) {
   }
 
   return (
-    <VStack flex="1" align="stretch" gap={6} maxW={{ lg: "450px" }}>
+    <VStack align="stretch" gap={6} w={{ base: "full", lg: "420px" }} flexShrink={0}>
 
       <Box>
         <HStack gap={2} mb={3} wrap="wrap">
