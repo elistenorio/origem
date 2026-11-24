@@ -16,6 +16,7 @@ import { ApiError } from "@/services/api"
 import { pedidosService } from "@/services/pedidos.service"
 import { useCartStore } from "@/store/cartStore"
 import { validateCheckout } from "@/utils/validateCheckout"
+import { montarPedido } from "@/utils/montarPedido"
 import { ESTADOS } from "@/constants/regioes"
 import type { DadosCheckout, ErrosCheckout } from "@/types/checkout"
 import { CheckoutSteps } from "./CheckoutSteps"
@@ -64,15 +65,7 @@ export function CheckoutView() {
     setEnviando(true)
     setErroEnvio(undefined)
     try {
-      // Os dados do cartão não são enviados na Avaliação 1.
-      const pedido = await pedidosService.criar({
-        itens: itens.map((item) => ({ produtoId: item.produto.id, quantidade: item.quantidade })),
-        comprador: { nome: dados.nome, cpf: dados.cpf, email: dados.email, telefone: dados.telefone },
-        endereco: { cep: dados.cep, rua: dados.rua, numero: dados.numero, complemento: dados.complemento, bairro: dados.bairro, cidade: dados.cidade, estado: dados.estado },
-        frete,
-        pagamento: dados.pagamento,
-        parcelas: Number(dados.parcelas),
-      })
+      const pedido = await pedidosService.criar(montarPedido(dados, itens, frete))
       setPedidoCriado({ nome: pedido.comprador.nome, codigo: pedido.codigo, total: pedido.total })
       clearCart()
     } catch (erro) {
