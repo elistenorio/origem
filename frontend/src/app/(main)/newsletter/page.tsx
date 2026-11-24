@@ -1,12 +1,7 @@
-"use client"
-
-import { useState, type FormEvent } from "react"
-import { Box, Button, Flex, Grid, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
-import { BiCheckCircle, BiEnvelope } from "react-icons/bi"
+import { Box, Grid, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
+import { BiCheckCircle } from "react-icons/bi"
 import { PageBreadcrumb } from "@/components/common/PageBreadcrumb"
-import { SectionCard } from "@/components/common/SectionCard"
-import { FormField } from "@/components/common/FormField"
-import { AppCheckbox } from "@/components/common/AppCheckbox"
+import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup"
 
 const BENEFICIOS = [
   "Histórias e entrevistas com artesãos de todo Pernambuco",
@@ -16,13 +11,6 @@ const BENEFICIOS = [
 ]
 
 export default function NewsletterPage() {
-  const [inscrito, setInscrito] = useState(false)
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault() // depois: chamar a API de newsletter
-    setInscrito(true)
-  }
-
   return (
     <Box maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
       <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Nossa Newsletter" }]} />
@@ -69,59 +57,7 @@ export default function NewsletterPage() {
 
         {/* Coluna da direita: formulário, ou a confirmação depois de enviar */}
         <Stack gap={6} align="stretch">
-          {inscrito ? (
-            <Stack
-              align="center"
-              textAlign="center"
-              gap={3}
-              bg="origem.fundo"
-              borderWidth="1px"
-              borderColor="origem.sucesso"
-              borderRadius="xl"
-              p={8}
-            >
-              <Flex
-                boxSize="56px"
-                bg="origem.sucesso"
-                color="white"
-                borderRadius="full"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <BiCheckCircle size={28} />
-              </Flex>
-              <Heading as="h2" variant="destaque" fontSize="2xl">
-                Inscrição confirmada!
-              </Heading>
-              <Text fontSize="sm" color="origem.texto">
-                Enviamos um e-mail para ana.beatriz@email.com. Confirme o endereço para começar a
-                receber a newsletter.
-              </Text>
-            </Stack>
-          ) : (
-            <SectionCard title="Assine gratuitamente">
-              <Text fontSize="sm" color="origem.textoSuave" mt={-2}>
-                Preencha seus dados para receber a próxima edição.
-              </Text>
-
-              <form onSubmit={handleSubmit}>
-                <Stack gap={4}>
-                  <FormField label="Nome" placeholder="Como podemos te chamar?" />
-                  <FormField label="E-mail" type="email" placeholder="email@exemplo.com" />
-                  <AppCheckbox>
-                    Aceito receber e-mails e li a Política de Privacidade.
-                  </AppCheckbox>
-                  <Button variant="origem" w="full" type="submit">
-                    <BiEnvelope /> Quero receber
-                  </Button>
-                  <Text fontSize="xs" color="origem.textoSuave">
-                    Seus dados são usados apenas para o envio da newsletter, conforme a LGPD. Você
-                    pode cancelar a inscrição a qualquer momento pelo link no fim de cada e-mail.
-                  </Text>
-                </Stack>
-              </form>
-            </SectionCard>
-          )}
+          <NewsletterSignup />
         </Stack>
       </Grid>
     </Box>

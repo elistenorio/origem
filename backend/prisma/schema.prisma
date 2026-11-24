@@ -287,3 +287,11 @@ model AnaliseCuradoria {
 
   @@index([tipo, itemId])
 }
+
+// Quem assinou a newsletter (POST /newsletter). Um registro por e-mail: assinar de novo só atualiza o nome.
+model AssinanteNewsletter {
+  id       String   @id @default(cuid())
+  nome     String
+  email    String   @unique
+  criadoEm DateTime @default(now())
+}
