@@ -9,6 +9,7 @@ import { PasswordHints } from "@/components/cadastro/PasswordHints"
 import { INICIO_POR_PERFIL } from "@/constants/perfis"
 import { useSessao } from "@/hooks/useSessao"
 import { ApiError } from "@/services/api"
+import { SENHA_TAMANHO_MINIMO, emailValido } from "@/utils/validation"
 import type { CadastroCompradorInput } from "@/types/usuario"
 
 const vazio: CadastroCompradorInput = { nome: "", email: "", senha: "" }
@@ -30,8 +31,8 @@ export function BuyerRegisterForm() {
     // Validação rápida na tela; o backend valida de novo.
     const novos: typeof erros = {}
     if (!dados.nome.trim()) novos.nome = "Informe seu nome completo."
-    if (!dados.email.includes("@")) novos.email = "Informe um e-mail válido."
-    if (dados.senha.length < 8) novos.senha = "A senha precisa ter pelo menos 8 caracteres."
+    if (!emailValido(dados.email)) novos.email = "Informe um e-mail válido."
+    if (dados.senha.length < SENHA_TAMANHO_MINIMO) novos.senha = `A senha precisa ter pelo menos ${SENHA_TAMANHO_MINIMO} caracteres.`
     setErros(novos)
     if (Object.keys(novos).length > 0) return
 

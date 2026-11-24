@@ -1,10 +1,11 @@
 import { Box, Text } from "@chakra-ui/react"
+import { SENHA_TAMANHO_MINIMO } from "@/utils/validation"
 
 const hints = [
   "Utilize letras maiúsculas e minúsculas (ex: A, b, C).",
   "Inclua números (ex: 1, 2, 3).",
   "Adicione caracteres especiais (ex: @, #, $, !, &).",
-  "Tenha no mínimo 8 caracteres.",
+  `Tenha no mínimo ${SENHA_TAMANHO_MINIMO} caracteres.`,
   "Evite informações pessoais como nome, data de nascimento ou sequências óbvias (1234, senha).",
 ]
 
