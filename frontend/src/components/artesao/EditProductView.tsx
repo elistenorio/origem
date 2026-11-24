@@ -50,7 +50,7 @@ export function EditProductView({ id }: { id: string }) {
   return (
     <ArtisanShell ativo="catalogo">
       <Link asChild variant="suave" mb="3">
-        <NextLink href="/artesao/catalogo">← Voltar para Meu catálogo</NextLink>
+        <NextLink href="/artesao/catalogo">← Voltar para Minhas peças</NextLink>
       </Link>
       <DataState loading={loading} error={error} onRetry={recarregar}>
       {!produto ? (
@@ -59,7 +59,7 @@ export function EditProductView({ id }: { id: string }) {
           <>
             <PanelPageHeader titulo="Editar peça" descricao="Mudanças em fotos, nome, descrição ou preço passam por uma nova análise rápida da curadoria.">
               <Button asChild variant="claro">
-                <NextLink href={`/produtos/${produto.id}`}><BiShow /> Visualizar peça</NextLink>
+                <NextLink href={`/produtos/${produto.id}`}><BiShow /> Ver como fica no site</NextLink>
               </Button>
             </PanelPageHeader>
             <ProductForm

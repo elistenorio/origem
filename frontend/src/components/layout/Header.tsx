@@ -21,11 +21,11 @@ export function Header() {
   }
 
   return (
-    <Box py={4} px={{ base: 4, md: 10 }}>
+    <Box py={4} px={{ base: 4, md: 10 }} bg="white" borderBottomWidth="1px" borderColor="origem.linha">
       <Flex gap={{ base: 4, md: 8 }} align="center" justify="space-between" wrap={{ base: "wrap", lg: "nowrap" }}>
         <Link asChild _hover={{ textDecoration: "none", opacity: 0.8 }}>
           <NextLink href="/">
-            <Heading variant="titulo" textTransform="uppercase" letterSpacing="widest" fontSize="3xl">
+            <Heading variant="titulo" color="origem.laranja" fontSize="3xl">
               Origem
             </Heading>
           </NextLink>
@@ -48,14 +48,14 @@ export function Header() {
                   <BiUser /> Olá, {usuario.nome.split(" ")[0]}
                 </NextLink>
               </Button>
-              <LogoutLink fontSize="sm" color="origem.texto" display="inline-flex" alignItems="center" gap={1}>
+              <LogoutLink fontSize="md" fontWeight="bold" color="origem.texto" display="inline-flex" alignItems="center" gap={1}>
                 <BiLogOut /> Sair
               </LogoutLink>
             </>
           ) : (
             <Button asChild variant="outline" px={5}>
               <NextLink href="/minha-conta">
-                <BiUser /> Acesso / Minha Conta
+                <BiUser /> Entrar / Minha conta
               </NextLink>
             </Button>
           )}

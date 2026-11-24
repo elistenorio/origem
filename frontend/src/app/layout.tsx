@@ -3,17 +3,18 @@ import { Provider } from "@/components/ui/provider"
 import { SessionLoader } from "@/components/autenticacao/SessionLoader"
 
 // Cada fonte vira uma variável CSS (--font-titulo / --font-corpo),
-// que o tema do Chakra lê em src/theme/system.ts
+// que o tema do Chakra lê em src/theme/system.ts.
+// As duas são fontes variáveis (um arquivo cobre todos os pesos) com licença livre (OFL).
+// Atkinson Hyperlegible Next: feita para leitura fácil, inclusive por pessoas com baixa visão.
 const fonteTitulo = localFont({
-  src: "./fonts/TradeGothicNext-HeavyCondensed.otf",
+  src: "./fonts/BricolageGrotesque-variavel.woff2",
+  weight: "200 800",
   variable: "--font-titulo",
 })
 
 const fonteCorpo = localFont({
-  src: [
-    { path: "./fonts/BrandonGrotesque-Regular.otf", weight: "400" },
-    { path: "./fonts/BrandonGrotesque-Bold.otf", weight: "700" },
-  ],
+  src: "./fonts/AtkinsonHyperlegibleNext-variavel.woff2",
+  weight: "200 800",
   variable: "--font-corpo",
 })
 

@@ -17,7 +17,7 @@ export function StepProof({ data, onChange, onNext }: StepProps) {
 
   return (
     <StepForm onSubmit={onNext}>
-      <SelectField label="Possui registro e/ou certificações?" options={SIM_NAO}
+      <SelectField label="Possui registro e/ou certificações?" hint="Ex.: carteira do artesão. Se não tiver, tudo bem: escolha Não." options={SIM_NAO}
         value={data.possuiRegistro}
         onChange={(value) => onChange("possuiRegistro", value)} />
       <SelectField label="Já participou de feiras ou exposições?" options={SIM_NAO}

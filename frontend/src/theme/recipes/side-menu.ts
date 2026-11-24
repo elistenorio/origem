@@ -7,22 +7,25 @@ export const sideMenuRecipe = defineSlotRecipe({
   slots: ["root", "item", "sair"],
   base: {
     root: { display: "flex", flexDirection: "column", flexShrink: 0 },
-    item: { display: "flex", alignItems: "center", textDecoration: "none", _hover: { textDecoration: "none" } },
+    item: { display: "flex", alignItems: "center", textDecoration: "none", _hover: { textDecoration: "none" }, "& svg": { flexShrink: 0 } }, // ícone nunca encolhe com rótulo longo
     sair: { display: "flex", alignItems: "center", textDecoration: "none", _hover: { textDecoration: "none" } },
   },
   variants: {
     variant: {
       icones: {
-        root: { bg: "origem.passoFundo", w: { base: "64px", md: "80px" }, minH: "calc(100vh - 64px)", py: "8", gap: "6", alignItems: "center" },
+        root: { bg: "white", borderRightWidth: "1px", borderColor: "origem.linha", w: { base: "full", md: "260px" }, minH: { md: "calc(100vh - 64px)" }, py: { base: "3", md: "8" }, px: "4", gap: "2", flexDirection: { base: "row", md: "column" }, overflowX: { base: "auto", md: "visible" } },
         item: {
-          w: "48px",
-          h: "48px",
-          borderRadius: "full",
-          justifyContent: "center",
-          bg: "origem.fundo",
-          color: "origem.marrom",
-          _hover: { opacity: 0.8 },
-          _currentPage: { bg: "origem.laranja", color: "white" },
+          gap: "3",
+          px: "4",
+          py: "3",
+          minH: "52px",
+          borderRadius: "xl",
+          color: "origem.texto",
+          fontWeight: "medium",
+          fontSize: "md",
+          whiteSpace: "nowrap",
+          _hover: { bg: "origem.busca" },
+          _currentPage: { bg: "origem.busca", color: "origem.laranja", fontWeight: "bold" },
         },
       },
       lista: {
@@ -35,7 +38,7 @@ export const sideMenuRecipe = defineSlotRecipe({
           color: "origem.texto",
           fontWeight: "medium",
           _hover: { bg: "origem.busca" },
-          _currentPage: { bg: "origem.laranja", color: "white", _hover: { bg: "origem.laranja" } },
+          _currentPage: { bg: "origem.busca", color: "origem.laranja", fontWeight: "bold", _hover: { bg: "origem.busca" } },
         },
         sair: { gap: "3", px: "4", py: "3", color: "origem.perigo", fontWeight: "medium" },
       },

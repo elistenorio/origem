@@ -76,7 +76,7 @@ export function StockView() {
 
   return (
     <ArtisanShell ativo="estoque">
-      <PanelPageHeader titulo="Estoque" descricao="Acompanhe a quantidade disponível das suas peças e atualize sempre que produzir ou vender fora do Origem.">
+      <PanelPageHeader titulo="Meu estoque" descricao="Acompanhe a quantidade disponível das suas peças e atualize sempre que produzir ou vender fora do Origem.">
         <Button asChild variant="origem"><NextLink href="/artesao/catalogo/nova"><BiPlus /> Adicionar peça</NextLink></Button>
       </PanelPageHeader>
       <Stack gap="8">

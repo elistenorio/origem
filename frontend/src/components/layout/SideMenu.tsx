@@ -8,15 +8,17 @@ export type SideMenuItem = { id: string; label: string; icon: React.ReactNode; h
 
 type SideMenuProps = { items: readonly SideMenuItem[]; ativo: string; rotulo: string }
 
-// Menu lateral de ícones (painel do artesão e do admin). Estilo na recipe "sideMenu".
+// Menu lateral do painel do artesão e do admin: ícone + nome escrito, para ninguém
+// precisar adivinhar o que cada ícone faz. Estilo na recipe "sideMenu".
 export function SideMenu({ items, ativo, rotulo }: SideMenuProps) {
   const styles = useSlotRecipe({ key: "sideMenu" })({ variant: "icones" })
   return (
     <chakra.nav aria-label={rotulo} css={styles.root}>
       {items.map((item) => (
-        <Link asChild key={item.id} css={styles.item} aria-label={item.label} title={item.label} aria-current={ativo === item.id ? "page" : undefined}>
+        <Link asChild key={item.id} css={styles.item} aria-current={ativo === item.id ? "page" : undefined}>
           <NextLink href={item.href}>
             {item.icon}
+            {item.label}
           </NextLink>
         </Link>
       ))}

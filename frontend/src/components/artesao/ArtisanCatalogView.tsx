@@ -65,7 +65,7 @@ export function ArtisanCatalogView() {
 
   return (
     <ArtisanShell ativo="catalogo">
-      <PanelPageHeader titulo="Meu catálogo" descricao="Aqui você pode adicionar, editar e acompanhar as peças que estão disponíveis no Origem.">
+      <PanelPageHeader titulo="Minhas peças" descricao="Aqui você pode adicionar, editar e acompanhar as peças que estão disponíveis no Origem.">
         <Button asChild variant="origem">
           <NextLink href="/artesao/catalogo/nova"><BiPlus /> Adicionar peça</NextLink>
         </Button>

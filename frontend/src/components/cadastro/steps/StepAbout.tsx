@@ -23,10 +23,10 @@ export function StepAbout({ data, onChange, onNext }: StepProps) {
         onChange={(e) => onChange("oficio", e.target.value)} />
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-        <SelectField label="Tempo de atuação" options={TEMPO_ATUACAO}
+        <SelectField label="Tempo de atuação" hint="Há quanto tempo você trabalha com artesanato." options={TEMPO_ATUACAO}
           value={data.tempoAtuacao}
           onChange={(value) => onChange("tempoAtuacao", value)} />
-        <SelectField label="Área de atuação" options={selecione(CATEGORIAS)}
+        <SelectField label="Área de atuação" hint="O tipo de peça que você mais faz." options={selecione(CATEGORIAS)}
           value={data.areaAtuacao}
           onChange={(value) => onChange("areaAtuacao", value)} />
       </SimpleGrid>

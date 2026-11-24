@@ -152,10 +152,10 @@ export default function SobrePage() {
           </Heading>
           <Text mb={6}>Compre de quem faz ou venda o seu trabalho no Origem.</Text>
           <Stack direction={{ base: "column", sm: "row" }} justify="center" gap={4}>
-            <Button asChild bg="origem.fundo" color="origem.texto" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
+            <Button asChild variant="claro">
               <NextLink href="/artesaos">→ Conheça os artesãos</NextLink>
             </Button>
-            <Button asChild bg="origem.marrom" color="white" borderRadius="lg" px={6} _hover={{ opacity: 0.9 }}>
+            <Button asChild variant="origem">
               <NextLink href="/cadastro">+ Faça parte</NextLink>
             </Button>
           </Stack>
