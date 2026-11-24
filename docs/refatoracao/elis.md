@@ -39,7 +39,7 @@ O que se repete são duas regras pequenas e estáveis: uma constante e uma regex
 - **Mitigações:**
   - há um único ponto de definição em cada pacote;
   - um comentário em cada lado aponta para o outro;
-  - o `validation.test.ts` falha se a regra do frontend mudar sem intenção.
+  - o `frontend/tests/utils/validation.test.ts` (roda com `npm test`) falha se a regra do frontend mudar sem intenção.
 - **Impacto de uma divergência:** é limitado. O backend sempre valida, então nenhum dado inválido é persistido.
 - **Limitação:** o comentário em `backend/src/shared/validacao.ts:41` ainda cita o `BuyerRegisterForm`. Não alterei porque o backend ficou fora do escopo.
 - **Quando revisar:** se o projeto adotar um pacote compartilhado, ou se mais regras passarem a ser validadas nos dois lados.
