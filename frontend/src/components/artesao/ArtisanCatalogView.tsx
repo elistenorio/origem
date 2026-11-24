@@ -27,6 +27,7 @@ const CHAVES = ["busca", "status", "categoria", "ordenar"] as const
 const STATUS = [
   { value: "", label: "Todos" }, { value: "publicado", label: "Publicado" }, { value: "emAnalise", label: "Em análise" },
   { value: "rascunho", label: "Rascunho" }, { value: "indisponivel", label: "Indisponível" },
+  { value: "ajustesSolicitados", label: "Ajustes solicitados" }, { value: "recusado", label: "Recusada" },
 ]
 
 // Meu catálogo (Tela 06 do artesão): resumo, busca, filtros e as peças com ações.
@@ -99,8 +100,9 @@ export function ArtisanCatalogView() {
                 updatedAt={formatDate(p.criadoEm)}
                 price={p.preco}
                 status={p.status}
+                parecer={p.parecerCuradoria}
                 visible={p.status !== "indisponivel"}
-                onEdit={() => router.push(`/artesao/catalogo/${p.id}`)}
+                onEdit={p.status === "recusado" ? undefined : () => router.push(`/artesao/catalogo/${p.id}`)}
                 onView={() => router.push(`/produtos/${p.id}`)}
                 onToggleVisibility={() => alternarVisibilidade(p.id, p.status)}
               />

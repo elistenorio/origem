@@ -6,9 +6,10 @@ type StepFormProps = {
   children: React.ReactNode
   submitLabel?: string
   disabled?: boolean
+  loading?: boolean
 }
 
-export function StepForm({ onSubmit, children, submitLabel = "Continuar", disabled }: StepFormProps) {
+export function StepForm({ onSubmit, children, submitLabel = "Continuar", disabled, loading }: StepFormProps) {
   return (
     <form
       onSubmit={(event) => {
@@ -18,7 +19,7 @@ export function StepForm({ onSubmit, children, submitLabel = "Continuar", disabl
     >
       <Stack gap="5">
         {children}
-        <Button type="submit" alignSelf="center" mt="4" disabled={disabled}>
+        <Button type="submit" alignSelf="center" mt="4" disabled={disabled} loading={loading}>
           {submitLabel}
         </Button>
       </Stack>

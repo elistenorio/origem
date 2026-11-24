@@ -10,7 +10,7 @@ export type Pagination = {
   take: number // quantos itens buscar
 }
 
-// Lê page e pageSize da query string; valor ausente ou inválido vira o padrão (como na Fake API).
+// Lê page e pageSize da query string; valor ausente ou inválido vira o padrão.
 export function readPagination(query: { page?: unknown; pageSize?: unknown }): Pagination {
   const page = Math.max(1, Math.floor(Number(query.page)) || 1)
   const pedido = Math.max(1, Math.floor(Number(query.pageSize)) || DEFAULT_PAGE_SIZE)

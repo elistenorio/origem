@@ -17,7 +17,7 @@ export const artesaosService = {
     }
 
     // O filtro chega com o id da técnica ("renda"); o artesão guarda o nome ("Renda renascença").
-    // Id desconhecido: o filtro é ignorado, como na Fake API.
+    // Id desconhecido: o filtro é ignorado.
     const tecnicaLabel = tecnica ? (await filtrosRepository.buscarTecnica(tecnica))?.label : undefined
 
     const { itens, total } = await artesaosRepository.listarPublicados({ ...outros, ids, tecnicaLabel }, paginacao)

@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import type { Prisma, StatusPedido } from "@prisma/client"
 import { prisma } from "../prisma/client"
 import type { Comprador, CriarPedidoInput, Endereco, FretePedido, ItemPedido, Pedido } from "../../shared/types/pedido"
 
@@ -78,6 +78,71 @@ export const pedidosRepository = {
     return registro ? { pedido: paraPedido(registro), usuarioId: registro.usuarioId } : null
   },
 
+  async listar(filtros: { status?: StatusPedido; busca?: string }, paginacao: { skip: number; take: number }): Promise<{ itens: Pedido[]; total: number }> {
+    const busca = filtros.busca?.replace(/^#/, "")
+    const where: Prisma.PedidoWhereInput = {
+      status: filtros.status,
+      OR: busca ? [{ id: { contains: busca } }, { comprador: { path: ["nome"], string_contains: busca } }] : undefined,
+    }
+    const [total, registros] = await prisma.$transaction([
+      prisma.pedido.count({ where }),
+      prisma.pedido.findMany({
+        where,
+        include: incluirDetalhes,
+        orderBy: [{ criadoEm: "desc" }, { id: "desc" }],
+        skip: paginacao.skip,
+        take: paginacao.take,
+      }),
+    ])
+    return { itens: registros.map(paraPedido), total }
+  },
+
+  async listarAguardandoEnvioDesde(antesDe: Date): Promise<Pedido[]> {
+    const registros = await prisma.pedido.findMany({
+      where: { status: { in: ["processando", "emSeparacao"] }, criadoEm: { lt: antesDe } },
+      include: incluirDetalhes,
+      orderBy: [{ criadoEm: "asc" }, { id: "asc" }],
+    })
+    return registros.map(paraPedido)
+  },
+
+  async contarPorStatus(): Promise<Record<StatusPedido, number>> {
+    const grupos = await prisma.pedido.groupBy({ by: ["status"], _count: { _all: true } })
+    const contagem: Record<StatusPedido, number> = { processando: 0, emSeparacao: 0, enviado: 0, entregue: 0, cancelado: 0 }
+    for (const grupo of grupos) contagem[grupo.status] = grupo._count._all
+    return contagem
+  },
+
+  async listarComItensDoArtesao(artesaoId: string): Promise<Pedido[]> {
+    const doArtesao = { produto: { artesaoId } } satisfies Prisma.ItemPedidoWhereInput
+    const registros = await prisma.pedido.findMany({
+      where: { itens: { some: doArtesao } },
+      include: { ...incluirDetalhes, itens: { where: doArtesao, orderBy: { id: "asc" } } },
+      orderBy: [{ criadoEm: "desc" }, { id: "desc" }],
+    })
+    return registros.map(paraPedido)
+  },
+
+  async avancarStatus(
+    id: string,
+    de: StatusPedido,
+    para: StatusPedido,
+    dados: { evento: string; codigoRastreio?: string; previsaoEntrega?: Date },
+  ): Promise<Pedido | null> {
+    return prisma.$transaction(async (tx) => {
+      const { count } = await tx.pedido.updateMany({
+        where: { id, status: de },
+        data: { status: para, codigoRastreio: dados.codigoRastreio, previsaoEntrega: dados.previsaoEntrega },
+      })
+      if (count === 0) return null
+
+      await tx.eventoPedido.create({ data: { pedidoId: id, titulo: dados.evento } })
+
+      const registro = await tx.pedido.findUniqueOrThrow({ where: { id }, include: incluirDetalhes })
+      return paraPedido(registro)
+    })
+  },
+
   /** Pedidos do usuário, do mais recente para o mais antigo. */
   async listarPorUsuario(usuarioId: string): Promise<Pedido[]> {
     const registros = await prisma.pedido.findMany({
@@ -99,7 +164,7 @@ export const pedidosRepository = {
       const registro = await prisma.$transaction(async (tx) => {
         for (const item of dados.itens) {
           const { count } = await tx.produto.updateMany({
-            where: { id: item.produtoId, status: "publicado", estoque: { gte: item.quantidade } },
+            where: { id: item.produtoId, status: "publicado", artesao: { status: "publicado" }, estoque: { gte: item.quantidade } },
             data: { estoque: { decrement: item.quantidade } },
           })
           if (count === 0) throw new EstoqueAcabou(item.produtoId)

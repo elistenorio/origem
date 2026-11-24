@@ -38,7 +38,6 @@ export type Indicadores = {
   artesaosAtivos: number
   clientes: number
   produtosPublicados: number
-  visualizacoes: number
   variacoes: Record<"faturamento" | "pedidos" | "ticketMedio" | "pecasVendidas", number> // % vs período anterior
   faturamentoMensal: { mes: string; atual: number; anterior: number }[]
   vendasPorCategoria: { categoria: string; quantidade: number }[]
@@ -73,6 +72,7 @@ export type ItemCuradoria = {
   descricao: string
   trajetoria?: string
   documentos: { nome: string; tamanho: string }[]
+  comprovacoes?: { rotulo: string; valor: string }[]
   historico: { titulo: string; data: string }[]
 }
 

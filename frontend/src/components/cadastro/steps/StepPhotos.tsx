@@ -1,6 +1,6 @@
 "use client"
 
-import { Stack, Text } from "@chakra-ui/react"
+import { Alert, Stack, Text } from "@chakra-ui/react"
 import { FileField } from "@/components/common/FileField"
 import type { StepProps } from "@/types/artisan-registration"
 import { StepForm } from "../StepForm"
@@ -40,9 +40,15 @@ const SECOES: {
   },
 ]
 
-export function StepPhotos({ data, onChange, onNext }: StepProps) {
+export function StepPhotos({ data, onChange, onNext, enviando }: StepProps) {
   return (
-    <StepForm onSubmit={onNext}>
+    <StepForm onSubmit={onNext} submitLabel="Enviar cadastro" loading={enviando}>
+      <Alert.Root status="info">
+        <Alert.Indicator />
+        <Alert.Description>
+          Por enquanto as fotos não são enviadas com o cadastro: seu perfil começa com uma foto padrão, e a equipe do Origem combina o envio das fotos durante a análise.
+        </Alert.Description>
+      </Alert.Root>
       {SECOES.map(({ campo, titulo, destaque, texto, multiple }) => (
         <Stack key={campo} gap="2">
           <Text as="h2" fontWeight="bold" textTransform="uppercase" color="origem.texto">

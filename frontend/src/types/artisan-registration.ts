@@ -9,12 +9,14 @@ export type ArtisanRegistrationData = {
   aceitouTermos: boolean
   // etapa 2
   nomeArtistico: string
+  oficio: string
   tempoAtuacao: string
   areaAtuacao: string
   tecnicas: string[]
   outraTecnica: string
   cidade: string
   estado: string
+  regiao: string
   // etapa 3
   historia: string
   trabalho: string
@@ -35,8 +37,8 @@ export type ArtisanRegistrationData = {
 export const initialRegistrationData: ArtisanRegistrationData = {
   nome: "", email: "", senha: "", confirmarSenha: "",
   telefone: "", celular: "", aceitouTermos: false,
-  nomeArtistico: "", tempoAtuacao: "menos-1", areaAtuacao: "ceramica",
-  tecnicas: [], outraTecnica: "", cidade: "", estado: "",
+  nomeArtistico: "", oficio: "", tempoAtuacao: "menos-1", areaAtuacao: "",
+  tecnicas: [], outraTecnica: "", cidade: "", estado: "PE", regiao: "",
   historia: "", trabalho: "", origemTrabalho: "", gostaDeFazer: "",
   possuiRegistro: "sim", participouFeiras: "sim", pertenceAssociacao: "sim",
   qualAssociacao: "", links: ["", "", ""],
@@ -51,4 +53,5 @@ export type StepProps = {
     value: ArtisanRegistrationData[K],
   ) => void
   onNext: () => void
+  enviando?: boolean
 }

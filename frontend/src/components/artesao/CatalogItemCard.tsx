@@ -3,6 +3,7 @@ import { BiPencil, BiHide, BiShow } from "react-icons/bi"
 import { StatusBadge, type StatusKey } from "@/components/common/StatusBadge"
 import { Price } from "@/components/common/Price"
 import { Tile } from "@/components/common/Tile"
+import { CurationNotice } from "./CurationNotice"
 
 type CatalogItemCardProps = {
   title: string
@@ -12,6 +13,7 @@ type CatalogItemCardProps = {
   updatedAt: string // já formatado, ex.: "20/09/2026"
   price: number
   status: StatusKey
+  parecer?: string
   visible?: boolean
   onEdit?: () => void
   onView?: () => void
@@ -28,13 +30,14 @@ export function CatalogItemCard({
   updatedAt,
   price,
   status,
+  parecer,
   visible = true,
   onEdit,
   onView,
   onToggleVisibility,
 }: CatalogItemCardProps) {
   return (
-    <Tile p={4}>
+    <Tile p={4} display="flex" flexDirection="column" gap="3">
       <HStack align="flex-start" gap="4">
         <Box position="relative" flexShrink={0}>
           <Image src={imageUrl} alt={title} boxSize="80px" borderRadius="md" objectFit="cover" />
@@ -62,15 +65,18 @@ export function CatalogItemCard({
         <Stack gap="3" alignSelf="center" align="flex-end">
           <Price valor={price} fontSize="md" fontWeight="bold" color="origem.texto" />
           <HStack gap="2">
-            <Button variant="outline" size="sm" onClick={onEdit}>
-              <BiPencil /> Editar
-            </Button>
+            {onEdit && (
+              <Button variant="outline" size="sm" onClick={onEdit}>
+                <BiPencil /> Editar
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={onView}>
               Visualizar
             </Button>
           </HStack>
         </Stack>
       </HStack>
+      <CurationNotice status={status} parecer={parecer} item="peca" />
     </Tile>
   )
 }
