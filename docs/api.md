@@ -201,6 +201,26 @@ Opções de frete para o CEP (carrinho, checkout e detalhe do produto). Simulaç
 
 Erro: `400 VALIDATION` se o CEP não tiver 8 números.
 
+### `POST /newsletter`
+
+Assinatura da newsletter (tela `/newsletter`). Pública, sem login.
+
+```json
+{ "nome": "Ana Beatriz", "email": "ana.beatriz@email.com", "aceitouTermos": true }
+```
+
+Resposta `201` com o nome e o e-mail como ficaram salvos (o e-mail em minúsculas e sem espaços nas pontas):
+
+```json
+{ "nome": "Ana Beatriz", "email": "ana.beatriz@email.com" }
+```
+
+- Um registro por e-mail (tabela `AssinanteNewsletter`). Assinar de novo com o mesmo e-mail **não é erro**: responde `201` de novo e só atualiza o nome.
+- O site ainda não envia e-mails; a lista fica guardada para os envios.
+
+Erros:
+- `400 VALIDATION`: sem nome ("Informe seu nome."), e-mail inválido ("Informe um e-mail válido.") ou `aceitouTermos` diferente de `true` ("Marque que aceita receber e-mails para assinar.").
+
 ### `POST /pedidos`
 
 Finaliza a compra (como visitante). A tela envia os itens do carrinho, os dados do comprador, o endereço, a opção de frete escolhida (uma das devolvidas por `GET /frete`) e o pagamento.

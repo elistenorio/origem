@@ -7,6 +7,7 @@ import { minhaContaRouter } from "./minhaConta.routes"
 import { pedidosRouter } from "./pedidos.routes"
 import { filtrosRouter } from "./filtros.routes"
 import { freteRouter } from "./frete.routes"
+import { newsletterRouter } from "./newsletter.routes"
 import { produtosRouter } from "./produtos.routes"
 import { usuariosRouter } from "./usuarios.routes"
 
@@ -22,6 +23,7 @@ router.use("/produtos", produtosRouter)
 router.use("/filtros", filtrosRouter)
 router.use("/artesaos", artesaosRouter)
 router.use("/frete", freteRouter)
+router.use("/newsletter", newsletterRouter)
 
 // Pedidos, avaliações e área do usuário logado
 router.use("/pedidos", pedidosRouter)

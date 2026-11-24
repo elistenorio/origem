@@ -66,6 +66,7 @@ export const openapi = {
   tags: [
     { name: "Autenticação e cadastro" },
     { name: "Vitrine", description: "Rotas públicas" },
+    { name: "Newsletter", description: "Pública" },
     { name: "Pedidos e avaliações" },
     { name: "Minha conta", description: "Usuário logado (comprador ou artesão)" },
     { name: "Artesão", description: "Só para o perfil artesao" },
@@ -158,6 +159,17 @@ export const openapi = {
         summary: "Opções de frete (simulação)",
         parameters: [{ name: "cep", in: "query", required: true, schema: { type: "string" }, example: "50030170" }],
         responses: { 200: lista("OpcaoFrete"), 400: erro("CEP sem 8 números (VALIDATION)") },
+      },
+    },
+
+    // ---------- Newsletter ----------
+    "/newsletter": {
+      post: {
+        tags: ["Newsletter"],
+        summary: "Assinar a newsletter",
+        description: "Um registro por e-mail: assinar de novo responde 201 e só atualiza o nome.",
+        requestBody: corpo("AssinaturaNewsletterInput"),
+        responses: { 201: json("AssinaturaNewsletter", "Assinatura salva"), 400: invalido },
       },
     },
 
@@ -458,6 +470,19 @@ export const openapi = {
       cookieAuth: { type: "apiKey", in: "cookie", name: "token", description: "Gravado por POST /auth/login" },
     },
     schemas: {
+      AssinaturaNewsletterInput: {
+        type: "object",
+        required: ["nome", "email", "aceitouTermos"],
+        properties: {
+          nome: { type: "string", example: "Ana Beatriz" },
+          email: { type: "string", example: "ana.beatriz@email.com" },
+          aceitouTermos: { type: "boolean", example: true },
+        },
+      },
+      AssinaturaNewsletter: {
+        type: "object",
+        properties: { nome: { type: "string", example: "Ana Beatriz" }, email: { type: "string", example: "ana.beatriz@email.com" } },
+      },
       ApiError: {
         type: "object",
         properties: {
