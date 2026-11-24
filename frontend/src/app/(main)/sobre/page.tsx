@@ -37,7 +37,7 @@ export default function SobrePage() {
             <Text fontWeight="bold" textTransform="uppercase" fontSize="sm" letterSpacing="wide">
               Sobre nós
             </Text>
-            <Heading as="h1" fontFamily="heading" fontSize={{ base: "3xl", md: "5xl" }} fontWeight="normal">
+            <Heading as="h1" fontFamily="heading" fontSize={{ base: "3xl", md: "5xl" }} fontWeight="800" color="white">
               Feito à mão, com origem.
             </Heading>
             <Text maxW="500px" fontSize={{ base: "sm", md: "md" }}>
